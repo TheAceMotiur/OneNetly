@@ -16,4 +16,4 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         protocol: ftps
         security: loose
-        server-dir: /blingrs.com/
+        server-dir: /public_html/

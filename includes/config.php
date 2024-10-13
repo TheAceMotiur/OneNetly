@@ -1,8 +1,8 @@
 <?php  
-	define("DB_NAME", 'onenetly_onenetly');
-	define("DB_USER", 'onenetly_onenetly');
+	define("DB_NAME", 'onenetly_home');
+	define("DB_USER", 'onenetly_home');
 	define("DB_PASSWORD", 'AmiMotiur27@');
-	define("DB_HOST", 'localhost');
+	define("DB_HOST", '207.244.240.126');
 	define("DB_PORT", '3306');
 	define("SYS_URL", 'https://onenetly.com');
 	define("DEBUGGING", false);

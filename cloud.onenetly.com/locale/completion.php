@@ -1,0 +1,45 @@
+<?php
+/**
+ * FOSSBilling translations
+ * Dated: Sat Jun  8 03:49:20 UTC 2024
+ * License: https://github.com/FOSSBilling/locale/blob/main/LICENSE.md
+ */
+return [
+  'el_GR' => 100,
+  'bg_BG' => 91,
+  'he_IL' => 7,
+  'it_IT' => 56,
+  'fi_FI' => 93,
+  'ru_RU' => 95,
+  'fa_IR' => 100,
+  'bn_BD' => 0,
+  'hr_HR' => 37,
+  'tr_TR' => 95,
+  'sr_RS' => 100,
+  'cs_CZ' => 4,
+  'ar_SA' => 91,
+  'da_DK' => 33,
+  'zh_CN' => 80,
+  'sl_SI' => 0,
+  'es_ES' => 83,
+  'pt_PT' => 79,
+  'nl_NL' => 83,
+  'sv_SE' => 0,
+  'fr_FR' => 93,
+  'ar_EG' => 14,
+  'id_ID' => 26,
+  'uk_UA' => 93,
+  'pt_BR' => 100,
+  'vi_VN' => 73,
+  'ca_ES' => 79,
+  'ro_RO' => 91,
+  'lt_LT' => 73,
+  'ja_JP' => 0,
+  'ko_KR' => 3,
+  'th_TH' => 4,
+  'pl_PL' => 100,
+  'en_AU' => 1,
+  'hu_HU' => 93,
+  'de_DE' => 99,
+  'zh_TW' => 71,
+];

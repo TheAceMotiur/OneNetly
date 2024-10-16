@@ -40,17 +40,19 @@ try {
 
   // [2] check for new requests
   /* check if last friend reuqest deleted already */
-  if ($_POST['last_request'] != "0" && $user->check_last_friend_request($_POST['last_request'])) {
-    /* return */
-    $return['delete_last_request'] = true;
-  } else {
-    $requests = $user->get_friend_requests(0, $_POST['last_request']);
-    if ($requests) {
-      /* assign variables */
-      $smarty->assign('requests', $requests);
+  if ($system['friends_enabled']) {
+    if ($_POST['last_request'] != "0" && $user->check_last_friend_request($_POST['last_request'])) {
       /* return */
-      $return['requests_count'] = count($requests);
-      $return['requests'] = $smarty->fetch("ajax.live.requests.tpl");
+      $return['delete_last_request'] = true;
+    } else {
+      $requests = $user->get_friend_requests(0, $_POST['last_request']);
+      if ($requests) {
+        /* assign variables */
+        $smarty->assign('requests', $requests);
+        /* return */
+        $return['requests_count'] = count($requests);
+        $return['requests'] = $smarty->fetch("ajax.live.requests.tpl");
+      }
     }
   }
 

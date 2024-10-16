@@ -7663,6 +7663,12 @@ body.night-mode .review-reply {
   margin-bottom: 25px;
 }
 
+@media (max-width: 768px) {
+  .footer {
+    margin-bottom: 85px;
+  }
+}
+
 body.night-mode .footer {
   border-top: 1px solid var(--card-dark-divider);
 }
@@ -7678,6 +7684,14 @@ body.night-mode .footer {
 /* mini-footer */
 .mini-footer {
   font-size: 12px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+@media (max-width: 768px) {
+  .mini-footer {
+    margin-bottom: 85px !important;
+  }
 }
 
 .mini-footer .copyrights {

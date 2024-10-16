@@ -186,7 +186,7 @@ try {
       $distance = $_GET['distance'];
       $unit = ($system['system_distance'] == "mile") ? 3958 : 6371;
       $distance = ($_GET['distance'] && is_numeric($_GET['distance']) && $_GET['distance'] > 0) ? $_GET['distance'] : 25;
-      $distance_clause = sprintf("(%s * acos(cos(radians(%s)) * cos(radians(user_latitude)) * cos(radians(user_longitude) - radians(%s)) + sin(radians(%s)) * sin(radians(user_latitude))) ) AS distance ", secure($unit, 'int'), secure($user->_data['user_latitude']), secure($user->_data['user_longitude']), secure($user->_data['user_latitude']));
+      $distance_clause = sprintf("(%s * acos(cos(radians(%s)) * cos(radians(post_latitude)) * cos(radians(post_longitude) - radians(%s)) + sin(radians(%s)) * sin(radians(post_latitude))) ) AS distance ", secure($unit, 'int'), secure($user->_data['user_latitude']), secure($user->_data['user_longitude']), secure($user->_data['user_latitude']));
       $distance_query .= sprintf(" HAVING distance < %s ", secure($distance, 'int'));
       $order_query .= " ORDER BY distance ASC ";
     }
@@ -216,7 +216,8 @@ try {
     require('includes/class-pager.php');
     $params['selected_page'] = (!isset($_GET['page']) || (int) $_GET['page'] == 0) ? 1 : $_GET['page'];
     $distance_max_clause = ($distance_clause) ? ", MAX" . $distance_clause : "";
-    $total = $db->query("SELECT COUNT(*) as count " . $distance_max_clause . " FROM posts INNER JOIN posts_products ON posts.post_id = posts_products.post_id INNER JOIN users ON posts.user_id = users.user_id WHERE posts.post_type = 'product' AND posts_products.available = '1' AND (posts.pre_approved = '1' OR posts.has_approved = '1')" . $where_query . $distance_query . $order_query);
+    $author_join = " LEFT JOIN users AS user_post_author ON posts.user_type = 'user' AND posts.user_id = user_post_author.user_id AND user_post_author.user_banned = '0' LEFT JOIN pages AS page_post_author ON posts.user_type = 'page' AND posts.user_id = page_post_author.page_id ";
+    $total = $db->query("SELECT COUNT(*) as count " . $distance_max_clause . " FROM posts INNER JOIN posts_products ON posts.post_id = posts_products.post_id " . $author_join . " WHERE posts.post_type = 'product' AND posts_products.available = '1' AND (posts.pre_approved = '1' OR posts.has_approved = '1')" . $where_query . $distance_query . $order_query);
     $params['total_items'] = $total->fetch_assoc()['count'];
     $params['items_per_page'] = $system['marketplace_results'];
     $params['url'] = $system['system_url'] . '/market' . $url . '/%s';
@@ -231,7 +232,7 @@ try {
     // get posts
     $rows = [];
     $distance_clause = ($distance_clause) ? ", " . $distance_clause : "";
-    $get_rows = $db->query("SELECT posts.post_id " . $distance_clause . " FROM posts INNER JOIN posts_products ON posts.post_id = posts_products.post_id INNER JOIN users ON posts.user_id = users.user_id WHERE posts.post_type = 'product' AND posts_products.available = '1' AND (posts.pre_approved = '1' OR posts.has_approved = '1')" . $where_query . $distance_query . $order_query . $limit_query);
+    $get_rows = $db->query("SELECT posts.post_id " . $distance_clause . " FROM posts INNER JOIN posts_products ON posts.post_id = posts_products.post_id " . $author_join . " WHERE posts.post_type = 'product' AND posts_products.available = '1' AND (posts.pre_approved = '1' OR posts.has_approved = '1')" . $where_query . $distance_query . $order_query . $limit_query);
     while ($row = $get_rows->fetch_assoc()) {
       $row = $user->get_post($row['post_id']);
       if ($row) {

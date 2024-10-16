@@ -368,7 +368,7 @@
 
     <!-- Google Geocomplete -->
     {if $system['geolocation_enabled']}
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/geocomplete/1.7.0/jquery.geocomplete.min.js" integrity="sha512-4bp4fE4hv0i/1jLM7d+gXDaCAhnXXfGBKdHrBcpGBgnz7OlFMjUgVH4kwB85YdumZrZyryaTLnqGKlbmBatCpQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/geocomplete/1.7.0/jquery.geocomplete.min.js" integrity="sha512-4bp4fE4hv0i/1jLM7d+gXDaCAhnXXfGBKdHrBcpGBgnz7OlFMjUgVH4kwB85YdumZrZyryaTLnqGKlbmBatCpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
       <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key={$system['geolocation_key']}&loading=async"></script>
     {/if}
     <!-- Google Geocomplete -->
@@ -951,7 +951,7 @@
   <!-- Cookies Policy -->
 
   <!-- OneSignal Notifications -->
-  {if $user->_logged_in && $system['onesignal_notification_enabled']}
+  {if $user->_logged_in && $page != "reels" && $system['onesignal_notification_enabled']}
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
     <script>
       var onesignal_app_id = "{$system['onesignal_app_id']}";
@@ -981,7 +981,7 @@
             position: (theme_dir_rtl) ? 'bottom-right' : 'bottom-left',
             /* Either 'bottom-left' or 'bottom-right' */
             offset: {
-              bottom: '20px',
+              bottom: '100px',
               left: '20px',
               /* Only applied if bottom-left */
               right: '20px' /* Only applied if bottom-right */

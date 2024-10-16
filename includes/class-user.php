@@ -235,9 +235,9 @@ class User
         /* check events permission */
         $this->_data['can_create_events'] = $system['events_enabled'] && $this->check_module_permission('events_permission');
         /* check reels permission */
-        $this->_data['can_add_reels'] = $system['videos_enabled'] && $this->check_module_permission('reels_permission');
+        $this->_data['can_add_reels'] = $system['reels_enabled'] && $this->check_module_permission('reels_permission');
         /* check watch permission */
-        $this->_data['can_watch_videos'] = $system['videos_enabled'] && $this->check_module_permission('watch_permission');
+        $this->_data['can_watch_videos'] = $system['watch_enabled'] && $this->check_module_permission('watch_permission');
         /* check blogs permission */
         $this->_data['can_write_blogs'] = $system['blogs_enabled'] && $this->check_module_permission('blogs_permission');
         /* check blogs read permission */
@@ -3815,7 +3815,7 @@ class User
     /* update notifications counter +1 */
     $db->query(sprintf("UPDATE users SET user_live_notifications_counter = user_live_notifications_counter + 1 WHERE user_id = %s", secure($to_user_id, 'int')));
     /* onesignal push notifications */
-    if ($system['onesignal_notification_enabled'] && ($receiver['onesignal_user_id'] || $receiver['onesignal_android_user_id'])) {
+    if ($system['onesignal_notification_enabled'] && ($receiver['onesignal_user_id'] || $receiver['onesignal_android_user_id'] || $receiver['onesignal_ios_user_id'])) {
       /* set notification language to receiver's language */
       if ($receiver['user_language'] != DEFAULT_LOCALE) {
         $gettextTranslator->loadTranslations(Gettext\Translations::fromPoFile(ABSPATH . 'content/languages/locale/' . $receiver['user_language'] . '/LC_MESSAGES/messages.po'));
@@ -4371,8 +4371,9 @@ class User
         onesignal_notification($receiver['onesignal_android_user_id'], $notification);
       }
       if ($receiver['onesignal_ios_user_id']) {
-        $notification['url'] = str_replace('https://', 'sngine://', $notification['url']);
-        onesignal_notification($receiver['onesignal_ios_user_id'], $notification);
+        $notification_ios = $notification;
+        $notification_ios['url'] = str_replace('https://', 'sngine://', $notification_ios['url']);
+        onesignal_notification($receiver['onesignal_ios_user_id'], $notification_ios);
       }
     }
     /* email notifications */
@@ -4895,6 +4896,7 @@ class User
     $conversation['total_messages'] = $this->get_conversation_total_messages($conversation_id);
     /* decode message text */
     $conversation['message_orginal'] = $this->decode_emojis($conversation['message']);
+    $conversation['message_orginal'] = censored_words($conversation['message_orginal']);
     $conversation['message'] = $this->_parse(["text" => $conversation['message'], "decode_mention" => false, "decode_hashtags" => false]);
     /* return */
     return $conversation;
@@ -20823,7 +20825,7 @@ class User
   {
     global $db, $system;
     $fields = [];
-    /* prepare "for" [user|page|group|event|product|job|offer] - default -> user */
+    /* prepare "for" [user|page|group|event|product|job|offer|course] - default -> user */
     $args['for'] = (isset($args['for'])) ? $args['for'] : "user";
     if (!in_array($args['for'], ['user', 'page', 'group', 'event', 'product', 'job', 'offer', 'course'])) {
       throw new BadRequestException(__("Invalid field for"));
@@ -20906,7 +20908,7 @@ class User
   {
     global $db, $system;
     $custom_fields = [];
-    /* prepare "for" [user|page|group|event|product|job|offer] - default -> user */
+    /* prepare "for" [user|page|group|event|product|job|offer|course] - default -> user */
     if (!in_array($for, ['user', 'page', 'group', 'event', 'product', 'job', 'offer', 'course'])) {
       throw new BadRequestException(__("Invalid field for"));
     }

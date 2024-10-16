@@ -44,46 +44,48 @@
         <!-- left panel -->
         <div class="col-lg-8">
           <!-- panel nav -->
-          <ul class="nav nav-pills nav-fill nav-search mb10">
-            <li class="nav-item">
-              <a class="nav-link rounded-pill {if $tab == "" || $tab == "posts"}active{/if}" href="{$system['system_url']}/search/{if $hashtag}hashtag/{/if}{if $query}{$query}/posts{/if}">
-                <strong>{__("Posts")}</strong>
-              </a>
-            </li>
-            {if $system['blogs_enabled']}
+          {if $query}
+            <ul class="nav nav-pills nav-fill nav-search mb10">
               <li class="nav-item">
-                <a class="nav-link rounded-pill {if $tab == "blogs"}active{/if}" href="{$system['system_url']}/search/{if $hashtag}hashtag/{/if}{if $query}{$query}/blogs{/if}">
-                  <strong>{__("Blogs")}</strong>
+                <a class="nav-link rounded-pill {if $tab == "" || $tab == "posts"}active{/if}" href="{$system['system_url']}/search/{if $hashtag}hashtag/{/if}{if $query}{$query}/posts{/if}">
+                  <strong>{__("Posts")}</strong>
                 </a>
               </li>
-            {/if}
-            <li class="nav-item">
-              <a class="nav-link rounded-pill {if $tab == "users"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/users{/if}">
-                <strong>{__("Users")}</strong>
-              </a>
-            </li>
-            {if $system['pages_enabled']}
+              {if $system['blogs_enabled']}
+                <li class="nav-item">
+                  <a class="nav-link rounded-pill {if $tab == "blogs"}active{/if}" href="{$system['system_url']}/search/{if $hashtag}hashtag/{/if}{if $query}{$query}/blogs{/if}">
+                    <strong>{__("Blogs")}</strong>
+                  </a>
+                </li>
+              {/if}
               <li class="nav-item">
-                <a class="nav-link rounded-pill {if $tab == "pages"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/pages{/if}">
-                  <strong>{__("Pages")}</strong>
+                <a class="nav-link rounded-pill {if $tab == "users"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/users{/if}">
+                  <strong>{__("Users")}</strong>
                 </a>
               </li>
-            {/if}
-            {if $system['groups_enabled']}
-              <li class="nav-item">
-                <a class="nav-link rounded-pill {if $tab == "groups"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/groups{/if}">
-                  <strong>{__("Groups")}</strong>
-                </a>
-              </li>
-            {/if}
-            {if $system['events_enabled']}
-              <li class="nav-item">
-                <a class="nav-link rounded-pill {if $tab == "events"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/events{/if}">
-                  <strong>{__("Events")}</strong>
-                </a>
-              </li>
-            {/if}
-          </ul>
+              {if $system['pages_enabled']}
+                <li class="nav-item">
+                  <a class="nav-link rounded-pill {if $tab == "pages"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/pages{/if}">
+                    <strong>{__("Pages")}</strong>
+                  </a>
+                </li>
+              {/if}
+              {if $system['groups_enabled']}
+                <li class="nav-item">
+                  <a class="nav-link rounded-pill {if $tab == "groups"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/groups{/if}">
+                    <strong>{__("Groups")}</strong>
+                  </a>
+                </li>
+              {/if}
+              {if $system['events_enabled']}
+                <li class="nav-item">
+                  <a class="nav-link rounded-pill {if $tab == "events"}active{/if}" href="{$system['system_url']}/search/{if $query}{$query}/events{/if}">
+                    <strong>{__("Events")}</strong>
+                  </a>
+                </li>
+              {/if}
+            </ul>
+          {/if}
           <!-- panel nav -->
 
           <div class="tab-content">

@@ -190,14 +190,14 @@ function data_heartbeat() {
   /* "popular" && "saved" & "memories" excluded as not ordered by id */
   if (
     posts_stream.length > 0
-    && posts_stream.data('get') != 'popular'
-    && posts_stream.data('get') != 'saved'
-    && posts_stream.data('get') != 'memories'
-    && (posts_stream.data('get') != 'posts_profile' && posts_stream.data('query') !== undefined)
-    && (posts_stream.data('get') != 'posts_page' && posts_stream.data('query') !== undefined)
-    && (posts_stream.data('get') != 'posts_group' && posts_stream.data('query') !== undefined)
-    && (posts_stream.data('get') != 'posts_event' && posts_stream.data('query') !== undefined)
-    && posts_stream.data('loading') === undefined) {
+    && !['popular', 'saved', 'memories'].includes(posts_stream.data('get'))
+    && (
+      (['posts_profile', 'posts_page', 'posts_group', 'posts_event'].includes(posts_stream.data('get'))
+        && posts_stream.data('query') === undefined)
+      || !['posts_profile', 'posts_page', 'posts_group', 'posts_event'].includes(posts_stream.data('get'))
+    )
+    && posts_stream.data('loading') === undefined
+  ) {
     data['last_post'] = posts_stream_staging.find("li:first .post").data('id') || posts_stream.find("li:first .post").data('id') || 0;
     data['get'] = posts_stream.data('get');
     data['filter'] = posts_stream.data('filter');

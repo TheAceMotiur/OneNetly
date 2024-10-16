@@ -130,51 +130,54 @@ try {
       if ($profile['user_id'] == $user->_data['user_id']) {
         $steps_missed = 0;
         $steps_requried = 3; /* there is 3 required fields already */
-        /* [1] check profile verified */
+        /* [1] check profile verified (optional) */
         if ($system['verification_for_posts']) {
-          $steps_missed++;
+          $steps_requried++;
+          if (!$profile['user_verified']) {
+            $steps_missed++;
+          }
         }
-        /* [2] check profile picture */
+        /* [2] check profile picture (required) */
         if ($profile['user_picture_default']) {
           $steps_missed++;
         }
-        /* [3] check profile cover */
+        /* [3] check profile cover (required) */
         if ($profile['user_cover_default']) {
           $steps_missed++;
         }
-        /* [4] check birthdate */
+        /* [4] check birthdate (required) */
         if (!$profile['user_birthdate']) {
           $steps_missed++;
         }
-        /* [5] check biography */
+        /* [5] check biography (optional) */
         if ($system['biography_info_enabled']) {
           $steps_requried++;
           if (!$profile['user_biography']) {
             $steps_missed++;
           }
         }
-        /* [6] check relationship */
+        /* [6] check relationship (optional) */
         if ($system['relationship_info_enabled']) {
           $steps_requried++;
           if (!$profile['user_relationship']) {
             $steps_missed++;
           }
         }
-        /* [7] check work */
+        /* [7] check work (optional) */
         if ($system['work_info_enabled']) {
           $steps_requried++;
           if (!$profile['user_work_title'] || !$profile['user_work_place']) {
             $steps_missed++;
           }
         }
-        /* [8] check location */
+        /* [8] check location (optional) */
         if ($system['location_info_enabled']) {
           $steps_requried++;
           if (!$profile['user_current_city'] || !$profile['user_hometown']) {
             $steps_missed++;
           }
         }
-        /* [9] check education */
+        /* [9] check education (optional) */
         if ($system['education_info_enabled']) {
           $steps_requried++;
           if (!$profile['user_edu_major'] || !$profile['user_edu_school']) {

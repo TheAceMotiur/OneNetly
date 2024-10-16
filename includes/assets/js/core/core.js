@@ -196,7 +196,7 @@ function initialize() {
         /* pause other videos when one is played */
         player.on('play', function () {
           $("video.js_video-plyr").each(function () {
-            if (_id !== _this.attr('id')) {
+            if (_id !== $(this).attr('id')) {
               this.pause();
             }
           });

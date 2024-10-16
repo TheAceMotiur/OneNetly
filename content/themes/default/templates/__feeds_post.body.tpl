@@ -638,7 +638,7 @@
         {if $_post['media']['source_type'] == "photo"}
           <div class="post-media">
             <div class="post-media-image">
-              <img src="{$_post['media']['source_thumbnail']}">
+              <img src="{$_post['media']['source_url']}">
             </div>
             <div class="post-media-meta">
               <div class="source"><a target="_blank" href="{$_post['media']['source_url']}">{$_post['media']['source_provider']}</a></div>

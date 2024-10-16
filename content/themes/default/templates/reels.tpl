@@ -37,6 +37,9 @@
 {include file='_footer.tpl'}
 
 <script>
-  var url = site_path + '/reels/' + $('.reel-container').first().data('id');
-  window.history.pushState({ state: 'new' }, '', url);
+  var first_id = $('.reel-container').first().data('id');
+  if (first_id) {
+    var url = site_path + '/reels/' + first_id;
+    window.history.pushState({ state: 'new' }, '', url);
+  }
 </script>

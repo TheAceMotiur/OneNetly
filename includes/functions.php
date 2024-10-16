@@ -426,15 +426,13 @@ function init_system(&$system)
       }
       $system['current_language'] = $system['language']['code'];
     }
-  } elseif ($system['auto_language_detection'] && $user_language) {
+  } elseif ($system['auto_language_detection'] && $user_language && array_key_exists($user_language, $system['languages'])) {
     /* get user language */
-    if (array_key_exists($user_language, $system['languages'])) {
-      $system['language'] = $system['languages'][$user_language];
-      if ($system['language']['code'] != DEFAULT_LOCALE) {
-        $gettextTranslator->loadTranslations(Gettext\Translations::fromPoFile(ABSPATH . 'content/languages/locale/' . $system['language']['code'] . '/LC_MESSAGES/messages.po'));
-      }
-      $system['current_language'] = $system['language']['code'];
+    $system['language'] = $system['languages'][$user_language];
+    if ($system['language']['code'] != DEFAULT_LOCALE) {
+      $gettextTranslator->loadTranslations(Gettext\Translations::fromPoFile(ABSPATH . 'content/languages/locale/' . $system['language']['code'] . '/LC_MESSAGES/messages.po'));
     }
+    $system['current_language'] = $system['language']['code'];
   } else {
     if (isset($system['default_language'])) {
       $system['language'] = $system['default_language'];
@@ -943,7 +941,7 @@ function _error()
                                 <li>" . "Are you sure that you have typed the correct hostname?" . "</li>
                                 <li>" . "Are you sure that the database server is running?" . "</li>
                             </ul>
-                            <p>" . "If you're unsure what these terms mean you should probably contact your host. If you still need help you can always visit the" . " <a href='https://support.zamblek.com'>" . "Sngine Support" . ".</a></p>
+                            <p>" . "If you're unsure what these terms mean you should probably contact your host. If you still need help you can always visit the" . " <a href='https://www.zamblek.com/support'>" . "Sngine Support" . ".</a></p>
                             </div>";
         break;
 
@@ -1623,7 +1621,10 @@ function onesignal_notification($send_to, $notification)
   ];
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
-  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json; charset=utf-8']);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json; charset=utf-8',
+    'Authorization: Basic ' . $system['onesignal_api_key']
+  ]);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_POST, 1);

@@ -40,7 +40,7 @@ try {
         $db->query("UPDATE system_countries SET system_countries.default = '0'");
       }
       /* update */
-      $db->query(sprintf("UPDATE system_countries SET system_countries.default = %s, `enabled` = %s, country_code = %s, country_name = %s, phone_code = %s, country_vat = %s, country_order = %s WHERE country_id = %s", secure($_POST['default']), secure($_POST['enabled']), secure($_POST['country_code']), secure($_POST['country_name']), secure($_POST['phone_code']), secure($_POST['country_vat'], 'int'), secure($_POST['country_order'], 'int'), secure($_GET['id'], 'int')));
+      $db->query(sprintf("UPDATE system_countries SET system_countries.default = %s, `enabled` = %s, country_code = %s, country_name = %s, phone_code = %s, country_vat = %s, country_order = %s WHERE country_id = %s", secure($_POST['default']), secure($_POST['enabled']), secure($_POST['country_code']), secure($_POST['country_name']), secure($_POST['phone_code']), secure($_POST['country_vat'], 'float'), secure($_POST['country_order'], 'int'), secure($_GET['id'], 'int')));
       /* return */
       return_json(['success' => true, 'message' => __("Country info have been updated")]);
       break;
@@ -54,7 +54,7 @@ try {
         $db->query("UPDATE system_countries SET system_countries.default = '0'");
       }
       /* insert */
-      $db->query(sprintf("INSERT INTO system_countries (system_countries.default, `enabled`, country_code, country_name, phone_code, country_vat, country_order) VALUES (%s, %s, %s, %s, %s, %s, %s)", secure($_POST['default']), secure($_POST['enabled']), secure($_POST['country_code']), secure($_POST['country_name']), secure($_POST['phone_code']), secure($_POST['country_vat'], 'int'), secure($_POST['country_order'], 'int')));
+      $db->query(sprintf("INSERT INTO system_countries (system_countries.default, `enabled`, country_code, country_name, phone_code, country_vat, country_order) VALUES (%s, %s, %s, %s, %s, %s, %s)", secure($_POST['default']), secure($_POST['enabled']), secure($_POST['country_code']), secure($_POST['country_name']), secure($_POST['phone_code']), secure($_POST['country_vat'], 'float'), secure($_POST['country_order'], 'int')));
       /* return */
       return_json(['callback' => 'window.location = "' . $system['system_url'] . '/' . $control_panel['url'] . '/countries";']);
       break;

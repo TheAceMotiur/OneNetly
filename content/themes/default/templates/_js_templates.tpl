@@ -35,7 +35,7 @@
       </button>
     </div>
     <div class="modal-body">
-      <p>{literal}{{message}}{/literal}</p>
+      <p>{literal}{{{message}}}{/literal}</p>
     </div>
   </script>
 
@@ -43,7 +43,7 @@
     <div class="modal-body text-center" style="padding: 50px;">
       {include file='__svg_icons.tpl' icon="checkmark" class="main-icon mb20" width="60px" height="60px"}
       <h4>{literal}{{title}}{/literal}</h4>
-      <p class="mt20">{literal}{{message}}{/literal}</p>
+      <p class="mt20">{literal}{{{message}}}{/literal}</p>
     </div>
   </script>
 
@@ -51,7 +51,7 @@
     <div class="modal-body text-center" style="padding: 50px;">
       {include file='__svg_icons.tpl' icon="report" class="main-icon mb20" width="60px" height="60px"}
       <h4>{literal}{{title}}{/literal}</h4>
-      <p class="mt20">{literal}{{message}}{/literal}</p>
+      <p class="mt20">{literal}{{{message}}}{/literal}</p>
     </div>
   </script>
 
@@ -60,7 +60,7 @@
       <h6 class="modal-title">{literal}{{title}}{/literal}</h6>
     </div>
     <div class="modal-body">
-      <h6>{literal}{{message}}{/literal}</h6>
+      <h6>{literal}{{{message}}}{/literal}</h6>
       {literal}{{#password_check}}{/literal}
       <div class="form-group mt20">
         <label class="form-label" for="modal-password-check">{__("Confirm Password")}</label>

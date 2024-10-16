@@ -4315,7 +4315,7 @@ if (isset($_POST['submit'])) {
       `country_code` varchar(2) NOT NULL,
       `country_name` varchar(64) NOT NULL,
       `phone_code` varchar(8) DEFAULT NULL,
-      `country_vat` int(10) UNSIGNED DEFAULT NULL,
+      `country_vat` float UNSIGNED DEFAULT NULL,
       `default` enum('0','1') NOT NULL,
       `enabled` enum('0','1') NOT NULL DEFAULT '1',
       `country_order` int(10) UNSIGNED NOT NULL DEFAULT '1'

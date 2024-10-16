@@ -3365,25 +3365,23 @@
                 </div>
               </div>
 
-              {if $system['friends_enabled']}
-                <div class="form-group col-md-6">
-                  <label class="form-label">{__("Who can see your")} {__("friends")}</label>
-                  <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-user-friends"></i></span>
-                    <select class="form-select" name="user_privacy_friends">
-                      <option {if $system['user_privacy_friends'] == "public"}selected{/if} value="public">
-                        {__("Everyone")}
-                      </option>
-                      <option {if $system['user_privacy_friends'] == "friends"}selected{/if} value="friends">
-                        {__("Friends")}
-                      </option>
-                      <option {if $system['user_privacy_friends'] == "me"}selected{/if} value="me">
-                        {__("Just Me")}
-                      </option>
-                    </select>
-                  </div>
+              <div class="form-group col-md-6">
+                <label class="form-label">{__("Who can see your")} {__("friends")} {if !$system['friends_enabled']}<span class="badge bg-light text-primary">{__("Disabled")}{/if}</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user-friends"></i></span>
+                  <select class="form-select" name="user_privacy_friends">
+                    <option {if $system['user_privacy_friends'] == "public"}selected{/if} value="public">
+                      {__("Everyone")}
+                    </option>
+                    <option {if $system['user_privacy_friends'] == "friends"}selected{/if} value="friends">
+                      {__("Friends")}
+                    </option>
+                    <option {if $system['user_privacy_friends'] == "me"}selected{/if} value="me">
+                      {__("Just Me")}
+                    </option>
+                  </select>
                 </div>
-              {/if}
+              </div>
 
               <div class="form-group col-md-6">
                 <label class="form-label">{__("Who can see your")} {__("followers/followings")}</label>

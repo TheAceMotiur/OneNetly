@@ -1,4 +1,4 @@
-<div class="mini-footer mtb20 plr10">
+<div class="mini-footer plr10">
   <div class="copyrights dropdown">
     <span class="mr5">&copy; {date('Y')} {__($system['system_title'])}</span>
     <!-- language -->

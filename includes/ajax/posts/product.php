@@ -103,7 +103,7 @@ try {
       if (is_empty($_POST['product']->quantity)) {
         return_json(['error' => true, 'message' => __("Please add your product quantity")]);
       }
-      if (!is_numeric($_POST['product']->quantity) || $_POST['product']->quantity < 0) {
+      if (!is_numeric($_POST['product']->quantity) || $_POST['product']->quantity <= 0) {
         return_json(['error' => true, 'message' => __("Please add valid product quantity")]);
       }
       /* check product price */

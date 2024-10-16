@@ -314,12 +314,21 @@ try {
           $deleted_rows_count += $db->affected_rows;
           /* delete posts_polls */
           $db->query("DELETE FROM posts_polls WHERE post_id NOT IN (SELECT post_id FROM posts)");
+          $deleted_rows_count += $db->affected_rows;
           /* delete notifications where from_user_id doesnt exist */
           $db->query("DELETE FROM notifications WHERE from_user_id NOT IN (SELECT user_id FROM users) AND from_user_type = 'user'");
+          $deleted_rows_count += $db->affected_rows;
           /* delete notifications where to_user_id doesnt exist */
           $db->query("DELETE FROM notifications WHERE to_user_id NOT IN (SELECT user_id FROM users)");
+          $deleted_rows_count += $db->affected_rows;
           /* delete sessions where user doesnt exist */
           $db->query("DELETE FROM users_sessions WHERE user_id NOT IN (SELECT user_id FROM users)");
+          $deleted_rows_count += $db->affected_rows;
+          /* delete verification_requests where node_type = user & doesnt exist */
+          $db->query("DELETE FROM verification_requests WHERE node_type = 'user' AND node_id NOT IN (SELECT user_id FROM users)");
+          $deleted_rows_count += $db->affected_rows;
+          /* delete verification_requests where node_type = page & doesnt exist */
+          $db->query("DELETE FROM verification_requests WHERE node_type = 'page' AND node_id NOT IN (SELECT page_id FROM pages)");
           $deleted_rows_count += $db->affected_rows;
           break;
 

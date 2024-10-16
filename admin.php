@@ -3949,7 +3949,7 @@ try {
           page_header($control_panel['title'] . " &rsaquo; " . __("Verification") . " &rsaquo; " . __("Requests"));
 
           // get data
-          $get_rows = $db->query("SELECT verification_requests.*, users.user_name, users.user_firstname, users.user_lastname, users.user_gender, users.user_picture, pages.page_name, pages.page_title, pages.page_picture FROM verification_requests LEFT JOIN users ON verification_requests.node_type = 'user' AND verification_requests.node_id = users.user_id LEFT JOIN pages ON verification_requests.node_type = 'page' AND verification_requests.node_id = pages.page_id WHERE status = '0'");
+          $get_rows = $db->query("SELECT verification_requests.*, users.user_name, users.user_firstname, users.user_lastname, users.user_gender, users.user_picture, pages.page_name, pages.page_title, pages.page_picture FROM verification_requests LEFT JOIN users ON verification_requests.node_type = 'user' AND verification_requests.node_id = users.user_id LEFT JOIN pages ON verification_requests.node_type = 'page' AND verification_requests.node_id = pages.page_id WHERE NOT (users.user_name <=> NULL AND pages.page_name <=> NULL) AND verification_requests.status = '0'");
           if ($get_rows->num_rows > 0) {
             while ($row = $get_rows->fetch_assoc()) {
               /* get node */
@@ -4687,7 +4687,7 @@ try {
   $reports_insights = $get_reports->fetch_assoc()['count'];
   $smarty->assign('reports_insights', $reports_insights);
   /* verification requests insights */
-  $get_verification_requests = $db->query("SELECT COUNT(*) as count FROM verification_requests WHERE status = '0'");
+  $get_verification_requests = $db->query("SELECT COUNT(*) as count FROM verification_requests LEFT JOIN users ON verification_requests.node_type = 'user' AND verification_requests.node_id = users.user_id LEFT JOIN pages ON verification_requests.node_type = 'page' AND verification_requests.node_id = pages.page_id WHERE NOT (users.user_name <=> NULL AND pages.page_name <=> NULL) AND verification_requests.status = '0'");
   $verification_requests_insights = $get_verification_requests->fetch_assoc()['count'];
   $smarty->assign('verification_requests_insights', $verification_requests_insights);
 } catch (Exception $e) {

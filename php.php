@@ -12,10 +12,14 @@ function getPDOConnection() {
     try {
         $pdo = new PDO($dsn, $username, $password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        echo 'Connected successfully';
         return $pdo;
     } catch (PDOException $e) {
         echo 'Connection failed: ' . $e->getMessage();
         return null;
     }
 }
+
+// Test the connection
+getPDOConnection();
 ?>

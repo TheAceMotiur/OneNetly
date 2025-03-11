@@ -82,7 +82,7 @@ try {
             <!-- Top bar with logo and user actions -->
             <div class="flex justify-between items-center py-4 border-b border-indigo-700">
                 <div class="flex items-center">
-                    <a class="text-xl font-bold mr-8 flex items-center" href="index.php">
+                    <a class="text-xl font-bold mr-8 flex items-center" href="/">
                         <span class="bg-white text-indigo-800 rounded-lg p-1 mr-2">
                             <i class="fas fa-cloud"></i>
                         </span>

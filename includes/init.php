@@ -23,6 +23,12 @@ require_once __DIR__ . '/../classes/Category.php';
 // Include comment class
 require_once __DIR__ . '/../classes/Comment.php';
 
+// Include email class (changed from EmailService to Email)
+require_once __DIR__ . '/../classes/Email.php';
+
+// Include SEO class
+require_once __DIR__ . '/../classes/SEO.php';
+
 // Initialize user object
 $user = new User($pdo);
 
@@ -37,6 +43,9 @@ $category = new Category($pdo);
 
 // Initialize comment object
 $comment = new Comment($pdo);
+
+// Initialize SEO manager
+$seo = new SEO($pdo);
 
 // If user is logged in, initialize user settings
 if (isset($_SESSION['user_id'])) {

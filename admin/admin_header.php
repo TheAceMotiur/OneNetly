@@ -79,6 +79,14 @@ function getActiveClass($page) {
                     </span>
                     Categories
                 </a>
+                <a href="seo-settings.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('seo-settings.php'); ?>">
+                    <span class="mr-3">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 3.5a6.5 6.5 0 0 1 4.5 11.15l6.5 6.5-1.5 1.5-6.5-6.5A6.5 6.5 0 1 1 10 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    SEO Settings
+                </a>
                 <a href="settings.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('settings.php'); ?>">
                     <span class="mr-3">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

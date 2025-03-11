@@ -1,87 +1,140 @@
 <?php
 require_once 'includes/init.php';
+require_once 'includes/ads.php';
+
+// Get slug from URL
+$slug = $_GET['slug'] ?? '';
+
+// Redirect to home if no slug provided
+if (empty($slug)) {
+    header('Location: index.php');
+    exit;
+}
 
 // Get current user if logged in
 $currentUser = $user->getCurrentUser();
 
-// Get blog post slug from URL
-$slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
-
-if (empty($slug)) {
-    redirect('index.php', 'Blog post not found', 'error');
-}
-
 // Get blog post by slug
 $blogPost = $blog->getBlogBySlug($slug);
 
-if (!$blogPost || $blogPost['status'] !== 'published') {
-    redirect('index.php', 'Blog post not found or not published', 'error');
+// If post not found or not published (unless user is author or admin)
+if (empty($blogPost) || ($blogPost['status'] !== 'published' && 
+    (!$user->isLoggedIn() || 
+    ($currentUser['id'] !== $blogPost['user_id'] && !$user->isAdmin())))) {
+    header('Location: index.php');
+    exit;
 }
 
-// Record view for this blog post
-$blog->recordView($blogPost['id']);
+// Track post view
+$blog->trackPostView($blogPost['id']);
 
-// Get blog post categories
-$blogCategories = $blog->getBlogCategories($blogPost['id']);
+// Get categories for this post
+$blogCategories = $blog->getCategoriesForPost($blogPost['id']);
 
-// Get category IDs for related posts
-$categoryIds = array_map(function($cat) { return $cat['id']; }, $blogCategories);
+// Get post author
+$postAuthor = $user->getUserById($blogPost['user_id']);
 
-// Get related posts based on shared categories
-$relatedPosts = $blog->getRelatedPosts($blogPost['id'], $categoryIds, 3);
-
-// Get all categories for sidebar
-$categories = $category->getAllCategories();
+// Get related posts
+$relatedPosts = $blog->getRelatedPosts($blogPost['id'], 4);
 
 // Get trending posts for sidebar
 $trendingPosts = $blog->getTrendingPosts(5);
 
-// Check if comments feature is available
+// Get all categories for sidebar
+$categories = $category->getAllCategories();
+
+// Set up breadcrumbs
+$breadcrumbs = [
+    $blogPost['title'] => ''
+];
+
+// If post has categories, add first one to breadcrumb
+if (!empty($blogCategories)) {
+    $primaryCategory = $blogCategories[0];
+    $breadcrumbs = [
+        $primaryCategory['name'] => 'category.php?slug=' . $primaryCategory['slug'] 
+    ] + $breadcrumbs; // Add at the beginning
+}
+
+// SEO Optimization
+$canonicalUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/$slug";
+
+// Set SEO meta tags
+$seo->setTitle($blogPost['title'])
+    ->setDescription(!empty($blogPost['excerpt']) ? $blogPost['excerpt'] : substr(strip_tags($blogPost['content']), 0, 160))
+    ->setCanonicalUrl($canonicalUrl)
+    ->setOgType('article')
+    ->setAuthor($postAuthor['username'] ?? 'OneNetly');
+
+// Add keywords from tags and categories
+$keywords = [];
+if (!empty($blogPost['tags'])) {
+    $tags = explode(',', $blogPost['tags']);
+    foreach ($tags as $tag) {
+        $keywords[] = trim($tag);
+    }
+}
+foreach ($blogCategories as $cat) {
+    $keywords[] = $cat['name'];
+}
+if (!empty($keywords)) {
+    $seo->setKeywords($keywords);
+}
+
+// Set OG image if post has featured image
+if (!empty($blogPost['featured_image'])) {
+    $seo->setOgImage($blogPost['featured_image']);
+} else {
+    $seo->setDefaultOgImage();
+}
+
+// Add article-specific meta tags
+$seo->addArticleTags($blogPost);
+
+// Generate structured data for the blog post
+$seo->generateBlogPostSchema($blogPost);
+
+// Generate breadcrumb schema markup
+$seo->generateBreadcrumbSchema($breadcrumbs);
+
+// Check if comments are available
 $commentsAvailable = $comment->isAvailable();
 
-// Get comments for this blog post
-$commentsList = $commentsAvailable ? $comment->getCommentsByBlog($blogPost['id'], 'approved') : [];
+// Get comments for this post if comments are available
+$commentsList = [];
+if ($commentsAvailable) {
+    $commentsList = $comment->getApprovedCommentsForPost($blogPost['id']);
+}
 
-// Handle comment submission
+// Set page title (for backward compatibility)
+$pageTitle = $blogPost['title'];
+
+// Process comment submission
 $commentError = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_comment'])) {
-    if (!$commentsAvailable) {
-        $commentError = 'Comments feature is not available yet.';
-    } elseif (!$user->isLoggedIn()) {
-        redirect('login.php', 'Please login to post comments', 'error');
+$commentSuccess = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content']) && $commentsAvailable && $user->isLoggedIn()) {
+    $commentContent = trim($_POST['comment_content']);
+    
+    if (empty($commentContent)) {
+        $commentError = "Comment cannot be empty";
     } else {
-        $content = trim($_POST['comment_content'] ?? '');
+        $result = $comment->addComment([
+            'post_id' => $blogPost['id'],
+            'user_id' => $currentUser['id'],
+            'content' => $commentContent
+        ]);
         
-        if (empty($content)) {
-            $commentError = 'Comment content is required';
+        if ($result) {
+            $commentSuccess = true;
+            // Redirect to prevent form resubmission
+            header("Location: $slug?comment_success=1#comments");
+            exit;
         } else {
-            $commentData = [
-                'blog_id' => $blogPost['id'],
-                'user_id' => $currentUser['id'],
-                'content' => $content,
-                'is_admin' => $currentUser['is_admin'] ?? false
-            ];
-            
-            $result = $comment->addComment($commentData);
-            
-            if ($result['success']) {
-                // If the comment was approved immediately (admin), we can refresh to show it
-                if (isset($result['status']) && $result['status'] === 'approved') {
-                    redirect($blogPost['slug'], $result['message'], 'success');
-                } else {
-                    // Just add a message that the comment is pending approval
-                    $_SESSION['message'] = $result['message'];
-                    $_SESSION['message_type'] = 'info';
-                }
-            } else {
-                $commentError = $result['message'];
-            }
+            $commentError = "Failed to post comment. Please try again.";
         }
     }
 }
-
-// Set page title
-$pageTitle = $blogPost['title'];
 
 // Include header
 require_once 'includes/header.php';
@@ -102,21 +155,25 @@ require_once 'includes/header.php';
                     <?php echo htmlspecialchars($blogPost['title']); ?>
                 </h1>
                 
-                <div class="text-gray-500 mb-6">
-                    <span>By <?php echo htmlspecialchars($blogPost['username']); ?></span>
-                    <span class="mx-2">•</span>
-                    <span><?php echo date('F j, Y', strtotime($blogPost['created_at'])); ?></span>
+                <div class="flex items-center text-gray-600 mb-6">
+                    
+                    <div class="flex items-center mr-4">
+                        <i class="far fa-calendar-alt mr-1"></i>
+                        <span><?php echo date('F j, Y', strtotime($blogPost['created_at'])); ?></span>
+                    </div>
                     
                     <?php if (!empty($blogCategories)): ?>
-                        <span class="mx-2">•</span>
-                        <span>
-                            <?php foreach ($blogCategories as $index => $cat): ?>
-                                <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="text-indigo-600 hover:text-indigo-800">
-                                    <?php echo htmlspecialchars($cat['name']); ?>
-                                </a>
-                                <?php if ($index < count($blogCategories) - 1) echo ', '; ?>
-                            <?php endforeach; ?>
-                        </span>
+                        <div class="flex items-center flex-wrap">
+                            <i class="fas fa-folder mr-1"></i>
+                            <span>
+                                <?php foreach ($blogCategories as $index => $cat): ?>
+                                    <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="text-indigo-600 hover:text-indigo-800">
+                                        <?php echo htmlspecialchars($cat['name']); ?>
+                                    </a>
+                                    <?php if ($index < count($blogCategories) - 1) echo ', '; ?>
+                                <?php endforeach; ?>
+                            </span>
+                        </div>
                     <?php endif; ?>
                 </div>
                 
@@ -125,16 +182,25 @@ require_once 'includes/header.php';
                     <a href="<?php echo htmlspecialchars($blogPost['demo_link']); ?>" 
                        target="_blank" rel="noopener noreferrer" 
                        class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
-                        View Demo
+                        <i class="fas fa-external-link-alt mr-2"></i> View Demo
                     </a>
                 </div>
                 <?php endif; ?>
                 
                 <div class="prose max-w-none">
-                    <?php echo $blogPost['content']; ?>
+                    <?php 
+                    // Split content to insert ad in the middle
+                    $content = $blogPost['content'];
+                    $splitContent = explode('</p>', $content, 3);
+                    
+                    if (count($splitContent) > 2) {
+                        echo $splitContent[0] . '</p>' . $splitContent[1] . '</p>';
+                        displayInArticleAd();
+                        echo $splitContent[2];
+                    } else {
+                        echo $content;
+                    }
+                    ?>
                 </div>
                 
                 <?php if (!empty($blogPost['download_link'])): ?>
@@ -150,8 +216,54 @@ require_once 'includes/header.php';
                     </a>
                 </div>
                 <?php endif; ?>
+                
+                <?php if (!empty($blogPost['tags'])): ?>
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <div class="flex flex-wrap items-center">
+                        <span class="mr-2 text-gray-700"><i class="fas fa-tags mr-1"></i> Tags:</span>
+                        <?php 
+                        $tags = explode(',', $blogPost['tags']);
+                        foreach ($tags as $tag): 
+                            $tag = trim($tag);
+                            if (empty($tag)) continue;
+                        ?>
+                            <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded mr-2 mb-2">
+                                <?php echo htmlspecialchars($tag); ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
         </article>
+        
+        <!-- Ad after article -->
+        <?php displayHorizontalAd(); ?>
+        
+        <!-- Related Posts -->
+        <?php if (!empty($relatedPosts)): ?>
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200">Related Posts</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                <?php foreach ($relatedPosts as $post): ?>
+                <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="flex items-start hover:bg-gray-50 p-2 rounded transition">
+                    <?php if (!empty($post['featured_image'])): ?>
+                        <div class="w-16 h-16 rounded overflow-hidden flex-shrink-0 mr-3">
+                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="w-full h-full object-cover">
+                        </div>
+                    <?php endif; ?>
+                    <div>
+                        <h3 class="font-medium text-indigo-700"><?php echo htmlspecialchars($post['title']); ?></h3>
+                        <p class="text-xs text-gray-500 mt-1 flex items-center">
+                            <i class="far fa-calendar-alt mr-1"></i>
+                            <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
+                        </p>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
         
         <!-- Comments Section -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -228,25 +340,25 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <div class="my-6">
-            <a href="index.php" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">
-                Back to Blog
-            </a>
-        </div>
     </div>
     
     <!-- Sidebar -->
     <div class="w-full lg:w-1/4 mt-8 lg:mt-0">
+        <!-- Sidebar Ad Unit -->
+        <?php displaySidebarAd(); ?>
+
         <!-- Trending Now Widget -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Trending Now</h2>
+            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
+                <i class="fas fa-fire text-orange-500 mr-2"></i> Trending Now
+            </h2>
             <?php if (empty($trendingPosts)): ?>
                 <p>No trending posts yet.</p>
             <?php else: ?>
                 <ul class="space-y-4">
                     <?php foreach ($trendingPosts as $post): ?>
                         <li class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-                            <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="block hover:bg-gray-50 transition-all rounded">
+                            <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="block hover:bg-gray-50 transition-all rounded p-2">
                                 <div class="flex items-center">
                                     <?php if (!empty($post['featured_image'])): ?>
                                         <div class="w-16 h-16 mr-3 flex-shrink-0 overflow-hidden rounded">
@@ -255,7 +367,10 @@ require_once 'includes/header.php';
                                     <?php endif; ?>
                                     <div>
                                         <h3 class="text-sm font-medium text-indigo-700"><?php echo htmlspecialchars($post['title']); ?></h3>
-                                        <p class="text-xs text-gray-500 mt-1"><?php echo date('M j, Y', strtotime($post['created_at'])); ?></p>
+                                        <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                            <i class="far fa-calendar-alt mr-1"></i>
+                                            <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
+                                        </p>
                                     </div>
                                 </div>
                             </a>
@@ -267,21 +382,28 @@ require_once 'includes/header.php';
         
         <!-- Categories Widget -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Categories</h2>
+            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
+                <i class="fas fa-folder mr-2 text-indigo-500"></i> Categories
+            </h2>
             <?php if (empty($categories)): ?>
                 <p>No categories found.</p>
             <?php else: ?>
                 <ul>
                     <?php foreach ($categories as $cat): ?>
                         <li class="mb-2">
-                            <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="text-indigo-600 hover:text-indigo-800">
-                                <?php echo htmlspecialchars($cat['name']); ?>
+                            <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" 
+                               class="text-indigo-600 hover:text-indigo-800 flex items-center justify-between p-2 hover:bg-indigo-50 rounded transition">
+                                <span><?php echo htmlspecialchars($cat['name']); ?></span>
+                                <i class="fas fa-chevron-right text-indigo-400"></i>
                             </a>
                         </li>
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
         </div>
+        
+        <!-- Second Sidebar Ad Unit -->
+        <?php displaySidebarAd(); ?>
     </div>
 </div>
 

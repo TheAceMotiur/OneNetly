@@ -70,6 +70,17 @@ class Comment {
     }
     
     /**
+     * Get approved comments for a blog post
+     * Alias for getCommentsByBlog() with status 'approved'
+     * 
+     * @param int $blogId Blog post ID
+     * @return array Approved comments
+     */
+    public function getApprovedCommentsForPost($blogId) {
+        return $this->getCommentsByBlog($blogId, 'approved');
+    }
+
+    /**
      * Add a comment to a blog post
      * 
      * @param array $data Comment data
@@ -256,6 +267,15 @@ class Comment {
      */
     public function isAvailable() {
         return $this->tableExists;
+    }
+    
+    /**
+     * Alias for isAvailable() - Check if comments feature is available
+     * 
+     * @return bool Whether comments feature is available
+     */
+    public function isCommentFeatureAvailable() {
+        return $this->isAvailable();
     }
     
     /**

@@ -1,19 +1,10 @@
 </div>
 
-    <footer class="bg-gray-800 text-white py-6">
+    <footer class="bg-gray-800 text-white py-6" itemscope itemtype="http://schema.org/WPFooter">
         <div class="container mx-auto px-4">
-            <div class="flex flex-wrap justify-between items-center">
-                <div>
-                    <p>&copy; <?php echo date('Y'); ?> OneNetly. All rights reserved.</p>
-                </div>
-                <div class="mt-4 md:mt-0">
-                    <a href="index.php" class="text-white hover:text-gray-300 mr-4">Home</a>
-                    <?php if ($user->isLoggedIn()): ?>
-                        <a href="dashboard.php" class="text-white hover:text-gray-300 mr-4">Dashboard</a>
-                    <?php else: ?>
-                        <a href="login.php" class="text-white hover:text-gray-300 mr-4">Login</a>
-                        <a href="register.php" class="text-white hover:text-gray-300 mr-4">Register</a>
-                    <?php endif; ?>
+            <div class="flex flex-wrap justify-center items-center">
+                <div class="text-center">
+                    <p>&copy; <?php echo date('Y'); ?> <span itemprop="copyrightHolder">OneNetly</span>. All rights reserved.</p>
                 </div>
             </div>
             
@@ -31,14 +22,39 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Organization Schema -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "OneNetly",
+            "url": "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]"; ?>",
+            "logo": "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/assets/images/logo.png"; ?>"
+        }
+        </script>
     </footer>
 
+    <!-- Mobile menu script -->
     <script>
         // Mobile category menu toggle
         document.getElementById('mobile-category-toggle')?.addEventListener('click', function() {
             const menu = document.getElementById('mobile-category-menu');
             if (menu) {
                 menu.classList.toggle('hidden');
+            }
+        });
+        
+        // Dropdown menus
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const menu = dropdown.querySelector('.dropdown-menu');
+            
+            // On smaller screens, handle click events for dropdowns
+            if (window.innerWidth < 1024) {
+                dropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('hidden');
+                });
             }
         });
     </script>

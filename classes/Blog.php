@@ -309,6 +309,17 @@ class Blog {
     }
     
     /**
+     * Get categories for a specific blog post
+     * 
+     * @param int $blogId Blog post ID
+     * @return array Categories for the post
+     */
+    public function getCategoriesForPost($blogId) {
+        // This method serves as an alias for getBlogCategories for better readability
+        return $this->getBlogCategories($blogId);
+    }
+    
+    /**
      * Record a view for a blog post
      * 
      * @param int $blogId Blog post ID
@@ -356,6 +367,17 @@ class Blog {
     }
     
     /**
+     * Alias for recordView - track a view for a blog post
+     * 
+     * @param int $blogId Blog post ID
+     * @return bool Success status
+     */
+    public function trackPostView($blogId) {
+        // This is just an alias for recordView for backward compatibility
+        return $this->recordView($blogId);
+    }
+    
+    /**
      * Get trending blog posts based on views in the past 7 days
      * 
      * @param int $limit Number of posts to return
@@ -388,16 +410,22 @@ class Blog {
      * Get related blog posts based on shared categories
      * 
      * @param int $blogId Current blog post ID to exclude
-     * @param array $categoryIds Array of category IDs
      * @param int $limit Number of posts to return
      * @return array Array of related blog posts
      */
-    public function getRelatedPosts($blogId, $categoryIds, $limit = 3) {
-        if (empty($categoryIds)) {
-            return [];
-        }
-        
+    public function getRelatedPosts($blogId, $limit = 3) {
         try {
+            // First get categories for this post
+            $categories = $this->getCategoriesForPost($blogId);
+            
+            // If no categories, return empty array
+            if (empty($categories)) {
+                return [];
+            }
+            
+            // Extract category IDs
+            $categoryIds = array_column($categories, 'id');
+            
             // Convert array of IDs to comma separated string
             $categoryList = implode(',', array_map('intval', $categoryIds));
             
@@ -511,6 +539,145 @@ class Blog {
         } catch (PDOException $e) {
             // Return empty array on error
             return [];
+        }
+    }
+    
+    /**
+     * Search blogs by keyword with pagination
+     * 
+     * @param string $keyword Search term
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @return array Blogs and pagination info
+     */
+    public function searchBlogs($keyword, $page = 1, $limit = 10) {
+        $offset = ($page - 1) * $limit;
+        $searchTerm = "%$keyword%";
+        
+        try {
+            // Count total matching blogs for pagination
+            $countSql = "SELECT COUNT(*) FROM blogs b 
+                        WHERE b.status = 'published' AND 
+                        b.title LIKE :search";
+            
+            $countStmt = $this->pdo->prepare($countSql);
+            $countStmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+            $countStmt->execute();
+            $total = $countStmt->fetchColumn();
+            
+            // Get blogs for current page
+            $sql = "SELECT b.*, u.username FROM blogs b 
+                    LEFT JOIN users u ON b.user_id = u.id 
+                    WHERE b.status = 'published' AND 
+                    b.title LIKE :search
+                    ORDER BY b.created_at DESC 
+                    LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $blogs = $stmt->fetchAll();
+            
+            // Calculate pagination info
+            $lastPage = ceil($total / $limit);
+            
+            return [
+                'blogs' => $blogs,
+                'pagination' => [
+                    'total' => $total,
+                    'per_page' => $limit,
+                    'current_page' => $page,
+                    'last_page' => $lastPage,
+                    'has_more_pages' => $page < $lastPage,
+                    'has_prev_pages' => $page > 1
+                ]
+            ];
+        } catch (PDOException $e) {
+            return [
+                'blogs' => [],
+                'pagination' => [
+                    'total' => 0,
+                    'per_page' => $limit,
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'has_more_pages' => false,
+                    'has_prev_pages' => false
+                ]
+            ];
+        }
+    }
+    
+    /**
+     * Get blogs by category
+     * 
+     * @param int $categoryId Category ID
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @return array Blogs and pagination info
+     */
+    public function getBlogsByCategory($categoryId, $page = 1, $limit = 10) {
+        $offset = ($page - 1) * $limit;
+        
+        try {
+            // Count total blogs for pagination
+            $countSql = "SELECT COUNT(*) FROM blogs b 
+                        JOIN blog_category bc ON b.id = bc.blog_id 
+                        WHERE bc.category_id = :category_id 
+                        AND b.status = 'published'";
+                        
+            $countStmt = $this->pdo->prepare($countSql);
+            $countStmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+            $countStmt->execute();
+            $total = $countStmt->fetchColumn();
+            
+            // Get blogs for current page
+            $sql = "SELECT b.*, u.username FROM blogs b 
+                    JOIN blog_category bc ON b.id = bc.blog_id 
+                    JOIN users u ON b.user_id = u.id 
+                    WHERE bc.category_id = :category_id 
+                    AND b.status = 'published' 
+                    ORDER BY b.created_at DESC 
+                    LIMIT :limit OFFSET :offset";
+                    
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $blogs = $stmt->fetchAll();
+            
+            // Calculate pagination info
+            $totalPages = ceil($total / $limit);
+            $hasNextPage = $page < $totalPages;
+            $hasPrevPage = $page > 1;
+            
+            return [
+                'blogs' => $blogs,
+                'pagination' => [
+                    'total' => $total,
+                    'per_page' => $limit,
+                    'current_page' => $page,
+                    'last_page' => $totalPages,
+                    'from' => $offset + 1,
+                    'to' => min($offset + $limit, $total),
+                    'has_more_pages' => $hasNextPage,
+                    'has_prev_pages' => $hasPrevPage
+                ]
+            ];
+        } catch (PDOException $e) {
+            return [
+                'blogs' => [],
+                'pagination' => [
+                    'total' => 0,
+                    'per_page' => $limit,
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'has_more_pages' => false,
+                    'has_prev_pages' => false
+                ]
+            ];
         }
     }
 }

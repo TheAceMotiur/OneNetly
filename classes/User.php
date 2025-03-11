@@ -249,4 +249,16 @@ class User
             return ['success' => false, 'message' => 'An error occurred while updating profile'];
         }
     }
+    
+    /**
+     * Get user by ID
+     * 
+     * @param int $userId User ID
+     * @return array|false User data or false if not found
+     */
+    public function getUserById($userId) {
+        $stmt = $this->pdo->prepare("SELECT id, username, email, is_admin, created_at FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        return $stmt->fetch();
+    }
 }

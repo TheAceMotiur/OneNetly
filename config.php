@@ -19,7 +19,6 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,
     PDO::ATTR_PERSISTENT         => true,
 ];
-
 // DSN (Data Source Name)
 $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
 

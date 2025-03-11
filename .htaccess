@@ -94,3 +94,7 @@ Options -Indexes
 # php_value upload_max_filesize 8M
 # php_value max_execution_time 300
 # php_value max_input_time 300
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]

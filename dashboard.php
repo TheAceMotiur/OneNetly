@@ -92,7 +92,7 @@ $userBlogs = $blog->getAllBlogs(1, 5, 'all');
                 <?php echo displayMessage(); ?>
                 
                 <!-- Dashboard Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-white rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold text-gray-700">Welcome!</h2>
                         <p class="text-gray-600 mt-2">Welcome to your OneNetly dashboard. This is where you'll manage all your activities.</p>
@@ -109,18 +109,6 @@ $userBlogs = $blog->getAllBlogs(1, 5, 'all');
                                     <a href="admin/index.php" class="block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md">Admin Panel</a>
                                 </div>
                             <?php endif; ?>
-                        </div>
-                    </div>
-                    
-                    <!-- Quick Actions -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold text-gray-700">Quick Actions</h2>
-                        <div class="mt-2 space-y-3">
-                            <?php if ($user->isAdmin()): ?>
-                                <a href="create-post.php" class="block px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-center rounded-md">Create New Blog Post</a>
-                            <?php endif; ?>
-                            <a href="settings.php" class="block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-center rounded-md">Settings</a>
-                            <a href="index.php" class="block px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-center rounded-md">Go to Home</a>
                         </div>
                     </div>
                 </div>

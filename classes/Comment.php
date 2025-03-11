@@ -239,4 +239,59 @@ class Comment {
     public function isAvailable() {
         return $this->tableExists;
     }
+    
+    /**
+     * Get comment counts for the past n days
+     * 
+     * @param int $days Number of days to get statistics for
+     * @return array Daily comment counts indexed by date
+     */
+    public function getRecentCommentCounts($days = 7) {
+        // Return empty array if table doesn't exist
+        if (!$this->tableExists) {
+            return [];
+        }
+        
+        try {
+            // Get comments for the last n days
+            $sql = "SELECT DATE(created_at) as date, COUNT(*) as count 
+                    FROM comments 
+                    WHERE created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY) 
+                    GROUP BY DATE(created_at) 
+                    ORDER BY date";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':days', $days, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $results = $stmt->fetchAll();
+            
+            // Format data for chart
+            $commentData = [];
+            
+            // Create a date range for the past n days
+            $endDate = new DateTime();
+            $startDate = new DateTime();
+            $startDate->modify('-' . ($days - 1) . ' days');
+            
+            // Initialize all dates with zero comments
+            $interval = new DateInterval('P1D');
+            $dateRange = new DatePeriod($startDate, $interval, $endDate);
+            
+            foreach ($dateRange as $date) {
+                $formattedDate = $date->format('Y-m-d');
+                $commentData[$formattedDate] = 0;
+            }
+            
+            // Fill in actual comment counts
+            foreach ($results as $row) {
+                $commentData[$row['date']] = (int)$row['count'];
+            }
+            
+            return $commentData;
+        } catch (PDOException $e) {
+            // Return empty array on error
+            return [];
+        }
+    }
 }

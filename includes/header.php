@@ -11,6 +11,8 @@ $categoryHierarchy = $category->getCategoryHierarchy();
     <script src="https://cdn.tailwindcss.com"></script>
     <?php echo getThemeStyles(); ?>
     <?php echo getThemeScript(); ?>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
     <style>
         .dropdown:hover .dropdown-menu {
             display: block;

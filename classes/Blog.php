@@ -421,4 +421,96 @@ class Blog {
             return [];
         }
     }
+    
+    /**
+     * Get view statistics for the past n days
+     * 
+     * @param int $days Number of days to get statistics for
+     * @return array Daily view counts indexed by date
+     */
+    public function getViewsStats($days = 7) {
+        try {
+            // Get views for the last n days
+            $sql = "SELECT DATE(viewed_at) as date, COUNT(*) as count 
+                    FROM blog_views 
+                    WHERE viewed_at >= DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY) 
+                    GROUP BY DATE(viewed_at) 
+                    ORDER BY date";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':days', $days, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $results = $stmt->fetchAll();
+            
+            // Format data for chart
+            $viewData = [];
+            
+            // Create a date range for the past n days
+            $endDate = new DateTime();
+            $startDate = new DateTime();
+            $startDate->modify('-' . ($days - 1) . ' days');
+            
+            // Initialize all dates with zero views
+            $interval = new DateInterval('P1D');
+            $dateRange = new DatePeriod($startDate, $interval, $endDate);
+            
+            foreach ($dateRange as $date) {
+                $formattedDate = $date->format('Y-m-d');
+                $viewData[$formattedDate] = 0;
+            }
+            
+            // Fill in actual view counts
+            foreach ($results as $row) {
+                $viewData[$row['date']] = (int)$row['count'];
+            }
+            
+            return $viewData;
+        } catch (PDOException $e) {
+            // Return empty array on error
+            return [];
+        }
+    }
+    
+    /**
+     * Get total views across all blog posts
+     * 
+     * @return int Total number of views
+     */
+    public function getTotalViews() {
+        try {
+            $sql = "SELECT COUNT(*) FROM blog_views";
+            $stmt = $this->pdo->query($sql);
+            return (int)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            return 0;
+        }
+    }
+    
+    /**
+     * Get most popular blog posts based on view count
+     * 
+     * @param int $limit Number of posts to return
+     * @return array Array of popular blog posts
+     */
+    public function getPopularPosts($limit = 5) {
+        try {
+            $sql = "SELECT b.id, b.title, b.slug, COUNT(v.id) as view_count 
+                    FROM blogs b
+                    JOIN blog_views v ON b.id = v.blog_id
+                    WHERE b.status = 'published'
+                    GROUP BY b.id, b.title, b.slug
+                    ORDER BY view_count DESC
+                    LIMIT :limit";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            // Return empty array on error
+            return [];
+        }
+    }
 }

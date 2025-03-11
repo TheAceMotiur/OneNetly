@@ -25,7 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'google_analytics_id' => trim($_POST['google_analytics_id'] ?? ''),
             'google_site_verification' => trim($_POST['google_site_verification'] ?? ''),
             'bing_site_verification' => trim($_POST['bing_site_verification'] ?? ''),
-            'site_url' => trim($_POST['site_url'] ?? '')
+            'site_url' => trim($_POST['site_url'] ?? ''),
+            'recaptcha_site_key' => trim($_POST['recaptcha_site_key'] ?? ''),
+            'recaptcha_secret_key' => trim($_POST['recaptcha_secret_key'] ?? '')
         ];
 
         try {
@@ -43,12 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     `google_site_verification` varchar(100),
                     `bing_site_verification` varchar(100),
                     `site_url` varchar(255),
+                    `recaptcha_site_key` varchar(255),
+                    `recaptcha_secret_key` varchar(255),
                     `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     PRIMARY KEY (`id`)
                 )");
                 
                 // Insert initial record
-                $stmt = $pdo->prepare("INSERT INTO site_config (site_name, site_description, site_keywords, default_og_image, google_analytics_id, google_site_verification, bing_site_verification, site_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt = $pdo->prepare("INSERT INTO site_config (site_name, site_description, site_keywords, default_og_image, google_analytics_id, google_site_verification, bing_site_verification, site_url, recaptcha_site_key, recaptcha_secret_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $seoSettings['site_name'],
                     $seoSettings['site_description'],
@@ -57,7 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $seoSettings['google_analytics_id'],
                     $seoSettings['google_site_verification'],
                     $seoSettings['bing_site_verification'],
-                    $seoSettings['site_url']
+                    $seoSettings['site_url'],
+                    $seoSettings['recaptcha_site_key'],
+                    $seoSettings['recaptcha_secret_key']
                 ]);
             } else {
                 // Update existing record
@@ -66,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if ($count === 0) {
                     // No records exist, insert a new one
-                    $stmt = $pdo->prepare("INSERT INTO site_config (site_name, site_description, site_keywords, default_og_image, google_analytics_id, google_site_verification, bing_site_verification, site_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt = $pdo->prepare("INSERT INTO site_config (site_name, site_description, site_keywords, default_og_image, google_analytics_id, google_site_verification, bing_site_verification, site_url, recaptcha_site_key, recaptcha_secret_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     $stmt->execute([
                         $seoSettings['site_name'],
                         $seoSettings['site_description'],
@@ -75,11 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $seoSettings['google_analytics_id'],
                         $seoSettings['google_site_verification'],
                         $seoSettings['bing_site_verification'],
-                        $seoSettings['site_url']
+                        $seoSettings['site_url'],
+                        $seoSettings['recaptcha_site_key'],
+                        $seoSettings['recaptcha_secret_key']
                     ]);
                 } else {
                     // Update the first record
-                    $stmt = $pdo->prepare("UPDATE site_config SET site_name = ?, site_description = ?, site_keywords = ?, default_og_image = ?, google_analytics_id = ?, google_site_verification = ?, bing_site_verification = ?, site_url = ? WHERE id = (SELECT id FROM (SELECT id FROM site_config LIMIT 1) as temp)");
+                    $stmt = $pdo->prepare("UPDATE site_config SET site_name = ?, site_description = ?, site_keywords = ?, default_og_image = ?, google_analytics_id = ?, google_site_verification = ?, bing_site_verification = ?, site_url = ?, recaptcha_site_key = ?, recaptcha_secret_key = ? WHERE id = (SELECT id FROM (SELECT id FROM site_config LIMIT 1) as temp)");
                     $stmt->execute([
                         $seoSettings['site_name'],
                         $seoSettings['site_description'],
@@ -88,7 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $seoSettings['google_analytics_id'],
                         $seoSettings['google_site_verification'],
                         $seoSettings['bing_site_verification'],
-                        $seoSettings['site_url']
+                        $seoSettings['site_url'],
+                        $seoSettings['recaptcha_site_key'],
+                        $seoSettings['recaptcha_secret_key']
                     ]);
                 }
             }
@@ -141,7 +151,9 @@ try {
         'google_analytics_id' => '',
         'google_site_verification' => '',
         'bing_site_verification' => '',
-        'site_url' => isset($_SERVER['HTTP_HOST']) ? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] : ''
+        'site_url' => isset($_SERVER['HTTP_HOST']) ? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] : '',
+        'recaptcha_site_key' => '',
+        'recaptcha_secret_key' => ''
     ];
 }
 
@@ -236,7 +248,20 @@ require_once 'admin_header.php';
                         <label for="bing_site_verification" class="block text-gray-700 font-bold mb-2">Bing Site Verification</label>
                         <input type="text" id="bing_site_verification" name="bing_site_verification" value="<?php echo htmlspecialchars($seoSettings['bing_site_verification'] ?? ''); ?>" 
                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <p class="text-gray-500 text-sm mt-1">Bing Webmaster Tools verification code.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="recaptcha_site_key" class="block text-gray-700 font-bold mb-2">reCAPTCHA Site Key</label>
+                        <input type="text" id="recaptcha_site_key" name="recaptcha_site_key" value="<?php echo htmlspecialchars($seoSettings['recaptcha_site_key'] ?? ''); ?>" 
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <p class="text-gray-500 text-sm mt-1">Google reCAPTCHA v2 Site Key</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="recaptcha_secret_key" class="block text-gray-700 font-bold mb-2">reCAPTCHA Secret Key</label>
+                        <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" value="<?php echo htmlspecialchars($seoSettings['recaptcha_secret_key'] ?? ''); ?>" 
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <p class="text-gray-500 text-sm mt-1">Google reCAPTCHA v2 Secret Key</p>
                     </div>
                 </div>
             </div>

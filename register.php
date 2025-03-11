@@ -9,9 +9,24 @@ if ($user->isLoggedIn()) {
 // Get current user if logged in (for header)
 $currentUser = $user->getCurrentUser();
 
+// Get reCAPTCHA site key from settings
+$stmt = $pdo->query("SELECT value FROM site_config WHERE name = 'recaptcha_site_key'");
+$recaptchaSiteKey = $stmt->fetchColumn();
+
 // Process registration form
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verify reCAPTCHA
+    $recaptchaSecret = $pdo->query("SELECT value FROM site_config WHERE name = 'recaptcha_secret_key'")->fetchColumn();
+    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+    
+    $recaptchaVerify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaSecret}&response={$recaptchaResponse}");
+    $recaptchaData = json_decode($recaptchaVerify);
+    
+    if (!$recaptchaData->success) {
+        $errors[] = 'Please complete the reCAPTCHA verification';
+    }
+    
     $username = $_POST['username'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -58,6 +73,9 @@ $pageTitle = "Register";
 require_once 'includes/header.php';
 ?>
 
+<!-- Add reCAPTCHA script in head -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
     <div class="bg-indigo-800 text-white py-4 px-6">
         <h3 class="text-xl font-semibold text-center">Create an Account</h3>
@@ -93,6 +111,10 @@ require_once 'includes/header.php';
                 <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="confirm_password" name="confirm_password" required>
             </div>
             
+            <div class="mb-4">
+                <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($recaptchaSiteKey); ?>"></div>
+            </div>
+
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
                     Register

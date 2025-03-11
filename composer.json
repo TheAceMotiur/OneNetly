@@ -1,6 +1,7 @@
 {
     "require": {
-        "onemigrator/onemigrator": "dev-main"
+        "onemigrator/onemigrator": "dev-main",
+        "phpmailer/phpmailer": "^6.9"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

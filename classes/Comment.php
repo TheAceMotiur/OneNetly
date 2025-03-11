@@ -3,10 +3,22 @@
 class Comment {
     private $pdo;
     private $tableExists = false;
+    private $badWords = [];
+    private $commentSettings = [];
     
     public function __construct($pdo) {
         $this->pdo = $pdo;
         $this->checkTableExists();
+        
+        // Load comment configuration if file exists
+        $configFile = __DIR__ . '/../config/comment_config.php';
+        if (file_exists($configFile)) {
+            include $configFile;
+            
+            // Set configuration values
+            $this->badWords = $comment_bad_words ?? [];
+            $this->commentSettings = $comment_settings ?? [];
+        }
     }
     
     /**
@@ -73,16 +85,22 @@ class Comment {
         }
         
         try {
-            $sql = "INSERT INTO comments (blog_id, user_id, content, status) 
-                    VALUES (:blog_id, :user_id, :content, :status)";
+            // Filter bad words in content
+            $content = $this->filterBadWords($data['content']);
+            
+            // Add nofollow to links
+            $content = $this->addNoFollowToLinks($content);
             
             // Determine the status - if user is admin, auto-approve
             $status = isset($data['is_admin']) && $data['is_admin'] ? 'approved' : 'pending';
             
+            $sql = "INSERT INTO comments (blog_id, user_id, content, status) 
+                    VALUES (:blog_id, :user_id, :content, :status)";
+            
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':blog_id', $data['blog_id'], PDO::PARAM_INT);
             $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':content', $data['content'], PDO::PARAM_STR);
+            $stmt->bindParam(':content', $content, PDO::PARAM_STR);
             $stmt->bindParam(':status', $status, PDO::PARAM_STR);
             
             $stmt->execute();
@@ -187,7 +205,7 @@ class Comment {
                     JOIN blogs b ON c.blog_id = b.id 
                     WHERE c.status = 'pending' 
                     ORDER BY c.created_at ASC";
-                    
+            
             $stmt = $this->pdo->query($sql);
             return $stmt->fetchAll();
         } catch (PDOException $e) {
@@ -293,5 +311,69 @@ class Comment {
             // Return empty array on error
             return [];
         }
+    }
+    
+    /**
+     * Filter bad words from comment content
+     * 
+     * @param string $content The comment content
+     * @return string Filtered content
+     */
+    private function filterBadWords($content) {
+        // Skip if filtering is disabled
+        if (empty($this->commentSettings['filter_bad_words'])) {
+            return $content;
+        }
+        
+        // Use configured bad words
+        if (!empty($this->badWords)) {
+            // Replace bad words with asterisks
+            foreach ($this->badWords as $word) {
+                // Use word boundary to match whole words only
+                $pattern = '/\b' . preg_quote($word, '/') . '\b/i';
+                $replacement = str_repeat('*', strlen($word));
+                $content = preg_replace($pattern, $replacement, $content);
+            }
+        }
+        
+        return $content;
+    }
+    
+    /**
+     * Add nofollow attribute to links in comment content
+     * 
+     * @param string $content The comment content
+     * @return string Content with nofollow links
+     */
+    private function addNoFollowToLinks($content) {
+        // Skip if nofollow is disabled
+        if (empty($this->commentSettings['add_nofollow_to_links'])) {
+            return $content;
+        }
+        
+        // Regular expression to find links without rel="nofollow"
+        $pattern = '/<a(.*?)href=["\'](.*?)["\'](.*?)>/i';
+        
+        // Callback function to add rel="nofollow" to links
+        $replacement = function($matches) {
+            $attrs = $matches[1] . ' href="' . $matches[2] . '"' . $matches[3];
+            
+            // Check if rel attribute already exists
+            if (stripos($attrs, 'rel=') !== false) {
+                // Add nofollow to existing rel attribute if not present
+                if (stripos($attrs, 'nofollow') === false) {
+                    $attrs = preg_replace('/rel=(["\'])(.*?)(["\'])/i', 'rel=$1$2 nofollow$3', $attrs);
+                }
+            } else {
+                // Add rel="nofollow" attribute if not present
+                $attrs .= ' rel="nofollow"';
+            }
+            
+            return '<a' . $attrs . '>';
+        };
+        
+        $content = preg_replace_callback($pattern, $replacement, $content);
+        
+        return $content;
     }
 }

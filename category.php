@@ -22,8 +22,8 @@ if (!$categoryData) {
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max(1, $page); // Ensure page is at least 1
 
-// Get blog posts in this category with pagination (10 per page)
-$result = $category->getBlogsByCategory($categoryData['id'], $page, 10);
+// Get blog posts in this category with pagination (12 per page instead of 10)
+$result = $category->getBlogsByCategory($categoryData['id'], $page, 12);
 $blogs = $result['blogs'];
 $pagination = $result['pagination'];
 
@@ -54,43 +54,41 @@ require_once 'includes/header.php';
                 <p>No blog posts found in this category. Check back later!</p>
             </div>
         <?php else: ?>
-            <?php foreach ($blogs as $blogPost): ?>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-                    <?php if (!empty($blogPost['featured_image'])): ?>
-                        <div class="w-full h-64 overflow-hidden">
-                            <img src="<?php echo htmlspecialchars($blogPost['featured_image']); ?>" alt="<?php echo htmlspecialchars($blogPost['title']); ?>" class="w-full h-full object-cover">
-                        </div>
-                    <?php endif; ?>
-                    
-                    <div class="p-6">
-                        <h2 class="text-2xl font-bold mb-2">
-                            <a href="<?php echo htmlspecialchars($blogPost['slug']); ?>" class="text-indigo-700 hover:text-indigo-900">
-                                <?php echo htmlspecialchars($blogPost['title']); ?>
-                            </a>
-                        </h2>
+            <!-- Grid with 3 posts per row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php foreach ($blogs as $blogPost): ?>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
+                        <?php if (!empty($blogPost['featured_image'])): ?>
+                            <div class="w-full h-40 overflow-hidden">
+                                <img src="<?php echo htmlspecialchars($blogPost['featured_image']); ?>" alt="<?php echo htmlspecialchars($blogPost['title']); ?>" class="w-full h-full object-cover">
+                            </div>
+                        <?php endif; ?>
                         
-                        <div class="text-gray-500 mb-4">
-                            <span>By <?php echo htmlspecialchars($blogPost['username']); ?></span>
-                            <span class="mx-2">•</span>
-                            <span><?php echo date('F j, Y', strtotime($blogPost['created_at'])); ?></span>
+                        <div class="p-4 flex-1 flex flex-col">
+                            <h2 class="text-lg font-bold mb-2">
+                                <a href="<?php echo htmlspecialchars($blogPost['slug']); ?>" class="text-indigo-700 hover:text-indigo-900">
+                                    <?php echo htmlspecialchars($blogPost['title']); ?>
+                                </a>
+                            </h2>
+                            
+                            <div class="text-gray-500 mb-2 text-sm">
+                                <span><?php echo date('M j, Y', strtotime($blogPost['created_at'])); ?></span>
+                            </div>
+                            
+                            <div class="mb-4 flex-1">
+                                <?php 
+                                if (!empty($blogPost['excerpt'])) {
+                                    echo htmlspecialchars($blogPost['excerpt']);
+                                } else {
+                                    echo substr(strip_tags($blogPost['content']), 0, 100) . '...';
+                                }
+                                ?>
+                            </div>
+                            
                         </div>
-                        
-                        <div class="mb-4">
-                            <?php 
-                            if (!empty($blogPost['excerpt'])) {
-                                echo htmlspecialchars($blogPost['excerpt']);
-                            } else {
-                                echo substr(strip_tags($blogPost['content']), 0, 200) . '...';
-                            }
-                            ?>
-                        </div>
-                        
-                        <a href="<?php echo htmlspecialchars($blogPost['slug']); ?>" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">
-                            Read More
-                        </a>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
             
             <!-- Pagination -->
             <?php if ($pagination['last_page'] > 1): ?>
@@ -169,21 +167,6 @@ require_once 'includes/header.php';
                         </li>
                     <?php endforeach; ?>
                 </ul>
-            <?php endif; ?>
-        </div>
-        
-        <!-- About Widget -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">About OneNetly</h2>
-            <p class="text-gray-700">
-                OneNetly is a simple blog platform that allows users to read articles and engage with content created by our administrators.
-            </p>
-            <?php if (!$user->isLoggedIn()): ?>
-                <div class="mt-4">
-                    <a href="login.php" class="text-indigo-600 hover:text-indigo-800">Login</a> or 
-                    <a href="register.php" class="text-indigo-600 hover:text-indigo-800">Register</a> 
-                    to access your account.
-                </div>
             <?php endif; ?>
         </div>
     </div>

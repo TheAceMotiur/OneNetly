@@ -16,6 +16,9 @@ $pagination = $result['pagination'];
 // Get trending posts for sidebar
 $trendingPosts = $blog->getTrendingPosts(5);
 
+// Get all categories for sidebar
+$categories = $category->getAllCategories();
+
 // Set page title
 $pageTitle = "Blog";
 
@@ -61,6 +64,12 @@ require_once 'includes/header.php';
                                 echo substr(strip_tags($blogPost['content']), 0, 100) . '...';
                             }
                             ?>
+                        </div>
+                        
+                        <div class="mt-auto">
+                            <a href="<?php echo htmlspecialchars($blogPost['slug']); ?>" class="text-sm text-indigo-600 hover:text-indigo-800 transition">
+                                Read More →
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -129,18 +138,21 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- About Widget -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">About OneNetly</h2>
-            <p class="text-gray-700">
-                OneNetly is a simple blog platform that allows users to read articles and engage with content created by our administrators.
-            </p>
-            <?php if (!$user->isLoggedIn()): ?>
-                <div class="mt-4">
-                    <a href="login.php" class="text-indigo-600 hover:text-indigo-800">Login</a> or 
-                    <a href="register.php" class="text-indigo-600 hover:text-indigo-800">Register</a> 
-                    to access your account.
-                </div>
+        <!-- Categories Widget -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Categories</h2>
+            <?php if (empty($categories)): ?>
+                <p>No categories found.</p>
+            <?php else: ?>
+                <ul>
+                    <?php foreach ($categories as $cat): ?>
+                        <li class="mb-2">
+                            <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="text-indigo-600 hover:text-indigo-800">
+                                <?php echo htmlspecialchars($cat['name']); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             <?php endif; ?>
         </div>
     </div>

@@ -17,14 +17,14 @@ require_once 'includes/header.php';
     </div>
     <div class="p-6">
         <div class="prose max-w-none">
-            <p class="text-gray-600 mb-4">Last updated: <?php echo date('F d, Y'); ?></p>
+            <p class="text-gray-600 mb-6">Last updated: <?php echo date('F d, Y'); ?></p>
             
-            <h2>Digital Millennium Copyright Act Notice & Policy</h2>
+            <h2 class="text-xl font-bold text-gray-800 mt-8 mb-4">1. Digital Millennium Copyright Act Notice & Policy</h2>
             <p>OneNetly respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act of 1998 ("DMCA"), we will respond expeditiously to claims of copyright infringement that are reported to our designated copyright agent.</p>
             
-            <h2>Notification of Copyright Infringement</h2>
+            <h2 class="text-xl font-bold text-gray-800 mt-8 mb-4">2. Notification of Copyright Infringement</h2>
             <p>If you believe that your work has been copied in a way that constitutes copyright infringement, please provide our copyright agent with the following information in accordance with the DMCA:</p>
-            <ol>
+            <ol class="list-decimal pl-6 mt-4 mb-4 space-y-2">
                 <li>An electronic or physical signature of the person authorized to act on behalf of the owner of the copyright interest;</li>
                 <li>A description of the copyrighted work that you claim has been infringed;</li>
                 <li>A description of where the material that you claim is infringing is located on our website, with enough detail that we may find it;</li>
@@ -32,22 +32,26 @@ require_once 'includes/header.php';
                 <li>A statement by you that you have a good faith belief that the disputed use is not authorized by the copyright owner, its agent, or the law; and</li>
                 <li>A statement by you, made under penalty of perjury, that the above information in your notice is accurate and that you are the copyright owner or authorized to act on the copyright owner's behalf.</li>
             </ol>
-            <p>Our designated copyright agent can be reached at:</p>
-            <p>[Your Name/Company Name]<br>
-            [Your Address in Bangladesh]<br>
-            Email: [Your Email]</p>
             
-            <h2>Counter-Notification</h2>
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 my-6">
+                <p><strong>Our designated copyright agent can be reached at:</strong></p>
+                <p class="mt-2">OneNetly Copyright Department<br>
+                123 Tech Street, Dhaka<br>
+                Bangladesh<br>
+                Email: copyright@onenetly.com</p>
+            </div>
+            
+            <h2 class="text-xl font-bold text-gray-800 mt-8 mb-4">3. Counter-Notification</h2>
             <p>If you believe that your content that was removed (or to which access was disabled) is not infringing, or that you have the authorization from the copyright owner, the copyright owner's agent, or pursuant to the law, to post and use the material in your content, you may send a counter-notice containing the following information to our copyright agent:</p>
-            <ol>
+            <ol class="list-decimal pl-6 mt-4 mb-4 space-y-2">
                 <li>Your physical or electronic signature;</li>
                 <li>Identification of the content that has been removed or to which access has been disabled and the location at which the content appeared before it was removed or disabled;</li>
                 <li>A statement that you have a good faith belief that the content was removed or disabled as a result of mistake or a misidentification of the content; and</li>
                 <li>Your name, address, telephone number, and email address, a statement that you consent to the jurisdiction of the courts in Bangladesh, and a statement that you will accept service of process from the person who provided notification of the alleged infringement.</li>
             </ol>
-            <p>If our copyright agent receives a counter-notification, we may send a copy of the counter-notification to the original complaining party informing that person that we may replace the removed content or cease disabling it in 10 business days. Unless the copyright owner files an action seeking a court order against the content provider, member or user, the removed content may be replaced, or access to it restored, in 10 to 14 business days or more after receipt of the counter-notice, at our sole discretion.</p>
+            <p class="mt-3">If our copyright agent receives a counter-notification, we may send a copy of the counter-notification to the original complaining party informing that person that we may replace the removed content or cease disabling it in 10 business days. Unless the copyright owner files an action seeking a court order against the content provider, member or user, the removed content may be replaced, or access to it restored, in 10 to 14 business days or more after receipt of the counter-notice, at our sole discretion.</p>
             
-            <h2>Repeat Infringer Policy</h2>
+            <h2 class="text-xl font-bold text-gray-800 mt-8 mb-4">4. Repeat Infringer Policy</h2>
             <p>In accordance with the DMCA and other applicable law, we have adopted a policy of terminating, in appropriate circumstances and at our sole discretion, users who are deemed to be repeat infringers. We may also at our sole discretion limit access to our website and/or terminate the accounts of any users who infringe any intellectual property rights of others, whether or not there is any repeat infringement.</p>
         </div>
         

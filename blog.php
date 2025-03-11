@@ -121,7 +121,7 @@ require_once 'includes/header.php';
                 </div>
                 
                 <?php if (!empty($blogPost['demo_link'])): ?>
-                <div class="mb-6">
+                <div class="mb-6 flex justify-center">
                     <a href="<?php echo htmlspecialchars($blogPost['demo_link']); ?>" 
                        target="_blank" rel="noopener noreferrer" 
                        class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition">
@@ -139,7 +139,7 @@ require_once 'includes/header.php';
                 
                 <?php if (!empty($blogPost['download_link'])): ?>
                 <!-- Download Button -->
-                <div class="mt-8 border-t pt-6">
+                <div class="mt-8 border-t pt-6 flex justify-center">
                     <a href="<?php echo htmlspecialchars($blogPost['download_link']); ?>" 
                        class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-bold"
                        target="_blank">
@@ -213,8 +213,12 @@ require_once 'includes/header.php';
                                             <?php echo date('F j, Y \a\t g:i a', strtotime($commentItem['created_at'])); ?>
                                         </div>
                                     </div>
-                                    <div class="text-gray-700 whitespace-pre-line">
-                                        <?php echo nl2br(htmlspecialchars($commentItem['content'])); ?>
+                                    <div class="text-gray-700 whitespace-pre-line comment-content">
+                                        <?php 
+                                        // Display comment content - already filtered for bad words during submission
+                                        // nl2br for line breaks, links already have nofollow added during submission
+                                        echo nl2br($commentItem['content']); 
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -276,21 +280,6 @@ require_once 'includes/header.php';
                         </li>
                     <?php endforeach; ?>
                 </ul>
-            <?php endif; ?>
-        </div>
-        
-        <!-- About Widget -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">About OneNetly</h2>
-            <p class="text-gray-700">
-                OneNetly is a simple blog platform that allows users to read articles and engage with content created by our administrators.
-            </p>
-            <?php if (!$user->isLoggedIn()): ?>
-                <div class="mt-4">
-                    <a href="login.php" class="text-indigo-600 hover:text-indigo-800">Login</a> or 
-                    <a href="register.php" class="text-indigo-600 hover:text-indigo-800">Register</a> 
-                    to access your account.
-                </div>
             <?php endif; ?>
         </div>
     </div>

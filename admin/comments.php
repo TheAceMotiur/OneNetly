@@ -80,7 +80,7 @@ $pendingComments = $comment->getPendingComments();
 <div class="bg-white rounded-lg shadow mb-6">
     <div class="p-4 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-700">Comments Pending Approval</h2>
-        <p class="text-sm text-gray-600">Review and moderate comments before they appear on the blog</p>
+        <p class="text-sm text-gray-600">Review and moderate comments before they appear on the blog. Bad words are automatically filtered and links have nofollow attributes added.</p>
     </div>
     
     <div class="overflow-x-auto">
@@ -112,7 +112,7 @@ $pendingComments = $comment->getPendingComments();
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <a href="../<?php echo htmlspecialchars($pendingComment['blog_slug']); ?>" class="text-blue-600 hover:text-blue-900" target="_blank">
-                            <?php echo htmlspecialchars($pendingComment['blog_title']); ?>
+                            View Post
                         </a>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

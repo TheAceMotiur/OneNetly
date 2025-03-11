@@ -14,11 +14,29 @@ require_once __DIR__ . '/../classes/User.php';
 // Include settings class
 require_once __DIR__ . '/../classes/Settings.php';
 
+// Include blog class
+require_once __DIR__ . '/../classes/Blog.php';
+
+// Include category class
+require_once __DIR__ . '/../classes/Category.php';
+
+// Include comment class
+require_once __DIR__ . '/../classes/Comment.php';
+
 // Initialize user object
 $user = new User($pdo);
 
 // Initialize settings object
 $settings = new Settings($pdo);
+
+// Initialize blog object
+$blog = new Blog($pdo);
+
+// Initialize category object
+$category = new Category($pdo);
+
+// Initialize comment object
+$comment = new Comment($pdo);
 
 // If user is logged in, initialize user settings
 if (isset($_SESSION['user_id'])) {

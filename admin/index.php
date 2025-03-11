@@ -1,20 +1,26 @@
 <?php
 require_once 'admin_header.php';
 
-// Get counts for dashboard stats
-$stmt = $pdo->query("SELECT COUNT(*) FROM users");
-$userCount = $stmt->fetchColumn();
+// Get count of users
+$userCount = count($user->getAllUsers());
 
-$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE is_admin = 1");
-$adminCount = $stmt->fetchColumn();
+// Get count of admin users
+$adminCount = count($user->getAllAdmins());
+
+// Get count of blog posts
+$blogCount = $blog->getAllBlogs(1, 1)['pagination']['total'];
+
+// Check if comments feature is available
+$commentsAvailable = $comment->isAvailable();
+
+// Get count of pending comments
+$pendingCommentsCount = $commentsAvailable ? count($comment->getPendingComments()) : 0;
 
 // Get recent users
-$stmt = $pdo->query("SELECT * FROM users ORDER BY created_at DESC LIMIT 5");
-$recentUsers = $stmt->fetchAll();
+$recentUsers = $user->getRecentUsers(5);
 ?>
 
-<!-- Admin Dashboard Content -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-lg font-semibold text-gray-700">Total Users</h2>
         <p class="text-3xl font-bold text-blue-600 mt-2"><?php echo $userCount; ?></p>
@@ -28,11 +34,24 @@ $recentUsers = $stmt->fetchAll();
     </div>
     
     <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-lg font-semibold text-gray-700">Quick Actions</h2>
-        <div class="mt-2 space-y-3">
-            <a href="users.php" class="block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md">Manage Users</a>
-            <a href="settings.php" class="block px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-center rounded-md">System Settings</a>
-        </div>
+        <h2 class="text-lg font-semibold text-gray-700">Blog Posts</h2>
+        <p class="text-3xl font-bold text-blue-600 mt-2"><?php echo $blogCount; ?></p>
+        <p class="text-gray-500 text-sm mt-2">Published and drafts</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-700">Pending Comments</h2>
+        <?php if ($commentsAvailable): ?>
+            <p class="text-3xl font-bold text-<?php echo $pendingCommentsCount > 0 ? 'yellow' : 'blue'; ?>-600 mt-2"><?php echo $pendingCommentsCount; ?></p>
+            <p class="text-gray-500 text-sm mt-2">Awaiting moderation</p>
+            <?php if ($pendingCommentsCount > 0): ?>
+                <a href="comments.php" class="mt-2 inline-block text-sm text-blue-600 hover:underline">Moderate comments</a>
+            <?php endif; ?>
+        <?php else: ?>
+            <p class="text-3xl font-bold text-gray-400 mt-2">-</p>
+            <p class="text-gray-500 text-sm mt-2">Comments feature not active</p>
+            <a href="../migrate.php" class="mt-2 inline-block text-sm text-blue-600 hover:underline">Run migration</a>
+        <?php endif; ?>
     </div>
 </div>
 

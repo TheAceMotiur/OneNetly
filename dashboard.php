@@ -8,6 +8,9 @@ if (!$user->isLoggedIn()) {
 
 // Get current user
 $currentUser = $user->getCurrentUser();
+
+// Get user's blog posts
+$userBlogs = $blog->getAllBlogs(1, 5, 'all');
 ?>
 <!DOCTYPE html>
 <html lang="en" class="<?php echo getThemeClass(); ?>">
@@ -109,25 +112,73 @@ $currentUser = $user->getCurrentUser();
                         </div>
                     </div>
                     
+                    <!-- Quick Actions -->
                     <div class="bg-white rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold text-gray-700">Quick Actions</h2>
                         <div class="mt-2 space-y-3">
+                            <?php if ($user->isAdmin()): ?>
+                                <a href="create-post.php" class="block px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-center rounded-md">Create New Blog Post</a>
+                            <?php endif; ?>
                             <a href="settings.php" class="block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-center rounded-md">Settings</a>
                             <a href="index.php" class="block px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-center rounded-md">Go to Home</a>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="p-6 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-700">Recent Activity</h2>
-                        <p class="text-gray-500 mt-2">This is where your recent activities will appear.</p>
+                <!-- My Blog Posts -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <?php if ($user->isAdmin()): ?>
+                        <div class="p-6 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-semibold text-gray-700">Blog Posts</h2>
+                            <a href="create-post.php" class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">New Post</a>
+                        </div>
                     </div>
-                    <div class="px-6 py-4">
-                        <p class="text-gray-600">No recent activities found.</p>
+                    <?php endif; ?>
+                    <div class="divide-y divide-gray-200">
+                        <?php if (empty($userBlogs['blogs'])): ?>
+                            <p class="p-6 text-gray-600">You haven't created any blog posts yet.</p>
+                        <?php else: ?>
+                            <?php foreach ($userBlogs['blogs'] as $post): ?>
+                                <?php if ($post['user_id'] == $currentUser['id']): ?>
+                                    <div class="p-6">
+                                        <div class="flex justify-between">
+                                            <div>
+                                                <h3 class="text-xl font-medium text-gray-900">
+                                                    <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="hover:text-indigo-600">
+                                                        <?php echo htmlspecialchars($post['title']); ?>
+                                                    </a>
+                                                </h3>
+                                                <p class="mt-1 text-sm text-gray-500">
+                                                    <span class="<?php echo $post['status'] === 'published' ? 'text-green-600' : 'text-yellow-600'; ?>">
+                                                        <?php echo ucfirst($post['status']); ?>
+                                                    </span> • 
+                                                    <?php echo date('F j, Y', strtotime($post['created_at'])); ?>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <a href="edit-post.php?id=<?php echo $post['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                                <a href="delete-post.php?id=<?php echo $post['id']; ?>" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <p class="text-gray-600">
+                                                <?php 
+                                                if (!empty($post['excerpt'])) {
+                                                    echo htmlspecialchars($post['excerpt']);
+                                                } else {
+                                                    echo substr(strip_tags($post['content']), 0, 150) . '...';
+                                                }
+                                                ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
+                
             </main>
         </div>
     </div>

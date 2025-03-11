@@ -1,4 +1,7 @@
 <?php
+// Start output buffering to prevent "headers already sent" errors
+ob_start();
+
 require_once '../includes/init.php';
 
 // Protect admin pages - only accessible to admins
@@ -50,6 +53,31 @@ function getActiveClass($page) {
                         </svg>
                     </span>
                     Manage Users
+                </a>
+                <a href="blogs.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('blogs.php'); ?>">
+                    <span class="mr-3">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 7L12 13L21 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    Manage Blogs
+                </a>
+                <a href="comments.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('comments.php'); ?>">
+                    <span class="mr-3">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 12H8.01M12 12H12.01M16 12H16.01M21 12C21 16.4183 16.9706 20 12 20C10.4607 20 9.01172 19.6565 7.74467 19.0511L3 20L4.39499 16.28C3.51156 15.0423 3 13.5743 3 12C3 7.58172 7.02944 4 12 4C16.9706 4 21 7.58172 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    Comments
+                </a>
+                <a href="categories.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('categories.php'); ?>">
+                    <span class="mr-3">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    Categories
                 </a>
                 <a href="settings.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('settings.php'); ?>">
                     <span class="mr-3">

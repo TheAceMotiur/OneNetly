@@ -116,6 +116,31 @@ class User
     }
     
     /**
+     * Get a list of all admin users
+     * 
+     * @return array List of all admin users
+     */
+    public function getAllAdmins()
+    {
+        $stmt = $this->pdo->query("SELECT id, username, email, created_at FROM users WHERE is_admin = 1 ORDER BY id");
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get recent users
+     * 
+     * @param int $limit Number of users to return
+     * @return array List of recent users
+     */
+    public function getRecentUsers($limit = 5)
+    {
+        $stmt = $this->pdo->prepare("SELECT id, username, email, is_admin, created_at FROM users ORDER BY created_at DESC LIMIT :limit");
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    
+    /**
      * Toggle admin status for a user
      * 
      * @param int $userId User ID to update

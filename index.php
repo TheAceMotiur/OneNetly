@@ -29,7 +29,7 @@ require_once 'includes/header.php';
 <div class="flex flex-wrap">
     <!-- Main Content -->
     <div class="w-full lg:w-3/4 pr-0 lg:pr-8">
-        <h1 class="text-3xl font-bold mb-6">Latest Blog Posts</h1>
+        <h1 class="text-3xl font-bold mb-6">RECENTLY ADDED FILES</h1>
         
         <?php if (empty($blogs)): ?>
             <div class="bg-white rounded-lg shadow-md p-6">

@@ -63,6 +63,9 @@ require_once 'includes/header.php';
             <div class="mb-6">
                 <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
                 <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password">
+                <div class="mt-1 text-right">
+                    <a href="forgot-password.php" class="text-sm text-indigo-600 hover:text-indigo-800">Forgot your password?</a>
+                </div>
             </div>
             
             <div class="flex items-center justify-between">

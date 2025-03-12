@@ -24,7 +24,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
-    $excerpt = trim($_POST['excerpt'] ?? '');
+    // Removed excerpt field
     $status = $_POST['status'] ?? 'draft';
     $categoryIds = isset($_POST['categories']) ? $_POST['categories'] : [];
     $featuredImage = '';
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'user_id' => $currentUser['id'],
             'title' => $title,
             'content' => $content,
-            'excerpt' => $excerpt,
+            // Removed excerpt from blogData
             'featured_image' => $featuredImage,
             'demo_link' => $demoLink,
             'download_link' => $downloadLink,

@@ -38,7 +38,6 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
-    $excerpt = trim($_POST['excerpt'] ?? '');
     $status = $_POST['status'] ?? 'draft';
     $categoryIds = isset($_POST['categories']) ? $_POST['categories'] : [];
     $demoLink = trim($_POST['demo_link'] ?? '');
@@ -57,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $blogData = [
         'title' => $title,
         'content' => $content,
-        'excerpt' => $excerpt,
         'status' => $status,
         'categories' => $categoryIds,
         'demo_link' => $demoLink,

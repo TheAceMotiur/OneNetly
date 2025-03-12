@@ -29,11 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoryIds = isset($_POST['categories']) ? $_POST['categories'] : [];
     $featuredImage = '';
     $demoLink = trim($_POST['demo_link'] ?? ''); 
-    $downloadLink = trim($_POST['download_link'] ?? ''); // Add this line
+    $downloadLink = trim($_POST['download_link'] ?? '');
     
     // Validate input
     if (empty($title)) {
-        $errors[] = 'Title is required';
         $errors[] = 'Title is required';
     }
     
@@ -77,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'excerpt' => $excerpt,
             'featured_image' => $featuredImage,
             'demo_link' => $demoLink,
-            'download_link' => $downloadLink, // Add this line
+            'download_link' => $downloadLink,
             'status' => $status,
             'categories' => $categoryIds
         ];

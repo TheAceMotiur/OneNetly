@@ -122,16 +122,19 @@ class Blog {
         
         try {
             $sql = "INSERT INTO blogs 
-                    (user_id, title, slug, content, featured_image, status) 
+                    (user_id, title, slug, content, excerpt, featured_image, demo_link, download_link, status) 
                     VALUES 
-                    (:user_id, :title, :slug, :content, :featured_image, :status)";
+                    (:user_id, :title, :slug, :content, :excerpt, :featured_image, :demo_link, :download_link, :status)";
             
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
             $stmt->bindParam(':title', $data['title'], PDO::PARAM_STR);
             $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
             $stmt->bindParam(':content', $data['content'], PDO::PARAM_STR);
+            $stmt->bindParam(':excerpt', $data['excerpt'], PDO::PARAM_STR);
             $stmt->bindParam(':featured_image', $data['featured_image'], PDO::PARAM_STR);
+            $stmt->bindParam(':demo_link', $data['demo_link'], PDO::PARAM_STR);
+            $stmt->bindParam(':download_link', $data['download_link'], PDO::PARAM_STR);
             $stmt->bindParam(':status', $data['status'], PDO::PARAM_STR);
             
             $stmt->execute();

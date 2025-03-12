@@ -243,21 +243,33 @@ require_once 'includes/header.php';
         <!-- Related Posts -->
         <?php if (!empty($relatedPosts)): ?>
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200">Related Posts</h2>
+            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
+                <i class="fas fa-project-diagram mr-2 text-indigo-500"></i> Related Posts
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 <?php foreach ($relatedPosts as $post): ?>
-                <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="flex items-start hover:bg-gray-50 p-2 rounded transition">
+                <a href="<?php echo htmlspecialchars($post['slug']); ?>" 
+                   class="flex items-start hover:bg-gray-50 p-3 rounded transition group">
                     <?php if (!empty($post['featured_image'])): ?>
-                        <div class="w-16 h-16 rounded overflow-hidden flex-shrink-0 mr-3">
-                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="w-full h-full object-cover">
+                        <div class="w-20 h-20 rounded overflow-hidden flex-shrink-0 mr-3">
+                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" 
+                                 alt="<?php echo htmlspecialchars($post['title']); ?>" 
+                                 class="w-full h-full object-cover transform group-hover:scale-105 transition">
                         </div>
                     <?php endif; ?>
-                    <div>
-                        <h3 class="font-medium text-indigo-700"><?php echo htmlspecialchars($post['title']); ?></h3>
+                    <div class="flex-1">
+                        <h3 class="font-medium text-indigo-700 group-hover:text-indigo-900 line-clamp-2">
+                            <?php echo htmlspecialchars($post['title']); ?>
+                        </h3>
                         <p class="text-xs text-gray-500 mt-1 flex items-center">
                             <i class="far fa-calendar-alt mr-1"></i>
                             <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
                         </p>
+                        <?php if (!empty($post['excerpt'])): ?>
+                            <p class="text-sm text-gray-600 mt-1 line-clamp-2">
+                                <?php echo htmlspecialchars($post['excerpt']); ?>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 </a>
                 <?php endforeach; ?>

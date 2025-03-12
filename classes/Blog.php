@@ -415,37 +415,61 @@ class Blog {
      */
     public function getRelatedPosts($blogId, $limit = 3) {
         try {
-            // First get categories for this post
-            $categories = $this->getCategoriesForPost($blogId);
-            
-            // If no categories, return empty array
-            if (empty($categories)) {
-                return [];
-            }
-            
-            // Extract category IDs
-            $categoryIds = array_column($categories, 'id');
-            
-            // Convert array of IDs to comma separated string
-            $categoryList = implode(',', array_map('intval', $categoryIds));
-            
-            $sql = "SELECT DISTINCT b.*, u.username FROM blogs b
-                    JOIN blog_category bc ON b.id = bc.blog_id
-                    JOIN users u ON b.user_id = u.id
-                    WHERE b.id != :blog_id 
-                    AND b.status = 'published'
-                    AND bc.category_id IN ($categoryList)
-                    ORDER BY b.created_at DESC
-                    LIMIT :limit";
-            
+            // First get the current post's categories and tags
+            $sql = "SELECT GROUP_CONCAT(c.id) as category_ids, b.tags 
+                    FROM blogs b
+                    LEFT JOIN blog_category bc ON b.id = bc.blog_id
+                    LEFT JOIN categories c ON bc.category_id = c.id
+                    WHERE b.id = :blog_id
+                    GROUP BY b.id";
+                    
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            $stmt->execute();
+            $currentPost = $stmt->fetch();
+            
+            // If no categories or tags, fall back to recent posts
+            if (empty($currentPost['category_ids']) && empty($currentPost['tags'])) {
+                $sql = "SELECT b.*, u.username 
+                        FROM blogs b
+                        LEFT JOIN users u ON b.user_id = u.id
+                        WHERE b.id != :blog_id 
+                        AND b.status = 'published'
+                        ORDER BY b.created_at DESC
+                        LIMIT :limit";
+                        
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+                $stmt->execute();
+                return $stmt->fetchAll();
+            }
+
+            // Build query for related posts based on categories and tags
+            $sql = "SELECT b.*, u.username,
+                    COUNT(DISTINCT bc.category_id) as shared_categories,
+                    IF(b.tags = '', 0, 
+                       (LENGTH(b.tags) - LENGTH(REPLACE(LOWER(b.tags), LOWER(:tags), ''))) / LENGTH(:tags)
+                    ) as tag_similarity
+                    FROM blogs b
+                    LEFT JOIN blog_category bc ON b.id = bc.blog_id
+                    LEFT JOIN users u ON b.user_id = u.id
+                    WHERE b.id != :blog_id 
+                    AND b.status = 'published'
+                    AND (bc.category_id IN (" . $currentPost['category_ids'] . ") OR b.tags LIKE :tag_pattern)
+                    GROUP BY b.id
+                    ORDER BY shared_categories DESC, tag_similarity DESC, b.created_at DESC
+                    LIMIT :limit";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            $stmt->bindParam(':tags', $currentPost['tags'], PDO::PARAM_STR);
+            $stmt->bindParam(':tag_pattern', '%' . str_replace(',', '%', $currentPost['tags']) . '%', PDO::PARAM_STR);
             $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
             
             return $stmt->fetchAll();
         } catch (PDOException $e) {
-            // Return empty array on error
             return [];
         }
     }

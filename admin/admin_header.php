@@ -27,9 +27,19 @@ function getActiveClass($page) {
     <?php echo getThemeScript(); ?>
 </head>
 <body class="<?php echo getBodyThemeClass(); ?>">
-    <div class="min-h-screen flex">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Mobile Header -->
+        <div class="md:hidden bg-blue-950 text-white p-4 flex justify-between items-center">
+            <h2 class="text-xl font-semibold">OneNetly Admin</h2>
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
         <!-- Admin Sidebar -->
-        <div class="w-64 bg-blue-900 text-white">
+        <div id="admin-sidebar" class="w-full md:w-64 bg-blue-900 text-white hidden md:block">
             <div class="p-4 bg-blue-950">
                 <h2 class="text-2xl font-semibold">OneNetly Admin</h2>
             </div>
@@ -119,10 +129,10 @@ function getActiveClass($page) {
         <div class="flex-1">
             <!-- Header -->
             <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <h1 class="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
-                    <div class="flex items-center">
-                        <span class="text-sm text-gray-500 mr-4">
+                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center">
+                    <h1 class="text-xl md:text-2xl font-semibold text-gray-900"><?php echo isset($pageTitle) ? $pageTitle : 'Admin Dashboard'; ?></h1>
+                    <div class="flex items-center mt-2 md:mt-0">
+                        <span class="text-sm text-gray-500">
                             Admin: <?php echo htmlspecialchars($user->getCurrentUser()['username']); ?>
                         </span>
                     </div>
@@ -132,3 +142,22 @@ function getActiveClass($page) {
             <!-- Main content -->
             <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <?php echo displayMessage(); ?>
+
+<script>
+document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+    const sidebar = document.getElementById('admin-sidebar');
+    sidebar.classList.toggle('hidden');
+});
+
+// Hide sidebar when clicking outside on mobile
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('admin-sidebar');
+    const mobileButton = document.getElementById('mobile-menu-button');
+    
+    if (window.innerWidth < 768 && !sidebar.contains(e.target) && !mobileButton.contains(e.target)) {
+        sidebar.classList.add('hidden');
+    }
+});
+</script>
+</body>
+</html>

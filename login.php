@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/init.php';
+require_once 'includes/ads.php';  // Add this line to include the ads functions
 
 // If user is already logged in, redirect to dashboard
 if ($user->isLoggedIn()) {

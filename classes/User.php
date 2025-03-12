@@ -251,6 +251,75 @@ class User
     }
     
     /**
+     * Delete a user by ID
+     * 
+     * @param int $userId The ID of the user to delete
+     * @return bool True if deletion was successful
+     */
+    public function deleteUser($userId)
+    {
+        // Don't allow deleting the current user
+        if ($this->isLoggedIn() && $_SESSION['user_id'] == $userId) {
+            return false;
+        }
+        
+        try {
+            $this->pdo->beginTransaction();
+            
+            // First, delete related data that would cause foreign key constraints
+            
+            // Delete user's blog posts (and their associated categories, comments, etc.)
+            $blogStmt = $this->pdo->prepare("SELECT id FROM blogs WHERE user_id = ?");
+            $blogStmt->execute([$userId]);
+            $blogs = $blogStmt->fetchAll();
+            
+            foreach ($blogs as $blog) {
+                // Delete blog categories
+                $stmt = $this->pdo->prepare("DELETE FROM blog_category WHERE blog_id = ?");
+                $stmt->execute([$blog['id']]);
+                
+                // Delete blog comments if the table exists
+                try {
+                    $stmt = $this->pdo->prepare("DELETE FROM comments WHERE post_id = ?");
+                    $stmt->execute([$blog['id']]);
+                } catch (PDOException $e) {
+                    // Comments table might not exist, so ignore this error
+                }
+                
+                // Delete blog post
+                $stmt = $this->pdo->prepare("DELETE FROM blogs WHERE id = ?");
+                $stmt->execute([$blog['id']]);
+            }
+            
+            // Delete user's comments if the table exists
+            try {
+                $stmt = $this->pdo->prepare("DELETE FROM comments WHERE user_id = ?");
+                $stmt->execute([$userId]);
+            } catch (PDOException $e) {
+                // Comments table might not exist, so ignore this error
+            }
+            
+            // Delete user's password reset tokens if any
+            $stmt = $this->pdo->prepare("DELETE FROM password_resets WHERE user_id = ?");
+            $stmt->execute([$userId]);
+            
+            // Delete user's settings
+            $stmt = $this->pdo->prepare("DELETE FROM settings WHERE user_id = ?");
+            $stmt->execute([$userId]);
+            
+            // Finally, delete the user
+            $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
+            $result = $stmt->execute([$userId]);
+            
+            $this->pdo->commit();
+            return $result;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            return false;
+        }
+    }
+
+    /**
      * Get user by ID
      * 
      * @param int $userId User ID

@@ -20,6 +20,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: users.php');
         exit;
     }
+    
+    // Handle user deletion
+    if (isset($_POST['delete_user'])) {
+        $userId = (int)$_POST['user_id'];
+        
+        if ($user->deleteUser($userId)) {
+            $_SESSION['message'] = 'User deleted successfully';
+            $_SESSION['message_type'] = 'success';
+        } else {
+            $_SESSION['message'] = 'Failed to delete user';
+            $_SESSION['message_type'] = 'error';
+        }
+        
+        // Redirect to prevent form resubmission
+        header('Location: users.php');
+        exit;
+    }
 }
 
 // Get all users
@@ -70,6 +87,12 @@ $currentUserId = $user->getCurrentUser()['id'];
                                     <?php echo $userItem['is_admin'] ? 'Remove Admin' : 'Make Admin'; ?>
                                 </button>
                             </form>
+                            <form method="POST" class="inline ml-2" onsubmit="return confirmDelete('<?php echo htmlspecialchars(addslashes($userItem['username'])); ?>')">
+                                <input type="hidden" name="user_id" value="<?php echo $userItem['id']; ?>">
+                                <button type="submit" name="delete_user" class="text-red-600 hover:text-red-900">
+                                    Delete
+                                </button>
+                            </form>
                         <?php else: ?>
                             <span class="text-gray-400">Current User</span>
                         <?php endif; ?>
@@ -80,6 +103,13 @@ $currentUserId = $user->getCurrentUser()['id'];
         </table>
     </div>
 </div>
+
+<!-- JavaScript for confirmation alert -->
+<script>
+    function confirmDelete(username) {
+        return confirm('Are you sure you want to delete the user "' + username + '"? This action cannot be undone.');
+    }
+</script>
 
 <?php
 require_once 'admin_footer.php';

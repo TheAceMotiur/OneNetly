@@ -185,8 +185,8 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- Second Sidebar Ad -->
-        <?php displaySidebarAd(); ?>
+        <!-- Second Sidebar Ad - Removing this ad -->
+        <?php // displaySidebarAd(); ?>
 
         <!-- Categories Widget -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">

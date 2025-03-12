@@ -245,8 +245,8 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- Second Sidebar Ad -->
-        <?php displaySidebarAd(); ?>
+        <!-- Second Sidebar Ad - Removing this ad -->
+        <?php // displaySidebarAd(); ?>
     </div>
 </div>
 

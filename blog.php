@@ -415,8 +415,8 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- Second Sidebar Ad Unit -->
-        <?php displaySidebarAd(); ?>
+        <!-- Second Sidebar Ad Unit - Removing this ad -->
+        <?php // displaySidebarAd(); ?>
     </div>
 </div>
 

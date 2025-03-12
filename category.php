@@ -250,8 +250,6 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- Second Sidebar Ad -->
-        <?php displaySidebarAd(); ?>
     </div>
 </div>
 

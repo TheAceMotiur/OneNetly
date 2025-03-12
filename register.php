@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/init.php';
+require_once 'includes/ads.php';  // Add this line
 
 // If user is already logged in, redirect to dashboard
 if ($user->isLoggedIn()) {
@@ -10,21 +11,32 @@ if ($user->isLoggedIn()) {
 $currentUser = $user->getCurrentUser();
 
 // Get reCAPTCHA site key from settings
-$stmt = $pdo->query("SELECT value FROM site_config WHERE name = 'recaptcha_site_key'");
-$recaptchaSiteKey = $stmt->fetchColumn();
+try {
+    $stmt = $pdo->query("SELECT recaptcha_site_key FROM site_config LIMIT 1");
+    $recaptchaSiteKey = $stmt->fetchColumn();
+} catch (PDOException $e) {
+    $recaptchaSiteKey = ''; // Fallback when table doesn't exist
+}
 
 // Process registration form
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verify reCAPTCHA
-    $recaptchaSecret = $pdo->query("SELECT value FROM site_config WHERE name = 'recaptcha_secret_key'")->fetchColumn();
-    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-    
-    $recaptchaVerify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaSecret}&response={$recaptchaResponse}");
-    $recaptchaData = json_decode($recaptchaVerify);
-    
-    if (!$recaptchaData->success) {
-        $errors[] = 'Please complete the reCAPTCHA verification';
+    // Verify reCAPTCHA if key exists
+    if (!empty($recaptchaSiteKey)) {
+        try {
+            $stmt = $pdo->query("SELECT recaptcha_secret_key FROM site_config LIMIT 1");
+            $recaptchaSecret = $stmt->fetchColumn();
+            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+            
+            $recaptchaVerify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaSecret}&response={$recaptchaResponse}");
+            $recaptchaData = json_decode($recaptchaVerify);
+            
+            if (!$recaptchaData->success) {
+                $errors[] = 'Please complete the reCAPTCHA verification';
+            }
+        } catch (PDOException $e) {
+            // Skip reCAPTCHA verification if config doesn't exist
+        }
     }
     
     $username = $_POST['username'] ?? '';
@@ -121,10 +133,11 @@ require_once 'includes/header.php';
                 </button>
             </div>
         </form>
-        
-        <div class="mt-6 text-center">
-            <p class="text-gray-600">Already have an account? <a href="login.php" class="text-indigo-600 hover:text-indigo-800">Login here</a></p>
-        </div>
+        <?php displayHorizontalAd(); ?>
+    </div>
+    
+    <div class="mt-6 text-center">
+        <p class="text-gray-600">Already have an account? <a href="login.php" class="text-indigo-600 hover:text-indigo-800">Login here</a></p>
     </div>
 </div>
 

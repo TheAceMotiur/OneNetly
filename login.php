@@ -78,6 +78,7 @@ require_once 'includes/header.php';
         <div class="mt-6 text-center">
             <p class="text-gray-600">Don't have an account? <a href="register.php" class="text-indigo-600 hover:text-indigo-800">Register here</a></p>
         </div>
+        <?php displayHorizontalAd(); ?>
     </div>
 </div>
 

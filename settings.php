@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/init.php';
+require_once 'includes/ads.php';
 
 // If user is not logged in, redirect to login page
 if (!$user->isLoggedIn()) {
@@ -246,6 +247,7 @@ $theme = $userSettings->get('theme', 'light');
                             </div>
                         </form>
                     </div>
+                    <?php displayHorizontalAd(); ?>
                 </div>
             </main>
         </div>

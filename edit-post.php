@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/init.php';
+require_once 'includes/ads.php';
 
 // If user is not logged in, redirect to login page
 if (!$user->isLoggedIn()) {
@@ -297,7 +298,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </form>
                 </div>
-            </main>
+                <?php displayHorizontalAd(); ?>
+            </div>
         </div>
     </div>
 </body>

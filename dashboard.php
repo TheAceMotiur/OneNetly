@@ -363,13 +363,7 @@ if ($isAdmin) {
                                         </div>
                                         <div class="mt-3">
                                             <p class="text-gray-600">
-                                                <?php 
-                                                if (!empty($post['excerpt'])) {
-                                                    echo htmlspecialchars($post['excerpt']);
-                                                } else {
-                                                    echo substr(strip_tags($post['content']), 0, 150) . '...';
-                                                }
-                                                ?>
+                                                <?php echo substr(strip_tags($post['content']), 0, 150) . '...'; ?>
                                             </p>
                                         </div>
                                         <div class="mt-3 flex">

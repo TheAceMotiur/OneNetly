@@ -265,11 +265,9 @@ require_once 'includes/header.php';
                             <i class="far fa-calendar-alt mr-1"></i>
                             <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
                         </p>
-                        <?php if (!empty($post['excerpt'])): ?>
-                            <p class="text-sm text-gray-600 mt-1 line-clamp-2">
-                                <?php echo htmlspecialchars($post['excerpt']); ?>
-                            </p>
-                        <?php endif; ?>
+                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">
+                            <?php echo substr(strip_tags($post['content']), 0, 100) . '...'; ?>
+                        </p>
                     </div>
                 </a>
                 <?php endforeach; ?>
@@ -382,6 +380,9 @@ require_once 'includes/header.php';
                                         <p class="text-xs text-gray-500 mt-1 flex items-center">
                                             <i class="far fa-calendar-alt mr-1"></i>
                                             <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
+                                        </p>
+                                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">
+                                            <?php echo substr(strip_tags($post['content']), 0, 100) . '...'; ?>
                                         </p>
                                     </div>
                                 </div>

@@ -199,10 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <div class="mb-4">
-                            <label for="excerpt" class="block text-gray-700 text-sm font-bold mb-2">Excerpt (optional)</label>
-                            <textarea id="excerpt" name="excerpt" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3"><?php echo htmlspecialchars($_POST['excerpt'] ?? ''); ?></textarea>
-                            <p class="text-sm text-gray-500 mt-1">A short summary of your blog post. If left empty, an excerpt will be generated from your content.</p>
-                        </div>
+                            <!-- Excerpt field removed -->
                         
                         <div class="mb-4">
                             <label for="content" class="block text-gray-700 text-sm font-bold mb-2">Content</label>

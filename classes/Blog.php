@@ -122,16 +122,15 @@ class Blog {
         
         try {
             $sql = "INSERT INTO blogs 
-                    (user_id, title, slug, content, excerpt, featured_image, status) 
+                    (user_id, title, slug, content, featured_image, status) 
                     VALUES 
-                    (:user_id, :title, :slug, :content, :excerpt, :featured_image, :status)";
+                    (:user_id, :title, :slug, :content, :featured_image, :status)";
             
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
             $stmt->bindParam(':title', $data['title'], PDO::PARAM_STR);
             $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
             $stmt->bindParam(':content', $data['content'], PDO::PARAM_STR);
-            $stmt->bindParam(':excerpt', $data['excerpt'], PDO::PARAM_STR);
             $stmt->bindParam(':featured_image', $data['featured_image'], PDO::PARAM_STR);
             $stmt->bindParam(':status', $data['status'], PDO::PARAM_STR);
             
@@ -703,5 +702,63 @@ class Blog {
                 ]
             ];
         }
+    }
+
+    // Update any createPost or updatePost methods to remove excerpt
+    public function createPost($userId, $title, $content, $slug, $status, $featuredImage = null, $demoLink = null, $downloadLink = null, $tags = null, $metaDescription = null, $metaKeywords = null)
+    {
+        $sql = "INSERT INTO blogs (user_id, title, content, slug, status, featured_image, demo_link, download_link, tags, meta_description, meta_keywords, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("issssssssss", 
+            $userId, 
+            $title, 
+            $content, 
+            $slug, 
+            $status, 
+            $featuredImage, 
+            $demoLink, 
+            $downloadLink, 
+            $tags, 
+            $metaDescription, 
+            $metaKeywords
+        );
+        
+        return $stmt->execute();
+    }
+    
+    public function updatePost($blogId, $title, $content, $slug, $status, $featuredImage = null, $demoLink = null, $downloadLink = null, $tags = null, $metaDescription = null, $metaKeywords = null)
+    {
+        $sql = "UPDATE blogs SET 
+                title = ?, 
+                content = ?, 
+                slug = ?, 
+                status = ?, 
+                featured_image = ?, 
+                demo_link = ?, 
+                download_link = ?, 
+                tags = ?, 
+                meta_description = ?, 
+                meta_keywords = ?, 
+                updated_at = NOW() 
+                WHERE id = ?";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("ssssssssssi", 
+            $title, 
+            $content, 
+            $slug, 
+            $status, 
+            $featuredImage, 
+            $demoLink, 
+            $downloadLink, 
+            $tags, 
+            $metaDescription, 
+            $metaKeywords, 
+            $blogId
+        );
+        
+        return $stmt->execute();
     }
 }

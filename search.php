@@ -131,13 +131,7 @@ require_once 'includes/header.php';
                                 </div>
                                 
                                 <div class="mb-4 flex-1">
-                                    <?php 
-                                    if (!empty($blogPost['excerpt'])) {
-                                        echo htmlspecialchars($blogPost['excerpt']);
-                                    } else {
-                                        echo substr(strip_tags($blogPost['content']), 0, 100) . '...';
-                                    }
-                                    ?>
+                                    <?php echo substr(strip_tags($blogPost['content']), 0, 100) . '...'; ?>
                                 </div>
                                 
                             </div>

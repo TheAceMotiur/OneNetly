@@ -2,9 +2,23 @@
 
 class Category {
     private $pdo;
+    private $displayOrderExists = false;
     
     public function __construct($pdo) {
         $this->pdo = $pdo;
+        $this->checkDisplayOrderExists();
+    }
+    
+    /**
+     * Check if display_order column exists in the categories table
+     */
+    private function checkDisplayOrderExists() {
+        try {
+            $stmt = $this->pdo->query("SHOW COLUMNS FROM categories LIKE 'display_order'");
+            $this->displayOrderExists = $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->displayOrderExists = false;
+        }
     }
     
     /**
@@ -15,12 +29,25 @@ class Category {
      */
     public function getAllCategories($includeParentInfo = false) {
         if ($includeParentInfo) {
-            $sql = "SELECT c.*, p.name as parent_name, p.slug as parent_slug 
-                    FROM categories c 
-                    LEFT JOIN categories p ON c.parent_id = p.id 
-                    ORDER BY COALESCE(c.parent_id, c.id), c.name ASC";
+            // Use display_order in sorting only if the column exists
+            if ($this->displayOrderExists) {
+                $sql = "SELECT c.*, p.name as parent_name, p.slug as parent_slug 
+                        FROM categories c 
+                        LEFT JOIN categories p ON c.parent_id = p.id 
+                        ORDER BY c.parent_id ASC, c.display_order ASC, c.name ASC";
+            } else {
+                $sql = "SELECT c.*, p.name as parent_name, p.slug as parent_slug 
+                        FROM categories c 
+                        LEFT JOIN categories p ON c.parent_id = p.id 
+                        ORDER BY c.parent_id ASC, c.name ASC";
+            }
         } else {
-            $sql = "SELECT * FROM categories ORDER BY name ASC";
+            // Use display_order in sorting only if the column exists
+            if ($this->displayOrderExists) {
+                $sql = "SELECT * FROM categories ORDER BY parent_id ASC, display_order ASC, name ASC";
+            } else {
+                $sql = "SELECT * FROM categories ORDER BY parent_id ASC, name ASC";
+            }
         }
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
@@ -32,7 +59,12 @@ class Category {
      * @return array Parent categories
      */
     public function getParentCategories() {
-        $sql = "SELECT * FROM categories WHERE parent_id IS NULL ORDER BY name ASC";
+        // Use display_order in sorting if the column exists
+        if ($this->displayOrderExists) {
+            $sql = "SELECT * FROM categories WHERE parent_id IS NULL ORDER BY display_order ASC, name ASC";
+        } else {
+            $sql = "SELECT * FROM categories WHERE parent_id IS NULL ORDER BY name ASC";
+        }
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
@@ -44,7 +76,12 @@ class Category {
      * @return array Subcategories
      */
     public function getSubcategories($parentId) {
-        $sql = "SELECT * FROM categories WHERE parent_id = :parent_id ORDER BY name ASC";
+        // Use display_order in sorting if the column exists
+        if ($this->displayOrderExists) {
+            $sql = "SELECT * FROM categories WHERE parent_id = :parent_id ORDER BY display_order ASC, name ASC";
+        } else {
+            $sql = "SELECT * FROM categories WHERE parent_id = :parent_id ORDER BY name ASC";
+        }
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':parent_id', $parentId, PDO::PARAM_INT);
         $stmt->execute();
@@ -95,7 +132,20 @@ class Category {
         $slug = $this->createSlug($data['name']);
         
         try {
-            $sql = "INSERT INTO categories (name, slug, description, parent_id) VALUES (:name, :slug, :description, :parent_id)";
+            // Only get display_order if the column exists
+            $newOrder = 1;
+            if ($this->displayOrderExists) {
+                $stmt = $this->pdo->query("SELECT MAX(display_order) as max_order FROM categories");
+                $orderData = $stmt->fetch();
+                $newOrder = ($orderData && $orderData['max_order']) ? $orderData['max_order'] + 1 : 1;
+                
+                // Insert new category with display order
+                $sql = "INSERT INTO categories (name, slug, description, parent_id, display_order) VALUES (:name, :slug, :description, :parent_id, :display_order)";
+            } else {
+                // Insert new category without display order
+                $sql = "INSERT INTO categories (name, slug, description, parent_id) VALUES (:name, :slug, :description, :parent_id)";
+            }
+            
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
             $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
@@ -107,6 +157,11 @@ class Category {
             // Handle parent_id - if empty or 0, set to NULL
             $parentId = !empty($data['parent_id']) ? $data['parent_id'] : null;
             $stmt->bindParam(':parent_id', $parentId, PDO::PARAM_INT);
+            
+            // Bind display order only if the column exists
+            if ($this->displayOrderExists) {
+                $stmt->bindParam(':display_order', $newOrder, PDO::PARAM_INT);
+            }
             
             $stmt->execute();
             
@@ -360,5 +415,109 @@ class Category {
                 'has_prev_pages' => $hasPrevPage
             ]
         ];
+    }
+    
+    /**
+     * Update category display order
+     * 
+     * @param int $categoryId The ID of the category to update
+     * @param string $direction Either 'up' or 'down'
+     * @return array Result of the operation
+     */
+    public function updateCategoryOrder($categoryId, $direction) {
+        // Check if display_order column exists
+        if (!$this->displayOrderExists) {
+            return [
+                'success' => false,
+                'message' => 'Display order functionality is not available yet. Please run the migration first.'
+            ];
+        }
+        
+        try {
+            // Get current category
+            $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = :id");
+            $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
+            $stmt->execute();
+            $category = $stmt->fetch();
+            
+            if (!$category) {
+                return ['success' => false, 'message' => 'Category not found'];
+            }
+            
+            // Get current display order (or use ID if not set)
+            $currentOrder = isset($category['display_order']) ? $category['display_order'] : $category['id'];
+            $parentId = $category['parent_id'];
+            
+            if ($direction === 'up') {
+                // Find category with next lower order in the same parent
+                if ($parentId === null) {
+                    $stmt = $this->pdo->prepare(
+                        "SELECT * FROM categories WHERE parent_id IS NULL AND display_order < :current_order 
+                        ORDER BY display_order DESC LIMIT 1"
+                    );
+                    $stmt->bindParam(':current_order', $currentOrder, PDO::PARAM_INT);
+                } else {
+                    $stmt = $this->pdo->prepare(
+                        "SELECT * FROM categories WHERE parent_id = :parent_id AND display_order < :current_order 
+                        ORDER BY display_order DESC LIMIT 1"
+                    );
+                    $stmt->bindParam(':parent_id', $parentId, PDO::PARAM_INT);
+                    $stmt->bindParam(':current_order', $currentOrder, PDO::PARAM_INT);
+                }
+            } else {
+                // Find category with next higher order in the same parent
+                if ($parentId === null) {
+                    $stmt = $this->pdo->prepare(
+                        "SELECT * FROM categories WHERE parent_id IS NULL AND display_order > :current_order 
+                        ORDER BY display_order ASC LIMIT 1"
+                    );
+                    $stmt->bindParam(':current_order', $currentOrder, PDO::PARAM_INT);
+                } else {
+                    $stmt = $this->pdo->prepare(
+                        "SELECT * FROM categories WHERE parent_id = :parent_id AND display_order > :current_order 
+                        ORDER BY display_order ASC LIMIT 1"
+                    );
+                    $stmt->bindParam(':parent_id', $parentId, PDO::PARAM_INT);
+                    $stmt->bindParam(':current_order', $currentOrder, PDO::PARAM_INT);
+                }
+            }
+            
+            $stmt->execute();
+            $swapCategory = $stmt->fetch();
+            
+            if (!$swapCategory) {
+                // No category found in that direction
+                return ['success' => false, 'message' => 'No categories found to swap positions with'];
+            }
+            
+            // Get swap category order
+            $swapOrder = isset($swapCategory['display_order']) ? $swapCategory['display_order'] : $swapCategory['id'];
+            
+            // Start transaction
+            $this->pdo->beginTransaction();
+            
+            // Update current category order
+            $stmt = $this->pdo->prepare("UPDATE categories SET display_order = :order WHERE id = :id");
+            $stmt->bindParam(':order', $swapOrder, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Update swap category order
+            $stmt = $this->pdo->prepare("UPDATE categories SET display_order = :order WHERE id = :id");
+            $stmt->bindParam(':order', $currentOrder, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $swapCategory['id'], PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Commit transaction
+            $this->pdo->commit();
+            
+            return ['success' => true];
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 }

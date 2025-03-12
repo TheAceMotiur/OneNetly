@@ -396,4 +396,75 @@ class Comment {
         
         return $content;
     }
+
+    /**
+     * Get comments for a blog post
+     * 
+     * @param int $blogId Blog ID
+     * @return array Comments for the blog
+     */
+    public function getComments($blogId)
+    {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT c.*, u.username as name, u.email, u.is_admin 
+                FROM comments c 
+                JOIN users u ON c.user_id = u.id 
+                WHERE c.blog_id = :blog_id AND c.status = 'approved' 
+                ORDER BY c.created_at ASC"
+            );
+            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get all approved comments
+     * 
+     * @return array List of approved comments
+     */
+    public function getApprovedComments() {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT c.*, u.username as name, u.email, b.title as post_title, b.slug as post_slug 
+                FROM comments c
+                JOIN users u ON c.user_id = u.id
+                JOIN blogs b ON c.blog_id = b.id
+                WHERE c.status = 'approved'
+                ORDER BY c.blog_id, c.created_at ASC"
+            );
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Approve a comment
+     * 
+     * @param int $commentId Comment ID to approve
+     * @return array Result of operation
+     */
+    public function approveComment($commentId) 
+    {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE comments SET status = 'approved' WHERE id = :id");
+            $stmt->bindParam(':id', $commentId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return [
+                'success' => true,
+                'message' => 'Comment approved successfully'
+            ];
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
 }

@@ -1,6 +1,10 @@
 <?php
 require_once 'admin_header.php';
 
+// Check if display_order column exists
+$stmt = $pdo->query("SHOW COLUMNS FROM categories LIKE 'display_order'");
+$displayOrderExists = $stmt->rowCount() > 0;
+
 // Process category actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['delete_category'])) {
@@ -36,11 +40,22 @@ $categories = $category->getAllCategories(true);
     <h1 class="text-2xl font-semibold">Categories</h1>
     
     <div>
+        <?php if (!$displayOrderExists): ?>
+        <a href="../migrations/add_display_order_to_categories.php" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">
+            Run Category Order Migration
+        </a>
+        <?php endif; ?>
         <a href="create-category.php" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             New Category
         </a>
     </div>
 </div>
+
+<?php if (!$displayOrderExists): ?>
+<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+    <p>Category ordering functionality is not available yet. Please run the migration to add display_order column to categories table.</p>
+</div>
+<?php endif; ?>
 
 <div class="bg-white rounded-lg shadow mb-6">
     <div class="p-4 border-b border-gray-200">
@@ -56,6 +71,7 @@ $categories = $category->getAllCategories(true);
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -63,7 +79,7 @@ $categories = $category->getAllCategories(true);
             <tbody class="bg-white divide-y divide-gray-200">
                 <?php if (empty($categories)): ?>
                 <tr>
-                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
                         No categories found.
                     </td>
                 </tr>
@@ -92,6 +108,29 @@ $categories = $category->getAllCategories(true);
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
                         <?php echo !empty($cat['description']) ? htmlspecialchars($cat['description']) : '-'; ?>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div class="flex space-x-1">
+                            <form method="POST" action="update-category-order.php" class="inline-block">
+                                <input type="hidden" name="category_id" value="<?php echo $cat['id']; ?>">
+                                <input type="hidden" name="direction" value="up">
+                                <button type="submit" class="text-blue-600 hover:text-blue-900 px-1" title="Move Up">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                            <form method="POST" action="update-category-order.php" class="inline-block">
+                                <input type="hidden" name="category_id" value="<?php echo $cat['id']; ?>">
+                                <input type="hidden" name="direction" value="down">
+                                <button type="submit" class="text-blue-600 hover:text-blue-900 px-1" title="Move Down">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                            <?php echo isset($cat['display_order']) ? $cat['display_order'] : $cat['id']; ?>
+                        </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('M j, Y', strtotime($cat['created_at'])); ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

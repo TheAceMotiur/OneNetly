@@ -43,6 +43,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $settings->set('email_from_address', $emailFromAddress);
             $settings->set('email_from_name', $emailFromName);
             
+            try {
+                // Check if smtp_encryption column exists in site_config
+                $checkStmt = $pdo->prepare("
+                    SELECT COUNT(*) FROM information_schema.columns 
+                    WHERE table_schema = DATABASE() 
+                    AND table_name = 'site_config' 
+                    AND column_name = 'smtp_encryption'
+                ");
+                $checkStmt->execute();
+                $columnExists = (bool)$checkStmt->fetchColumn();
+                
+                // If column exists, update it directly in site_config
+                if ($columnExists) {
+                    $stmt = $pdo->prepare("UPDATE site_config SET smtp_encryption = ? WHERE id = (SELECT id FROM (SELECT id FROM site_config LIMIT 1) as temp)");
+                    $stmt->execute([$smtpSecure]);
+                }
+                
+                // Also update in settings for backward compatibility
+                $settings->set('smtp_secure', $smtpSecure);
+                
+                // ...rest of existing update code...
+            } catch (PDOException $e) {
+                // Handle error
+                $error = 'Database error: ' . $e->getMessage();
+            }
+            
             // Test email configuration if requested
             if (isset($_POST['test_email']) && !empty($_POST['test_email_address'])) {
                 $testEmailTo = trim($_POST['test_email_address']);
@@ -133,7 +159,23 @@ $siteDescription = $settings->get('site_description', 'Web Management System');
 // Get email settings
 $smtpHost = $settings->get('smtp_host', '');
 $smtpPort = $settings->get('smtp_port', 587);
-$smtpSecure = $settings->get('smtp_secure', 'tls');
+$smtpSecure = ''; // Default value if not set
+
+// Try to get smtp_encryption from site_config first
+try {
+    $stmt = $pdo->query("SELECT smtp_encryption FROM site_config LIMIT 1");
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($result && isset($result['smtp_encryption'])) {
+        $smtpSecure = $result['smtp_encryption'];
+    } else {
+        // Fallback to settings table
+        $smtpSecure = $settings->get('smtp_secure', 'tls');
+    }
+} catch (PDOException $e) {
+    // Column likely doesn't exist yet, so use the fallback
+    $smtpSecure = $settings->get('smtp_secure', 'tls');
+}
+
 $smtpUsername = $settings->get('smtp_username', '');
 $smtpPassword = $settings->get('smtp_password', '');
 $emailFromAddress = $settings->get('email_from_address', '');

@@ -58,6 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($columnExists) {
                     $stmt = $pdo->prepare("UPDATE site_config SET smtp_encryption = ? WHERE id = (SELECT id FROM (SELECT id FROM site_config LIMIT 1) as temp)");
                     $stmt->execute([$smtpSecure]);
+                } else {
+                    // If the column doesn't exist yet, try to create it
+                    try {
+                        $pdo->exec("ALTER TABLE site_config ADD COLUMN smtp_encryption VARCHAR(10) DEFAULT 'tls'");
+                        $stmt = $pdo->prepare("UPDATE site_config SET smtp_encryption = ? WHERE id = (SELECT id FROM (SELECT id FROM site_config LIMIT 1) as temp)");
+                        $stmt->execute([$smtpSecure]);
+                    } catch (PDOException $e) {
+                        // If we can't create the column, just use the settings table
+                        $settings->set('smtp_secure', $smtpSecure);
+                    }
                 }
                 
                 // Also update in settings for backward compatibility

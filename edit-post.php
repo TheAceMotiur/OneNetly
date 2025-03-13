@@ -40,8 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = trim($_POST['content'] ?? '');
     $status = $_POST['status'] ?? 'draft';
     $categoryIds = isset($_POST['categories']) ? $_POST['categories'] : [];
-    $demoLink = trim($_POST['demo_link'] ?? '');
-    $downloadLink = trim($_POST['download_link'] ?? ''); // Add this line
     
     // Validate input
     if (empty($title)) {
@@ -57,9 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'title' => $title,
         'content' => $content,
         'status' => $status,
-        'categories' => $categoryIds,
-        'demo_link' => $demoLink,
-        'download_link' => $downloadLink // Add this line
+        'categories' => $categoryIds
     ];
     
     // Handle file upload if present
@@ -217,18 +213,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <div class="mb-4">
-                            <label for="demo_link" class="block text-gray-700 text-sm font-bold mb-2">Demo Link (optional)</label>
-                            <input type="url" id="demo_link" name="demo_link" value="<?php echo htmlspecialchars($_POST['demo_link'] ?? $blogPost['demo_link'] ?? ''); ?>" placeholder="https://example.com" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <p class="text-sm text-gray-500 mt-1">URL to a live demo of the project, if applicable.</p>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="download_link" class="block text-gray-700 text-sm font-bold mb-2">Download Link (optional)</label>
-                            <input type="url" id="download_link" name="download_link" value="<?php echo htmlspecialchars($_POST['download_link'] ?? $blogPost['download_link'] ?? ''); ?>" placeholder="https://example.com/download" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <p class="text-sm text-gray-500 mt-1">URL to a downloadable file or resource. This will appear as a "Download Now" button.</p>
-                        </div>
-                        
-                        <div class="mb-4">
                             <label for="featured_image" class="block text-gray-700 text-sm font-bold mb-2">Featured Image</label>
                             <?php if (!empty($blogPost['featured_image'])): ?>
                                 <div class="mb-2">
@@ -263,7 +247,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
+                            <p class="text-sm text-gray-500 mt-1">Select one or more categories for your blog post.</p>
                         </div>
+                        
+                        <!-- Remove demo_link and download_link form fields -->
                         
                         <div class="mb-6">
                             <label class="block text-gray-700 text-sm font-bold mb-2">Status</label>

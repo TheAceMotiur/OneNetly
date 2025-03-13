@@ -177,16 +177,6 @@ require_once 'includes/header.php';
                     <?php endif; ?>
                 </div>
                 
-                <?php if (!empty($blogPost['demo_link'])): ?>
-                <div class="mb-6 flex justify-center">
-                    <a href="<?php echo htmlspecialchars($blogPost['demo_link']); ?>" 
-                       target="_blank" rel="noopener noreferrer" 
-                       class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition">
-                        <i class="fas fa-external-link-alt mr-2"></i> View Demo
-                    </a>
-                </div>
-                <?php endif; ?>
-                
                 <div class="prose max-w-none">
                     <?php 
                     // Split content to insert ad in the middle
@@ -202,20 +192,6 @@ require_once 'includes/header.php';
                     }
                     ?>
                 </div>
-                
-                <?php if (!empty($blogPost['download_link'])): ?>
-                <!-- Download Button -->
-                <div class="mt-8 border-t pt-6 flex justify-center">
-                    <a href="<?php echo htmlspecialchars($blogPost['download_link']); ?>" 
-                       class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-bold"
-                       target="_blank">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        Download Now
-                    </a>
-                </div>
-                <?php endif; ?>
                 
                 <?php if (!empty($blogPost['tags'])): ?>
                 <div class="mt-6 pt-4 border-t border-gray-100">

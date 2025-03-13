@@ -122,9 +122,9 @@ class Blog {
         
         try {
             $sql = "INSERT INTO blogs 
-                    (user_id, title, slug, content, featured_image, demo_link, download_link, status) 
+                    (user_id, title, slug, content, featured_image, status) 
                     VALUES 
-                    (:user_id, :title, :slug, :content, :featured_image, :demo_link, :download_link, :status)";
+                    (:user_id, :title, :slug, :content, :featured_image, :status)";
             
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
@@ -132,8 +132,6 @@ class Blog {
             $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
             $stmt->bindParam(':content', $data['content'], PDO::PARAM_STR);
             $stmt->bindParam(':featured_image', $data['featured_image'], PDO::PARAM_STR);
-            $stmt->bindParam(':demo_link', $data['demo_link'], PDO::PARAM_STR);
-            $stmt->bindParam(':download_link', $data['download_link'], PDO::PARAM_STR);
             $stmt->bindParam(':status', $data['status'], PDO::PARAM_STR);
             
             $stmt->execute();
@@ -707,21 +705,19 @@ class Blog {
     }
 
     // Update any createPost or updatePost methods to remove excerpt
-    public function createPost($userId, $title, $content, $slug, $status, $featuredImage = null, $demoLink = null, $downloadLink = null, $tags = null, $metaDescription = null, $metaKeywords = null)
+    public function createPost($userId, $title, $content, $slug, $status, $featuredImage = null, $tags = null, $metaDescription = null, $metaKeywords = null)
     {
-        $sql = "INSERT INTO blogs (user_id, title, content, slug, status, featured_image, demo_link, download_link, tags, meta_description, meta_keywords, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        $sql = "INSERT INTO blogs (user_id, title, content, slug, status, featured_image, tags, meta_description, meta_keywords, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
         
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("issssssssss", 
+        $stmt->bind_param("issssssss", 
             $userId, 
             $title, 
             $content, 
             $slug, 
             $status, 
             $featuredImage, 
-            $demoLink, 
-            $downloadLink, 
             $tags, 
             $metaDescription, 
             $metaKeywords
@@ -730,7 +726,7 @@ class Blog {
         return $stmt->execute();
     }
     
-    public function updatePost($blogId, $title, $content, $slug, $status, $featuredImage = null, $demoLink = null, $downloadLink = null, $tags = null, $metaDescription = null, $metaKeywords = null)
+    public function updatePost($blogId, $title, $content, $slug, $status, $featuredImage = null, $tags = null, $metaDescription = null, $metaKeywords = null)
     {
         $sql = "UPDATE blogs SET 
                 title = ?, 
@@ -738,8 +734,6 @@ class Blog {
                 slug = ?, 
                 status = ?, 
                 featured_image = ?, 
-                demo_link = ?, 
-                download_link = ?, 
                 tags = ?, 
                 meta_description = ?, 
                 meta_keywords = ?, 
@@ -747,14 +741,12 @@ class Blog {
                 WHERE id = ?";
         
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("ssssssssssi", 
+        $stmt->bind_param("ssssssssi", 
             $title, 
             $content, 
             $slug, 
             $status, 
             $featuredImage, 
-            $demoLink, 
-            $downloadLink, 
             $tags, 
             $metaDescription, 
             $metaKeywords, 
@@ -762,5 +754,123 @@ class Blog {
         );
         
         return $stmt->execute();
+    }
+
+    /**
+     * Update a blog post
+     * 
+     * @param int $blogId The blog ID to update
+     * @param array $data The data to update
+     * @param array $categories The categories to associate with the blog
+     * @return bool True on success, false on failure
+     */
+    public function updateBlogPost($blogId, $data, $categories = [])
+    {
+        try {
+            $this->pdo->beginTransaction();
+            
+            // Extract blog data
+            $title = $data['title'];
+            $content = $data['content'];
+            $status = $data['status'] ?? 'draft';
+            $featuredImage = $data['featured_image'] ?? null;
+            $metaDescription = $data['meta_description'] ?? '';
+            $metaKeywords = $data['meta_keywords'] ?? '';
+            $tags = $data['tags'] ?? '';
+            
+            // Remove demo_link and download_link
+            
+            // Prepare SQL query
+            $sql = "UPDATE blogs 
+                    SET title = ?, content = ?, status = ?, 
+                        featured_image = COALESCE(?, featured_image),
+                        meta_description = ?, meta_keywords = ?, tags = ?
+                    WHERE id = ?";
+            
+            // Execute query
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                $title, 
+                $content, 
+                $status, 
+                $featuredImage,
+                $metaDescription, 
+                $metaKeywords, 
+                $tags, 
+                $blogId
+            ]);
+            
+            // Update categories
+            if (!empty($categories)) {
+                $this->updateBlogCategories($blogId, $categories);
+            }
+            
+            $this->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            return false;
+        }
+    }
+
+    /**
+     * Create a new blog post
+     * 
+     * @param array $data The blog data
+     * @param int $userId The user ID who is creating the post
+     * @return int|bool The new blog ID on success, false on failure
+     */
+    public function createBlogPost($data, $userId)
+    {
+        try {
+            $this->pdo->beginTransaction();
+            
+            // Generate slug
+            $slug = $this->generateSlug($data['title']);
+            
+            // Extract data
+            $title = $data['title'];
+            $content = $data['content'];
+            $status = $data['status'] ?? 'draft';
+            $featuredImage = $data['featured_image'] ?? null;
+            $excerpt = $data['excerpt'] ?? substr(strip_tags($content), 0, 150) . '...';
+            $metaDescription = $data['meta_description'] ?? substr(strip_tags($content), 0, 160);
+            $metaKeywords = $data['meta_keywords'] ?? '';
+            $tags = $data['tags'] ?? '';
+            
+            // Remove demo_link and download_link
+            
+            // Insert blog post
+            $sql = "INSERT INTO blogs (user_id, title, slug, content, excerpt, status, featured_image, meta_description, meta_keywords, tags, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                $userId, 
+                $title, 
+                $slug, 
+                $content, 
+                $excerpt, 
+                $status, 
+                $featuredImage, 
+                $metaDescription, 
+                $metaKeywords, 
+                $tags
+            ]);
+            
+            // Get the new blog ID
+            $blogId = $this->pdo->lastInsertId();
+            
+            // Update categories
+            if (!empty($data['categories'])) {
+                $this->updateBlogCategories($blogId, $data['categories']);
+            }
+            
+            $this->pdo->commit();
+            return $blogId;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            return false;
+        }
     }
 }

@@ -3,8 +3,11 @@
  * Migration to add smtp_encryption column to site_config table
  */
 
-require_once dirname(__DIR__) . 'config.php';
-require_once dirname(__DIR__) . 'classes/Settings.php';
+// Use a more reliable way to locate the root directory;
+$rootDir = dirname(__FILE__);;
+
+require_once $rootDir . '/config.php';
+require_once $rootDir . '/classes/Settings.php';
 
 try {
     // Check if the column already exists

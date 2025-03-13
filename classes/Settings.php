@@ -120,4 +120,28 @@ class Settings
         
         return $settings;
     }
+
+    /**
+     * Helper method to check if a database column exists
+     * 
+     * @param PDO $pdo PDO connection object
+     * @param string $table Table name
+     * @param string $column Column name
+     * @return bool Whether the column exists
+     */
+    public static function columnExists($pdo, $table, $column) 
+    {
+        try {
+            $stmt = $pdo->prepare("
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_schema = DATABASE() 
+                AND table_name = ? 
+                AND column_name = ?
+            ");
+            $stmt->execute([$table, $column]);
+            return (bool)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }

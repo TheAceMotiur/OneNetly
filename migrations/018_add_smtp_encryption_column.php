@@ -7,6 +7,12 @@ class AddSmtpEncryptionColumn extends Migration
     public function up(): string
     {
         return "
+            -- First verify if we need to copy data from settings table
+            SET @settings_count = (
+                SELECT COUNT(*) FROM information_schema.tables 
+                WHERE table_schema = DATABASE() AND table_name = 'settings'
+            );
+            
             -- Check if the site_config table exists
             SET @table_exists = (
                 SELECT COUNT(*)
@@ -31,6 +37,16 @@ class AddSmtpEncryptionColumn extends Migration
             );
 
             PREPARE stmt FROM @add_column;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+            
+            -- Copy data from settings if available
+            SET @copy_data = IF(@table_exists > 0 AND @settings_count > 0,
+                'UPDATE site_config sc SET sc.smtp_encryption = (SELECT value FROM settings WHERE name = \"smtp_secure\" LIMIT 1) WHERE (SELECT value FROM settings WHERE name = \"smtp_secure\" LIMIT 1) IS NOT NULL',
+                'SELECT \"Cannot copy data from settings\"'
+            );
+            
+            PREPARE stmt FROM @copy_data;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
         ";

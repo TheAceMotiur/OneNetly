@@ -117,14 +117,17 @@ class Blog {
      * @return array Result with success status and message
      */
     public function createBlog($data) {
+        // Format tags properly
+        $data['tags'] = $this->formatTags($data['tags'] ?? '');
+        
         // Generate slug from title
         $slug = $this->createSlug($data['title']);
         
         try {
             $sql = "INSERT INTO blogs 
-                    (user_id, title, slug, content, featured_image, status) 
+                    (user_id, title, slug, content, featured_image, status, tags) 
                     VALUES 
-                    (:user_id, :title, :slug, :content, :featured_image, :status)";
+                    (:user_id, :title, :slug, :content, :featured_image, :status, :tags)";
             
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
@@ -133,6 +136,7 @@ class Blog {
             $stmt->bindParam(':content', $data['content'], PDO::PARAM_STR);
             $stmt->bindParam(':featured_image', $data['featured_image'], PDO::PARAM_STR);
             $stmt->bindParam(':status', $data['status'], PDO::PARAM_STR);
+            $stmt->bindParam(':tags', $data['tags'], PDO::PARAM_STR);
             
             $stmt->execute();
             $blogId = $this->pdo->lastInsertId();
@@ -189,10 +193,7 @@ class Blog {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
             
-            // Update categories if provided
-            if (isset($data['categories'])) {
-                $this->updateBlogCategories($id, $data['categories']);
-            }
+            // Categories feature has been removed
             
             return [
                 'success' => true,
@@ -272,21 +273,8 @@ class Blog {
      * @param array $categoryIds Array of category IDs
      */
     private function updateBlogCategories($blogId, $categoryIds) {
-        // Remove existing categories
-        $sql = "DELETE FROM blog_category WHERE blog_id = :blog_id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        // Add new categories
-        $sql = "INSERT INTO blog_category (blog_id, category_id) VALUES (:blog_id, :category_id)";
-        $stmt = $this->pdo->prepare($sql);
-        
-        foreach ($categoryIds as $categoryId) {
-            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
-            $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
+        // Categories feature has been removed, do nothing
+        return;
     }
     
     /**
@@ -296,15 +284,8 @@ class Blog {
      * @return array Categories
      */
     public function getBlogCategories($blogId) {
-        $sql = "SELECT c.* FROM categories c 
-                JOIN blog_category bc ON c.id = bc.category_id 
-                WHERE bc.blog_id = :blog_id";
-                
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll();
+        // Categories feature has been removed
+        return [];
     }
     
     /**
@@ -314,8 +295,8 @@ class Blog {
      * @return array Categories for the post
      */
     public function getCategoriesForPost($blogId) {
-        // This method serves as an alias for getBlogCategories for better readability
-        return $this->getBlogCategories($blogId);
+        // Categories feature has been removed
+        return [];
     }
     
     /**
@@ -439,7 +420,10 @@ class Blog {
                         
                 $stmt = $this->pdo->prepare($sql);
                 $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
-                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+                
+                // Fix: Use bindValue instead of bindParam for the limit
+                $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+                
                 $stmt->execute();
                 return $stmt->fetchAll();
             }
@@ -463,8 +447,13 @@ class Blog {
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
             $stmt->bindParam(':tags', $currentPost['tags'], PDO::PARAM_STR);
-            $stmt->bindParam(':tag_pattern', '%' . str_replace(',', '%', $currentPost['tags']) . '%', PDO::PARAM_STR);
-            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            
+            $tagPattern = '%' . str_replace(',', '%', $currentPost['tags']) . '%';
+            $stmt->bindParam(':tag_pattern', $tagPattern, PDO::PARAM_STR);
+            
+            // Fix: Use bindValue instead of bindParam for the limit
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            
             $stmt->execute();
             
             return $stmt->fetchAll();
@@ -641,67 +630,20 @@ class Blog {
      * @return array Blogs and pagination info
      */
     public function getBlogsByCategory($categoryId, $page = 1, $limit = 10) {
-        $offset = ($page - 1) * $limit;
-        
-        try {
-            // Count total blogs for pagination
-            $countSql = "SELECT COUNT(*) FROM blogs b 
-                        JOIN blog_category bc ON b.id = bc.blog_id 
-                        WHERE bc.category_id = :category_id 
-                        AND b.status = 'published'";
-                        
-            $countStmt = $this->pdo->prepare($countSql);
-            $countStmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-            $countStmt->execute();
-            $total = $countStmt->fetchColumn();
-            
-            // Get blogs for current page
-            $sql = "SELECT b.*, u.username FROM blogs b 
-                    JOIN blog_category bc ON b.id = bc.blog_id 
-                    JOIN users u ON b.user_id = u.id 
-                    WHERE bc.category_id = :category_id 
-                    AND b.status = 'published' 
-                    ORDER BY b.created_at DESC 
-                    LIMIT :limit OFFSET :offset";
-                    
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-            $blogs = $stmt->fetchAll();
-            
-            // Calculate pagination info
-            $totalPages = ceil($total / $limit);
-            $hasNextPage = $page < $totalPages;
-            $hasPrevPage = $page > 1;
-            
-            return [
-                'blogs' => $blogs,
-                'pagination' => [
-                    'total' => $total,
-                    'per_page' => $limit,
-                    'current_page' => $page,
-                    'last_page' => $totalPages,
-                    'from' => $offset + 1,
-                    'to' => min($offset + $limit, $total),
-                    'has_more_pages' => $hasNextPage,
-                    'has_prev_pages' => $hasPrevPage
-                ]
-            ];
-        } catch (PDOException $e) {
-            return [
-                'blogs' => [],
-                'pagination' => [
-                    'total' => 0,
-                    'per_page' => $limit,
-                    'current_page' => 1,
-                    'last_page' => 1,
-                    'has_more_pages' => false,
-                    'has_prev_pages' => false
-                ]
-            ];
-        }
+        // Categories feature has been removed, return empty result
+        return [
+            'blogs' => [],
+            'pagination' => [
+                'total' => 0,
+                'per_page' => $limit,
+                'current_page' => $page,
+                'last_page' => 1,
+                'from' => 0,
+                'to' => 0,
+                'has_more_pages' => false,
+                'has_prev_pages' => false
+            ]
+        ];
     }
 
     // Update any createPost or updatePost methods to remove excerpt
@@ -872,5 +814,265 @@ class Blog {
             $this->pdo->rollBack();
             return false;
         }
+    }
+
+    /**
+     * Add a blog post to user's reading list
+     * 
+     * @param int $userId User ID
+     * @param int $blogId Blog post ID
+     * @return bool Success status
+     */
+    public function addToReadingList($userId, $blogId) {
+        try {
+            // Check if already in reading list
+            $sql = "SELECT COUNT(*) FROM reading_list WHERE user_id = :user_id AND blog_id = :blog_id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            if ($stmt->fetchColumn() > 0) {
+                // Already in reading list
+                return true;
+            }
+            
+            // Add to reading list
+            $sql = "INSERT INTO reading_list (user_id, blog_id, added_at) VALUES (:user_id, :blog_id, NOW())";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            // If the table doesn't exist yet, create it
+            if ($e->getCode() == '42S02') {
+                $this->createReadingListTable();
+                // Try again
+                return $this->addToReadingList($userId, $blogId);
+            }
+            return false;
+        }
+    }
+    
+    /**
+     * Remove a blog post from user's reading list
+     * 
+     * @param int $userId User ID
+     * @param int $blogId Blog post ID
+     * @return bool Success status
+     */
+    public function removeFromReadingList($userId, $blogId) {
+        try {
+            $sql = "DELETE FROM reading_list WHERE user_id = :user_id AND blog_id = :blog_id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Get user's reading list
+     * 
+     * @param int $userId User ID
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @return array Reading list items with pagination
+     */
+    public function getReadingList($userId, $page = 1, $limit = 10) {
+        $offset = ($page - 1) * $limit;
+        
+        try {
+            // Create the table if it doesn't exist
+            $this->createReadingListTable();
+            
+            // Count total items
+            $countSql = "SELECT COUNT(*) FROM reading_list WHERE user_id = :user_id";
+            $countStmt = $this->pdo->prepare($countSql);
+            $countStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $countStmt->execute();
+            $total = $countStmt->fetchColumn();
+            
+            // Get items for current page
+            $sql = "SELECT b.*, rl.added_at, u.username 
+                    FROM reading_list rl
+                    JOIN blogs b ON rl.blog_id = b.id
+                    LEFT JOIN users u ON b.user_id = u.id
+                    WHERE rl.user_id = :user_id
+                    ORDER BY rl.added_at DESC
+                    LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $items = $stmt->fetchAll();
+            
+            // Calculate pagination info
+            $totalPages = ceil($total / $limit);
+            $hasNextPage = $page < $totalPages;
+            $hasPrevPage = $page > 1;
+            
+            return [
+                'items' => $items,
+                'pagination' => [
+                    'total' => $total,
+                    'per_page' => $limit,
+                    'current_page' => $page,
+                    'last_page' => $totalPages,
+                    'from' => $offset + 1,
+                    'to' => min($offset + $limit, $total),
+                    'has_more_pages' => $hasNextPage,
+                    'has_prev_pages' => $hasPrevPage
+                ]
+            ];
+        } catch (PDOException $e) {
+            return [
+                'items' => [],
+                'pagination' => [
+                    'total' => 0,
+                    'per_page' => $limit,
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'has_more_pages' => false,
+                    'has_prev_pages' => false
+                ]
+            ];
+        }
+    }
+    
+    /**
+     * Check if a blog post is in user's reading list
+     * 
+     * @param int $userId User ID
+     * @param int $blogId Blog post ID
+     * @return bool True if post is in reading list
+     */
+    public function isInReadingList($userId, $blogId) {
+        try {
+            $sql = "SELECT COUNT(*) FROM reading_list WHERE user_id = :user_id AND blog_id = :blog_id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':blog_id', $blogId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchColumn() > 0;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Create reading_list table if it doesn't exist
+     */
+    private function createReadingListTable() {
+        $sql = "CREATE TABLE IF NOT EXISTS reading_list (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            blog_id INT NOT NULL,
+            added_at DATETIME NOT NULL,
+            UNIQUE KEY user_blog (user_id, blog_id),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE
+        )";
+        
+        $this->pdo->exec($sql);
+    }
+
+    /**
+     * Get blogs for a specific user with pagination
+     * 
+     * @param int $userId User ID
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @param string $status Filter by status (published, draft or all)
+     * @return array Blogs and pagination info
+     */
+    public function getUserBlogs($userId, $page = 1, $limit = 10, $status = 'all') {
+        $offset = ($page - 1) * $limit;
+        
+        $whereClause = "WHERE b.user_id = :user_id";
+        if ($status !== 'all') {
+            $whereClause .= " AND b.status = :status";
+        }
+        
+        // Count total blogs for pagination
+        $countSql = "SELECT COUNT(*) FROM blogs b $whereClause";
+        $countStmt = $this->pdo->prepare($countSql);
+        $countStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        
+        if ($status !== 'all') {
+            $countStmt->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+        
+        $countStmt->execute();
+        $total = $countStmt->fetchColumn();
+        
+        // Get blogs for current page
+        $sql = "SELECT b.*, u.username FROM blogs b 
+                LEFT JOIN users u ON b.user_id = u.id 
+                $whereClause 
+                ORDER BY b.created_at DESC 
+                LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        
+        if ($status !== 'all') {
+            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $blogs = $stmt->fetchAll();
+        
+        // Calculate pagination info
+        $totalPages = ceil($total / $limit);
+        $hasNextPage = $page < $totalPages;
+        $hasPrevPage = $page > 1;
+        
+        return [
+            'blogs' => $blogs,
+            'pagination' => [
+                'total' => $total,
+                'per_page' => $limit,
+                'current_page' => $page,
+                'last_page' => $totalPages,
+                'from' => $offset + 1,
+                'to' => min($offset + $limit, $total),
+                'has_more_pages' => $hasNextPage,
+                'has_prev_pages' => $hasPrevPage
+            ]
+        ];
+    }
+
+    /**
+     * Format tags properly before saving to database
+     * 
+     * @param string $tags Comma-separated list of tags
+     * @return string Properly formatted tags
+     */
+    private function formatTags($tags) {
+        if (empty($tags)) {
+            return '';
+        }
+        
+        // Split tags by comma
+        $tagArray = explode(',', $tags);
+        
+        // Trim whitespace and remove empty tags
+        $tagArray = array_map('trim', $tagArray);
+        $tagArray = array_filter($tagArray, function($tag) {
+            return !empty($tag);
+        });
+        
+        // Remove duplicates and rejoin
+        $tagArray = array_unique($tagArray);
+        
+        return implode(', ', $tagArray);
     }
 }

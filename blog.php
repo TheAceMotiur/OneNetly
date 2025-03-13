@@ -31,6 +31,9 @@ $blog->trackPostView($blogPost['id']);
 // Get categories for this post
 $blogCategories = $blog->getCategoriesForPost($blogPost['id']);
 
+// Get the primary category (first one)
+$primaryCategory = null;
+
 // Get post author
 $postAuthor = $user->getUserById($blogPost['user_id']);
 
@@ -43,18 +46,44 @@ $trendingPosts = $blog->getTrendingPosts(5);
 // Get all categories for sidebar
 $categories = $category->getAllCategories();
 
-// Set up breadcrumbs
+// Check if this post is in user's reading list
+$isInReadingList = false;
+if ($user->isLoggedIn()) {
+    $isInReadingList = $blog->isInReadingList($currentUser['id'], $blogPost['id']);
+}
+
+// Process reading list actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user->isLoggedIn()) {
+    if (isset($_POST['add_to_reading_list'])) {
+        $blog->addToReadingList($currentUser['id'], $blogPost['id']);
+        $isInReadingList = true;
+        // Use a JavaScript redirect to stay on the same page
+        echo '<script>window.location.href = "' . $slug . '?reading_list=added#top";</script>';
+        exit;
+    } elseif (isset($_POST['remove_from_reading_list'])) {
+        $blog->removeFromReadingList($currentUser['id'], $blogPost['id']);
+        $isInReadingList = false;
+        // Use a JavaScript redirect to stay on the same page
+        echo '<script>window.location.href = "' . $slug . '?reading_list=removed#top";</script>';
+        exit;
+    }
+}
+
+// Reading list notification
+$readingListNotification = '';
+if (isset($_GET['reading_list'])) {
+    if ($_GET['reading_list'] === 'added') {
+        $readingListNotification = 'Story added to your reading list';
+    } elseif ($_GET['reading_list'] === 'removed') {
+        $readingListNotification = 'Story removed from your reading list';
+    }
+}
+
+// Adjust breadcrumbs without categories
 $breadcrumbs = [
+    'Home' => 'index.php',
     $blogPost['title'] => ''
 ];
-
-// If post has categories, add first one to breadcrumb
-if (!empty($blogCategories)) {
-    $primaryCategory = $blogCategories[0];
-    $breadcrumbs = [
-        $primaryCategory['name'] => 'category.php?slug=' . $primaryCategory['slug'] 
-    ] + $breadcrumbs; // Add at the beginning
-}
 
 // SEO Optimization
 $canonicalUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/$slug";
@@ -66,16 +95,13 @@ $seo->setTitle($blogPost['title'])
     ->setOgType('article')
     ->setAuthor($postAuthor['username'] ?? 'OneNetly');
 
-// Add keywords from tags and categories
+// Add keywords from tags only since categories are removed
 $keywords = [];
 if (!empty($blogPost['tags'])) {
     $tags = explode(',', $blogPost['tags']);
     foreach ($tags as $tag) {
         $keywords[] = trim($tag);
     }
-}
-foreach ($blogCategories as $cat) {
-    $keywords[] = $cat['name'];
 }
 if (!empty($keywords)) {
     $seo->setKeywords($keywords);
@@ -139,119 +165,176 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content']) &&
 // Include header
 require_once 'includes/header.php';
 ?>
+
+<?php if (!empty($readingListNotification)): ?>
+<div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <i class="fas fa-check text-green-500"></i>
+        </div>
+        <div class="ml-3">
+            <p class="text-sm text-green-700"><?php echo $readingListNotification; ?></p>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
         
-<div class="flex flex-wrap">
-    <!-- Main Content -->
-    <div class="w-full lg:w-3/4 pr-0 lg:pr-8">
-        <article class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+<div class="max-w-4xl mx-auto px-4 py-8" id="top">
+    <article class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="p-6 md:p-8">
+            <!-- Article Header Section -->
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                <?php echo htmlspecialchars($blogPost['title']); ?>
+            </h1>
+            
+            <div class="flex items-center mb-6 pb-6 border-b">
+                <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden mr-4">
+                    <div class="w-full h-full flex items-center justify-center text-gray-600 font-semibold">
+                        <?php echo strtoupper(substr($postAuthor['username'] ?? 'A', 0, 1)); ?>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center">
+                        <h3 class="font-medium text-gray-900"><?php echo htmlspecialchars($postAuthor['username'] ?? 'Anonymous'); ?></h3>
+                        <button class="ml-2 px-3 py-1 text-sm bg-gray-100 text-green-600 rounded-full hover:bg-green-50 hover:text-green-700">Follow</button>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                        <span><?php echo date('M d, Y', strtotime($blogPost['created_at'])); ?></span>
+                        <span class="mx-2">·</span>
+                        <span><?php echo ceil(str_word_count(strip_tags($blogPost['content'])) / 200); ?> min read</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex space-x-4">
+                    <button class="flex items-center text-gray-500 hover:text-red-600">
+                        <i class="far fa-heart mr-2"></i> <span>Like</span>
+                    </button>
+                    <a href="#comments" class="flex items-center text-gray-500 hover:text-gray-900">
+                        <i class="far fa-comment mr-2"></i> <span>Comment</span>
+                    </a>
+                </div>
+                <div class="flex space-x-4">
+                    <?php if ($user->isLoggedIn()): ?>
+                        <form method="POST" action="">
+                            <?php if (!$isInReadingList): ?>
+                                <button type="submit" name="add_to_reading_list" class="text-gray-500 hover:text-gray-900 flex items-center">
+                                    <i class="far fa-bookmark mr-1"></i> Save
+                                </button>
+                            <?php else: ?>
+                                <button type="submit" name="remove_from_reading_list" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                    <i class="fas fa-bookmark mr-1"></i> Saved
+                                </button>
+                            <?php endif; ?>
+                        </form>
+                    <?php else: ?>
+                        <a href="login.php" class="text-gray-500 hover:text-gray-900 flex items-center">
+                            <i class="far fa-bookmark mr-1"></i> Save
+                        </a>
+                    <?php endif; ?>
+                    <button class="text-gray-500 hover:text-gray-900">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
             <?php if (!empty($blogPost['featured_image'])): ?>
-                <div class="w-full h-80 overflow-hidden">
+                <div class="w-full h-96 overflow-hidden mb-8 rounded">
                     <img src="<?php echo htmlspecialchars($blogPost['featured_image']); ?>" alt="<?php echo htmlspecialchars($blogPost['title']); ?>" class="w-full h-full object-cover">
                 </div>
             <?php endif; ?>
             
-            <div class="p-6">
-                <h1 class="text-3xl font-bold mb-4">
-                    <?php echo htmlspecialchars($blogPost['title']); ?>
-                </h1>
-                
-                <div class="flex items-center text-gray-600 mb-6">
-                    
-                    <div class="flex items-center mr-4">
-                        <i class="far fa-calendar-alt mr-1"></i>
-                        <span><?php echo date('F j, Y', strtotime($blogPost['created_at'])); ?></span>
-                    </div>
-                    
-                    <?php if (!empty($blogCategories)): ?>
-                        <div class="flex items-center flex-wrap">
-                            <i class="fas fa-folder mr-1"></i>
-                            <span>
-                                <?php foreach ($blogCategories as $index => $cat): ?>
-                                    <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="text-indigo-600 hover:text-indigo-800">
-                                        <?php echo htmlspecialchars($cat['name']); ?>
-                                    </a>
-                                    <?php if ($index < count($blogCategories) - 1) echo ', '; ?>
-                                <?php endforeach; ?>
-                            </span>
-                        </div>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="prose max-w-none">
-                    <?php 
-                    // Split content to insert ad in the middle
-                    $content = $blogPost['content'];
-                    $splitContent = explode('</p>', $content, 3);
-                    
-                    if (count($splitContent) > 2) {
-                        echo $splitContent[0] . '</p>' . $splitContent[1] . '</p>';
-                        displayInArticleAd();
-                        echo $splitContent[2];
-                    } else {
-                        echo $content;
-                    }
-                    ?>
-                </div>
-                
-                <?php if (!empty($blogPost['tags'])): ?>
-                <div class="mt-6 pt-4 border-t border-gray-100">
-                    <div class="flex flex-wrap items-center">
-                        <span class="mr-2 text-gray-700"><i class="fas fa-tags mr-1"></i> Tags:</span>
-                        <?php 
-                        $tags = explode(',', $blogPost['tags']);
-                        foreach ($tags as $tag): 
-                            $tag = trim($tag);
-                            if (empty($tag)) continue;
-                        ?>
-                            <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded mr-2 mb-2">
-                                <?php echo htmlspecialchars($tag); ?>
-                            </span>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
+            <!-- Main Content - Medium-like Styling for Quill Content -->
+            <div class="quill-content">
+                <?php 
+                // Add first-letter class to the first paragraph for dropcap effect
+                $content = $blogPost['content'];
+                // Check if the first element is a paragraph and add the first-letter class
+                $content = preg_replace('/<p>(.*?)<\/p>/', '<p class="first-letter">$1</p>', $content, 1);
+                echo $content;
+                ?>
             </div>
-        </article>
-        
-        <!-- Ad after article -->
-        <?php displayHorizontalAd(); ?>
-        
-        <!-- Related Posts -->
-        <?php if (!empty($relatedPosts)): ?>
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
-                <i class="fas fa-project-diagram mr-2 text-indigo-500"></i> Related Posts
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                <?php foreach ($relatedPosts as $post): ?>
-                <a href="<?php echo htmlspecialchars($post['slug']); ?>" 
-                   class="flex items-start hover:bg-gray-50 p-3 rounded transition group">
-                    <?php if (!empty($post['featured_image'])): ?>
-                        <div class="w-20 h-20 rounded overflow-hidden flex-shrink-0 mr-3">
-                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" 
-                                 alt="<?php echo htmlspecialchars($post['title']); ?>" 
-                                 class="w-full h-full object-cover transform group-hover:scale-105 transition">
-                        </div>
+            
+            <?php if (!empty($blogPost['tags'])): ?>
+            <div class="flex flex-wrap gap-2 mb-8 mt-8 pt-6 border-t">
+                <?php foreach (explode(',', $blogPost['tags']) as $tag): ?>
+                    <?php $tag = trim($tag); ?>
+                    <?php if (!empty($tag)): ?>
+                        <a href="search.php?q=<?php echo urlencode($tag); ?>" class="bg-gray-100 text-gray-800 px-3 py-1 text-sm rounded-full hover:bg-gray-200">
+                            <?php echo htmlspecialchars($tag); ?>
+                        </a>
                     <?php endif; ?>
-                    <div class="flex-1">
-                        <h3 class="font-medium text-indigo-700 group-hover:text-indigo-900 line-clamp-2">
-                            <?php echo htmlspecialchars($post['title']); ?>
-                        </h3>
-                        <p class="text-xs text-gray-500 mt-1 flex items-center">
-                            <i class="far fa-calendar-alt mr-1"></i>
-                            <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
-                        </p>
-                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">
-                            <?php echo substr(strip_tags($post['content']), 0, 100) . '...'; ?>
-                        </p>
-                    </div>
-                </a>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
+            
+            <div class="border-t border-b py-6 my-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden mr-4">
+                            <div class="w-full h-full flex items-center justify-center text-gray-600 font-semibold">
+                                <?php echo strtoupper(substr($postAuthor['username'] ?? 'A', 0, 1)); ?>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-900">Written by <?php echo htmlspecialchars($postAuthor['username'] ?? 'Anonymous'); ?></h3>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <?php echo $postAuthor['bio'] ?? 'Author at OneNetly'; ?>
+                            </p>
+                        </div>
+                    </div>
+                    <button class="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Follow</button>
+                </div>
+            </div>
         </div>
-        <?php endif; ?>
+    </article>
+    
+    <!-- Related Posts -->
+    <?php if (!empty($relatedPosts)): ?>
+    <div class="my-12">
+        <h2 class="text-xl font-bold mb-6 text-gray-800">More from OneNetly</h2>
         
-        <!-- Comments Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <?php foreach ($relatedPosts as $post): ?>
+                <div class="bg-white rounded-lg overflow-hidden border border-gray-200 transform hover:-translate-y-1 transition-all duration-300">
+                    <?php if (!empty($post['featured_image'])): ?>
+                        <div class="w-full h-40 overflow-hidden">
+                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" 
+                                 alt="<?php echo htmlspecialchars($post['title']); ?>" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                    <?php endif; ?>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-gray-600 font-semibold mr-2">
+                                <?php 
+                                $author = $user->getUserById($post['user_id']); 
+                                echo substr($author['username'] ?? 'A', 0, 1);
+                                ?>
+                            </div>
+                            <span class="text-xs font-medium"><?php echo htmlspecialchars($author['username'] ?? 'Anonymous'); ?></span>
+                        </div>
+                        
+                        <h3 class="text-lg font-bold mb-2 line-clamp-2">
+                            <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="text-gray-900 hover:text-gray-700 transition">
+                                <?php echo htmlspecialchars($post['title']); ?>
+                            </a>
+                        </h3>
+                        
+                        <p class="text-gray-500 text-sm mb-2">
+                            <?php echo date('M d', strtotime($post['created_at'])); ?> · 
+                            <?php echo ceil(str_word_count(strip_tags($post['content'])) / 200); ?> min read
+                        </p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    
+    <!-- Comments Section -->
+    <div id="comments" class="my-12">
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 class="text-xl font-semibold mb-4">Comments <?php if ($commentsAvailable): ?>(<?php echo count($commentsList); ?>)<?php endif; ?></h2>
             
@@ -267,7 +350,6 @@ require_once 'includes/header.php';
                                 <?php echo htmlspecialchars($commentError); ?>
                             </div>
                         <?php endif; ?>
-                        
                         <form method="POST" action="">
                             <div class="mb-4">
                                 <label for="comment_content" class="block text-gray-700 text-sm font-bold mb-2">Your Comment</label>
@@ -280,7 +362,7 @@ require_once 'includes/header.php';
                                 </button>
                             </div>
                         </form>
-                    </div>
+                    </div>    
                 <?php else: ?>
                     <div class="mb-6 border-b pb-6">
                         <p>Please <a href="login.php" class="text-indigo-600 hover:text-indigo-800">login</a> to post a comment.</p>
@@ -325,74 +407,6 @@ require_once 'includes/header.php';
                 <?php endif; ?>
             <?php endif; ?>
         </div>
-        
-    </div>
-    
-    <!-- Sidebar -->
-    <div class="w-full lg:w-1/4 mt-8 lg:mt-0">
-        <!-- Sidebar Ad Unit -->
-        <?php displaySidebarAd(); ?>
-
-        <!-- Trending Now Widget -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
-                <i class="fas fa-fire text-orange-500 mr-2"></i> Trending Now
-            </h2>
-            <?php if (empty($trendingPosts)): ?>
-                <p>No trending posts yet.</p>
-            <?php else: ?>
-                <ul class="space-y-4">
-                    <?php foreach ($trendingPosts as $post): ?>
-                        <li class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-                            <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="block hover:bg-gray-50 transition-all rounded p-2">
-                                <div class="flex items-center">
-                                    <?php if (!empty($post['featured_image'])): ?>
-                                        <div class="w-16 h-16 mr-3 flex-shrink-0 overflow-hidden rounded">
-                                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="w-full h-full object-cover">
-                                        </div>
-                                    <?php endif; ?>
-                                    <div>
-                                        <h3 class="text-sm font-medium text-indigo-700"><?php echo htmlspecialchars($post['title']); ?></h3>
-                                        <p class="text-xs text-gray-500 mt-1 flex items-center">
-                                            <i class="far fa-calendar-alt mr-1"></i>
-                                            <?php echo date('M j, Y', strtotime($post['created_at'])); ?>
-                                        </p>
-                                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">
-                                            <?php echo substr(strip_tags($post['content']), 0, 100) . '...'; ?>
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Categories Widget -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
-                <i class="fas fa-folder mr-2 text-indigo-500"></i> Categories
-            </h2>
-            <?php if (empty($categories)): ?>
-                <p>No categories found.</p>
-            <?php else: ?>
-                <ul>
-                    <?php foreach ($categories as $cat): ?>
-                        <li class="mb-2">
-                            <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" 
-                               class="text-indigo-600 hover:text-indigo-800 flex items-center justify-between p-2 hover:bg-indigo-50 rounded transition">
-                                <span><?php echo htmlspecialchars($cat['name']); ?></span>
-                                <i class="fas fa-chevron-right text-indigo-400"></i>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Second Sidebar Ad Unit - Removing this ad -->
-        <?php // displaySidebarAd(); ?>
     </div>
 </div>
 

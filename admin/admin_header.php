@@ -81,14 +81,6 @@ function getActiveClass($page) {
                     </span>
                     Comments
                 </a>
-                <a href="categories.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('categories.php'); ?>">
-                    <span class="mr-3">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    Categories
-                </a>
                 <a href="seo-settings.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('seo-settings.php'); ?>">
                     <span class="mr-3">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -142,6 +134,24 @@ function getActiveClass($page) {
             <!-- Main content -->
             <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <?php echo displayMessage(); ?>
+                <!-- Start Content Area -->
+                <div class="flex-grow py-6 px-8 bg-gray-100 min-h-screen">
+                    <?php if(isset($_SESSION['message'])): ?>
+                    <div class="mb-6 p-4 rounded <?php echo $_SESSION['message_type'] === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'; ?>">
+                        <?php 
+                        echo htmlspecialchars($_SESSION['message']); 
+                        unset($_SESSION['message']);
+                        unset($_SESSION['message_type']);
+                        ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Category Removal Notice -->
+                    <?php if(strpos($_SERVER['REQUEST_URI'], 'categories.php') !== false): ?>
+                    <div class="mb-6 p-4 rounded bg-yellow-100 text-yellow-700 border border-yellow-400">
+                        <strong>Notice:</strong> The Categories feature has been deprecated and removed from OneNetly. You can no longer manage categories.
+                    </div>
+                    <?php endif; ?>
 
 <script>
 document.getElementById('mobile-menu-button')?.addEventListener('click', function() {

@@ -260,6 +260,15 @@ class SEO {
     }
     
     /**
+     * Output HTML meta tags for head section
+     * 
+     * @return string HTML for meta tags
+     */
+    public function outputMetaTags() {
+        return $this->generateMetaTags();
+    }
+    
+    /**
      * Generate HTML meta tags for head section
      * 
      * @return string HTML for meta tags

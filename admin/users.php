@@ -25,12 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['delete_user'])) {
         $userId = (int)$_POST['user_id'];
         
-        if ($user->deleteUser($userId)) {
-            $_SESSION['message'] = 'User deleted successfully';
-            $_SESSION['message_type'] = 'success';
-        } else {
-            $_SESSION['message'] = 'Failed to delete user';
+        // Don't allow deleting yourself
+        if ($userId == $currentUser['id']) {
+            $_SESSION['message'] = 'You cannot delete your own account';
             $_SESSION['message_type'] = 'error';
+        } else {
+            if ($user->deleteUser($userId)) {
+                $_SESSION['message'] = 'User deleted successfully';
+                $_SESSION['message_type'] = 'success';
+            } else {
+                $_SESSION['message'] = 'Failed to delete user';
+                $_SESSION['message_type'] = 'error';
+            }
         }
         
         // Redirect to prevent form resubmission
@@ -39,12 +45,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all users
-$users = $user->getAllUsers();
+// Search functionality
+$searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+$users = empty($searchTerm) ? $user->getAllUsers() : $user->searchUsers($searchTerm);
 
 // Get current user ID for comparison
-$currentUserId = $user->getCurrentUser()['id'];
+$currentUserId = $currentUser['id'];
 ?>
+
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-2xl font-semibold">Manage Users</h1>
+    
+    <!-- Search Bar -->
+    <div>
+        <form action="" method="GET" class="flex">
+            <input type="text" name="search" placeholder="Search users..." value="<?php echo htmlspecialchars($searchTerm); ?>" 
+                   class="shadow appearance-none border rounded-l py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
 
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <div class="p-6 border-b border-gray-200">
@@ -65,6 +87,13 @@ $currentUserId = $user->getCurrentUser()['id'];
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
+                <?php if (empty($users)): ?>
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                        <?php echo empty($searchTerm) ? 'No users found.' : 'No users matching "' . htmlspecialchars($searchTerm) . '"'; ?>
+                    </td>
+                </tr>
+                <?php else: ?>
                 <?php foreach ($users as $userItem): ?>
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $userItem['id']; ?></td>
@@ -78,16 +107,19 @@ $currentUserId = $user->getCurrentUser()['id'];
                         <?php endif; ?>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('M j, Y', strtotime($userItem['created_at'])); ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <?php if ($userItem['id'] != $currentUserId): ?>
-                            <form method="POST" class="inline">
+                            <!-- Toggle admin status form -->
+                            <form method="POST" class="inline-block mr-2">
                                 <input type="hidden" name="user_id" value="<?php echo $userItem['id']; ?>">
-                                <input type="hidden" name="is_admin" value="<?php echo $userItem['is_admin'] ? '0' : '1'; ?>">
-                                <button type="submit" name="toggle_admin" class="text-<?php echo $userItem['is_admin'] ? 'red' : 'blue'; ?>-600 hover:text-<?php echo $userItem['is_admin'] ? 'red' : 'blue'; ?>-900">
+                                <input type="hidden" name="is_admin" value="<?php echo $userItem['is_admin'] ? 0 : 1; ?>">
+                                <button type="submit" name="toggle_admin" class="text-blue-600 hover:text-blue-900">
                                     <?php echo $userItem['is_admin'] ? 'Remove Admin' : 'Make Admin'; ?>
                                 </button>
                             </form>
-                            <form method="POST" class="inline ml-2" onsubmit="return confirmDelete('<?php echo htmlspecialchars(addslashes($userItem['username'])); ?>')">
+                            
+                            <!-- Delete user form -->
+                            <form method="POST" class="inline-block" onsubmit="return confirmDelete('<?php echo htmlspecialchars($userItem['username']); ?>')">
                                 <input type="hidden" name="user_id" value="<?php echo $userItem['id']; ?>">
                                 <button type="submit" name="delete_user" class="text-red-600 hover:text-red-900">
                                     Delete
@@ -99,6 +131,7 @@ $currentUserId = $user->getCurrentUser()['id'];
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

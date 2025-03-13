@@ -330,4 +330,20 @@ class User
         $stmt->execute([$userId]);
         return $stmt->fetch();
     }
+
+    /**
+     * Search users by username or email
+     * 
+     * @param string $query Search query
+     * @return array List of matching users
+     */
+    public function searchUsers($query)
+    {
+        $searchTerm = '%' . $query . '%';
+        $stmt = $this->pdo->prepare("SELECT id, username, email, is_admin, created_at FROM users 
+                                    WHERE username LIKE ? OR email LIKE ? 
+                                    ORDER BY id");
+        $stmt->execute([$searchTerm, $searchTerm]);
+        return $stmt->fetchAll();
+    }
 }

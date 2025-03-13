@@ -19,14 +19,11 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^([^/]+)/?$ blog.php?slug=$1 [L,QSA]
 
-    # Handle categories
-    RewriteRule ^category/([^/]+)/?$ category.php?slug=$1 [L,QSA]
-
     # Handle pagination
     RewriteRule ^page/([0-9]+)/?$ index.php?page=$1 [L,QSA]
 
-    # Handle category pagination
-    RewriteRule ^category/([^/]+)/page/([0-9]+)/?$ category.php?slug=$1&page=$2 [L,QSA]
+    # Category related rules removed as feature is deprecated
+
 </IfModule>
 
 # Enable URL rewriting

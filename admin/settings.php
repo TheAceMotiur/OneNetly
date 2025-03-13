@@ -69,6 +69,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+    
+    if (isset($_POST['update_integrations'])) {
+        // Update third-party integrations
+        $googleAnalyticsId = trim($_POST['google_analytics_id'] ?? '');
+        $googleSiteVerification = trim($_POST['google_site_verification'] ?? '');
+        $bingSiteVerification = trim($_POST['bing_site_verification'] ?? '');
+        $openrouterApiKey = trim($_POST['openrouter_api_key'] ?? '');
+        
+        try {
+            // Check if site_config table exists
+            $tableExists = $pdo->query("SHOW TABLES LIKE 'site_config'");
+            if ($tableExists->rowCount() === 0) {
+                // Create table if it doesn't exist
+                $pdo->exec("CREATE TABLE `site_config` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `site_name` varchar(255) DEFAULT NULL,
+                    `site_description` text,
+                    `site_keywords` text,
+                    `google_analytics_id` varchar(50) DEFAULT NULL,
+                    `google_site_verification` varchar(100) DEFAULT NULL,
+                    `bing_site_verification` varchar(100) DEFAULT NULL,
+                    `openrouter_api_key` varchar(255) DEFAULT NULL,
+                    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id`)
+                )");
+            }
+
+            // Check if any record exists in site_config
+            $stmt = $pdo->query("SELECT COUNT(*) FROM site_config");
+            $count = $stmt->fetchColumn();
+            
+            if ($count == 0) {
+                // Insert new record
+                $stmt = $pdo->prepare("INSERT INTO site_config (google_analytics_id, google_site_verification, bing_site_verification, openrouter_api_key) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$googleAnalyticsId, $googleSiteVerification, $bingSiteVerification, $openrouterApiKey]);
+            } else {
+                // Update existing record
+                $stmt = $pdo->prepare("UPDATE site_config SET google_analytics_id = ?, google_site_verification = ?, bing_site_verification = ?, openrouter_api_key = ?");
+                $stmt->execute([$googleAnalyticsId, $googleSiteVerification, $bingSiteVerification, $openrouterApiKey]);
+            }
+            
+            // Save integration settings in settings object for backward compatibility
+            $settings->set('google_analytics_id', $googleAnalyticsId);
+            $settings->set('google_site_verification', $googleSiteVerification);
+            $settings->set('bing_site_verification', $bingSiteVerification);
+            $settings->set('openrouter_api_key', $openrouterApiKey);
+            
+            $success = true;
+            $_SESSION['message'] = 'Integration settings updated successfully';
+            $_SESSION['message_type'] = 'success';
+        } catch (PDOException $e) {
+            $error = 'Database error: ' . $e->getMessage();
+        }
+    }
 }
 
 // Get current settings
@@ -83,6 +138,12 @@ $smtpUsername = $settings->get('smtp_username', '');
 $smtpPassword = $settings->get('smtp_password', '');
 $emailFromAddress = $settings->get('email_from_address', '');
 $emailFromName = $settings->get('email_from_name', 'OneNetly');
+
+// Get integration settings
+$googleAnalyticsId = $settings->get('google_analytics_id', '');
+$googleSiteVerification = $settings->get('google_site_verification', '');
+$bingSiteVerification = $settings->get('bing_site_verification', '');
+$openrouterApiKey = $settings->get('openrouter_api_key', '');
 ?>
 
 <div class="mb-6">
@@ -100,6 +161,11 @@ $emailFromName = $settings->get('email_from_name', 'OneNetly');
         <li class="mr-2" role="presentation">
             <a href="#email-settings" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" id="email-settings-tab" data-tab="email-settings">
                 Email Settings
+            </a>
+        </li>
+        <li class="mr-2" role="presentation">
+            <a href="#integrations" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" id="integrations-tab" data-tab="integrations">
+                Integrations
             </a>
         </li>
     </ul>
@@ -233,6 +299,59 @@ $emailFromName = $settings->get('email_from_name', 'OneNetly');
                         class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Save Email Settings
                 </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Third-party Integrations Tab Content -->
+<div id="integrations-content" class="bg-white rounded-lg shadow overflow-hidden tab-content hidden">
+    <div class="p-6 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-700">Third-Party Integrations</h2>
+        <p class="text-gray-500 mt-1">Configure external services and APIs</p>
+    </div>
+    
+    <div class="p-6">
+        <form method="POST">
+            <div class="grid grid-cols-1 gap-6">
+                <div>
+                    <label for="google_analytics_id" class="block text-gray-700 text-sm font-bold mb-2">Google Analytics</label>
+                    <input type="text" id="google_analytics_id" name="google_analytics_id" value="<?php echo htmlspecialchars($googleAnalyticsId); ?>" 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="UA-XXXXXXXXX-X or G-XXXXXXXXX">
+                    <p class="mt-2 text-sm text-gray-500">Enter your Google Analytics Tracking ID.</p>
+                </div>
+                
+                <div>
+                    <label for="google_site_verification" class="block text-gray-700 text-sm font-bold mb-2">Google Search Console</label>
+                    <input type="text" id="google_site_verification" name="google_site_verification" value="<?php echo htmlspecialchars($googleSiteVerification); ?>" 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="Google site verification code">
+                    <p class="mt-2 text-sm text-gray-500">Enter the Google site verification meta tag content.</p>
+                </div>
+                
+                <div>
+                    <label for="bing_site_verification" class="block text-gray-700 text-sm font-bold mb-2">Bing Webmaster Tools</label>
+                    <input type="text" id="bing_site_verification" name="bing_site_verification" value="<?php echo htmlspecialchars($bingSiteVerification); ?>" 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="Bing site verification code">
+                    <p class="mt-2 text-sm text-gray-500">Enter the Bing site verification meta tag content.</p>
+                </div>
+                
+                <div>
+                    <label for="openrouter_api_key" class="block text-gray-700 text-sm font-bold mb-2">OpenRouter API Key</label>
+                    <input type="text" id="openrouter_api_key" name="openrouter_api_key" value="<?php echo htmlspecialchars($openrouterApiKey); ?>" 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="sk-or-v1-...">
+                    <p class="mt-2 text-sm text-gray-500">Enter your OpenRouter API key for the AI writing assistant. Get a free key at <a href="https://openrouter.ai/" target="_blank" class="text-indigo-600 hover:text-indigo-500">openrouter.ai</a>.</p>
+                </div>
+                
+                <div class="flex items-center justify-end mt-6">
+                    <button type="submit" name="update_integrations" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Save Integration Settings
+                    </button>
+                </div>
             </div>
         </form>
     </div>

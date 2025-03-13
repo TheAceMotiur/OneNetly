@@ -51,11 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all blogs
+// Get current page number
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max(1, $page); // Ensure page is at least 1
 $status = isset($_GET['status']) ? $_GET['status'] : 'all';
 
+// Admin can see all blogs
 $result = $blog->getAllBlogs($page, 15, $status);
 $blogs = $result['blogs'];
 $pagination = $result['pagination'];
@@ -66,9 +67,7 @@ $pagination = $result['pagination'];
     <h1 class="text-2xl font-semibold">Manage Blog Posts</h1>
     
     <div>
-        <a href="create-category.php" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-            New Category
-        </a>
+        <!-- Remove "New Category" button -->
         <a href="../create-post.php" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
             New Blog Post
         </a>
@@ -115,7 +114,12 @@ $pagination = $result['pagination'];
                             <?php echo htmlspecialchars($blogPost['title']); ?>
                         </a>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($blogPost['username']); ?></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <?php echo htmlspecialchars($blogPost['username']); ?>
+                        <?php if ($blogPost['user_id'] == $currentUser['id']): ?>
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">You</span>
+                        <?php endif; ?>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <?php if ($blogPost['status'] === 'published'): ?>
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">

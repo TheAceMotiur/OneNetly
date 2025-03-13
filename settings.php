@@ -1,6 +1,5 @@
 <?php
 require_once 'includes/init.php';
-require_once 'includes/ads.php';
 
 // If user is not logged in, redirect to login page
 if (!$user->isLoggedIn()) {
@@ -10,54 +9,93 @@ if (!$user->isLoggedIn()) {
 // Get current user
 $currentUser = $user->getCurrentUser();
 
-// Process settings form submission
+// Process form submission
+$success = false;
+$errors = [];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $errors = [];
-    $success = false;
-    
-    // Handle profile settings
-    if (isset($_POST['profile_submit'])) {
-        $username = trim($_POST['username'] ?? '');
+    // Update profile
+    if (isset($_POST['update_profile'])) {
+        $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
+        $bio = trim($_POST['bio'] ?? '');
+        
+        // Validate input
+        if (empty($name)) {
+            $errors[] = 'Name is required';
+        }
+        
+        if (empty($email)) {
+            $errors[] = 'Email is required';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Invalid email format';
+        }
+        
+        if (empty($errors)) {
+            $result = $user->updateProfile($currentUser['id'], [
+                'name' => $name,
+                'email' => $email,
+                'bio' => $bio
+            ]);
+            
+            if ($result) {
+                $success = true;
+                // Refresh user data
+                $currentUser = $user->getCurrentUser();
+            } else {
+                $errors[] = 'Failed to update profile';
+            }
+        }
+    }
+    
+    // Change password
+    if (isset($_POST['change_password'])) {
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
         
-        // Update user profile
-        $result = $user->updateProfile($username, $email, $currentPassword, $newPassword, $confirmPassword);
+        // Validate input
+        if (empty($currentPassword)) {
+            $errors[] = 'Current password is required';
+        }
         
-        if ($result['success']) {
-            $success = true;
-            $successMessage = $result['message'];
-        } else {
-            $errors[] = $result['message'];
+        if (empty($newPassword)) {
+            $errors[] = 'New password is required';
+        } elseif (strlen($newPassword) < 8) {
+            $errors[] = 'New password must be at least 8 characters';
+        }
+        
+        if ($newPassword !== $confirmPassword) {
+            $errors[] = 'Passwords do not match';
+        }
+        
+        if (empty($errors)) {
+            $result = $user->changePassword($currentUser['id'], $currentPassword, $newPassword);
+            
+            if ($result) {
+                $success = true;
+            } else {
+                $errors[] = 'Failed to update password. Make sure your current password is correct.';
+            }
         }
     }
     
-    // Handle notification settings
-    if (isset($_POST['notification_submit'])) {
-        $emailNotifications = isset($_POST['email_notifications']) ? 1 : 0;
-        
-        // Save notification settings
-        $userSettings->set('email_notifications', $emailNotifications);
-        $success = true;
-        $successMessage = 'Notification settings updated successfully';
-    }
-    
-    // Handle theme settings
-    if (isset($_POST['theme_submit'])) {
+    // Update preferences
+    if (isset($_POST['update_preferences'])) {
         $theme = $_POST['theme'] ?? 'light';
         
-        // Save theme settings
-        $userSettings->set('theme', $theme);
-        $success = true;
-        $successMessage = 'Theme settings updated successfully';
+        $result = $userSettings->set('theme', $theme);
+        
+        if ($result) {
+            $success = true;
+        } else {
+            $errors[] = 'Failed to update preferences';
+        }
     }
 }
 
-// Get current user settings
-$emailNotifications = $userSettings->get('email_notifications', 0);
-$theme = $userSettings->get('theme', 'light');
+// Get current preferences
+$currentTheme = $userSettings->get('theme', 'light');
 ?>
 <!DOCTYPE html>
 <html lang="en" class="<?php echo getThemeClass(); ?>">
@@ -68,229 +106,191 @@ $theme = $userSettings->get('theme', 'light');
     <script src="https://cdn.tailwindcss.com"></script>
     <?php echo getThemeStyles(); ?>
     <?php echo getThemeScript(); ?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="<?php echo getBodyThemeClass(); ?>">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
-        <div class="w-64 bg-indigo-800 text-white">
-            <div class="p-4">
-                <h2 class="text-2xl font-semibold">OneNetly</h2>
+        <div class="w-64 bg-white border-r border-gray-200 text-gray-900">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold">OneNetly</h2>
             </div>
             <nav class="mt-6">
-                <a href="dashboard.php" class="flex items-center py-3 px-4 text-white hover:bg-indigo-700">
+                <a href="dashboard.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
                     <span class="mr-3">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V16C10 15.4477 10.4477 15 11 15H13C13.5523 15 14 15.4477 14 16V20C14 20.5523 14.4477 21 15 21M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    Dashboard
-                </a>
-                <a href="settings.php" class="flex items-center py-3 px-4 bg-indigo-900 text-white">
-                    <span class="mr-3">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    Settings
-                </a>
-                <a href="index.php" class="flex items-center py-3 px-4 text-white hover:bg-indigo-700">
-                    <span class="mr-3">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V16C10 15.4477 10.4477 15 11 15H13C13.5523 15 14 15.4477 14 16V20C14 20.5523 14.4477 21 15 21M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fas fa-home"></i>
                     </span>
                     Home
                 </a>
-                <a href="logout.php" class="flex items-center py-3 px-4 text-white hover:bg-indigo-700">
+                <a href="index.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
                     <span class="mr-3">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 16L21 12M21 12L17 8M21 12H9M13 16V17C13 18.6569 11.6569 20 10 20H6C4.34315 20 3 18.6569 3 17V7C3 5.34315 4.34315 4 6 4H10C11.6569 4 13 5.34315 13 7V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fas fa-book-open"></i>
                     </span>
-                    Logout
+                    Reading List
+                </a>
+                <a href="create-post.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
+                    <span class="mr-3">
+                        <i class="fas fa-edit"></i>
+                    </span>
+                    Write a Story
+                </a>
+                <a href="settings.php" class="flex items-center py-3 px-4 bg-gray-100 text-gray-900">
+                    <span class="mr-3">
+                        <i class="fas fa-cog"></i>
+                    </span>
+                    Settings
+                </a>
+                <a href="logout.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
+                    <span class="mr-3">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </span>
+                    Sign Out
                 </a>
             </nav>
         </div>
         
-        <!-- Content -->
         <div class="flex-1">
             <!-- Header -->
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <header class="bg-white border-b border-gray-200">
+                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <h1 class="text-2xl font-semibold text-gray-900">Settings</h1>
-                    <div class="flex items-center">
-                        <span class="text-sm text-gray-500 mr-4">Welcome, <?php echo htmlspecialchars($currentUser['username']); ?></span>
-                    </div>
                 </div>
             </header>
             
             <!-- Main content -->
-            <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <?php echo displayMessage(); ?>
-                
-                <?php if (isset($success) && $success): ?>
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        <?php echo htmlspecialchars($successMessage); ?>
+            <main class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <?php if ($success): ?>
+                    <div class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+                        <p>Your changes have been saved successfully.</p>
                     </div>
                 <?php endif; ?>
                 
                 <?php if (!empty($errors)): ?>
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        <?php foreach ($errors as $error): ?>
-                            <p><?php echo htmlspecialchars($error); ?></p>
-                        <?php endforeach; ?>
+                    <div class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                        <ul class="list-disc list-inside">
+                            <?php foreach ($errors as $error): ?>
+                                <li><?php echo htmlspecialchars($error); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
                 <?php endif; ?>
                 
-                <!-- Settings Tabs -->
-                <div class="bg-white shadow rounded-lg mb-6">
-                    <div class="border-b border-gray-200">
-                        <nav class="flex -mb-px">
-                            <a href="#profile" class="tab-link active w-1/3 py-4 px-1 text-center border-b-2 border-indigo-500 font-medium text-sm text-indigo-600" data-target="profile-section">
-                                Profile Settings
-                            </a>
-                            <a href="#notifications" class="tab-link w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="notification-section">
-                                Notification Settings
-                            </a>
-                            <a href="#theme" class="tab-link w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="theme-section">
-                                Theme Settings
-                            </a>
-                        </nav>
+                <!-- Profile settings -->
+                <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">Profile Information</h2>
+                        <p class="mt-1 text-sm text-gray-500">
+                            Update your account's profile information.
+                        </p>
                     </div>
                     
-                    <!-- Profile Settings Section -->
-                    <div id="profile-section" class="tab-content p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Settings</h3>
+                    <div class="p-6">
                         <form method="POST" action="">
-                            <div class="mb-4">
-                                <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                                <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" name="username" value="<?php echo htmlspecialchars($currentUser['username']); ?>">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                                <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" name="email" value="<?php echo htmlspecialchars($currentUser['email']); ?>">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="current_password" class="block text-gray-700 text-sm font-bold mb-2">Current Password (required for changes)</label>
-                                <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="current_password" name="current_password">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="new_password" class="block text-gray-700 text-sm font-bold mb-2">New Password (leave blank to keep current)</label>
-                                <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="new_password" name="new_password">
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label for="confirm_password" class="block text-gray-700 text-sm font-bold mb-2">Confirm New Password</label>
-                                <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="confirm_password" name="confirm_password">
-                            </div>
-                            
-                            <div class="flex items-center justify-end">
-                                <button type="submit" name="profile_submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                    Save Changes
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Notification Settings Section -->
-                    <div id="notification-section" class="tab-content p-6 hidden">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Notification Settings</h3>
-                        <form method="POST" action="">
-                            <div class="mb-6">
-                                <div class="flex items-center">
-                                    <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" id="email_notifications" name="email_notifications" <?php echo $emailNotifications ? 'checked' : ''; ?>>
-                                    <label for="email_notifications" class="ml-2 block text-sm text-gray-900">
-                                        Receive email notifications
-                                    </label>
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                                    <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($currentUser['name'] ?? $currentUser['username']); ?>" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
-                                <p class="mt-1 text-sm text-gray-500">We'll send you email notifications about important updates and activities.</p>
-                            </div>
-                            
-                            <div class="flex items-center justify-end">
-                                <button type="submit" name="notification_submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                    Save Preferences
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Theme Settings Section -->
-                    <div id="theme-section" class="tab-content p-6 hidden">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Theme Settings</h3>
-                        <form method="POST" action="">
-                            <div class="mb-6">
-                                <label class="block text-gray-700 text-sm font-bold mb-2">Theme Mode</label>
-                                <div class="mt-2 space-y-4">
-                                    <div class="flex items-center">
-                                        <input id="theme-light" name="theme" type="radio" value="light" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" <?php echo ($theme === 'light') ? 'checked' : ''; ?>>
-                                        <label for="theme-light" class="ml-3 block text-sm text-gray-700">Light Mode</label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input id="theme-dark" name="theme" type="radio" value="dark" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" <?php echo ($theme === 'dark') ? 'checked' : ''; ?>>
-                                        <label for="theme-dark" class="ml-3 block text-sm text-gray-700">Dark Mode</label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input id="theme-system" name="theme" type="radio" value="system" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" <?php echo ($theme === 'system') ? 'checked' : ''; ?>>
-                                        <label for="theme-system" class="ml-3 block text-sm text-gray-700">System Preference</label>
-                                    </div>
+                                
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                                    <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($currentUser['email'] ?? ''); ?>" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                
+                                <div>
+                                    <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+                                    <textarea id="bio" name="bio" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"><?php echo htmlspecialchars($currentUser['bio'] ?? ''); ?></textarea>
+                                    <p class="mt-2 text-sm text-gray-500">Brief description for your profile.</p>
+                                </div>
+                                
+                                <div>
+                                    <button type="submit" name="update_profile" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-green-600 hover:bg-green-700 focus:outline-none">
+                                        Save Profile Information
+                                    </button>
                                 </div>
                             </div>
-                            
-                            <div class="flex items-center justify-end">
-                                <button type="submit" name="theme_submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                    Save Theme
-                                </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Change password -->
+                <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">Change Password</h2>
+                        <p class="mt-1 text-sm text-gray-500">
+                            Ensure your account is using a secure password.
+                        </p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form method="POST" action="">
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                                    <input type="password" name="current_password" id="current_password" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                
+                                <div>
+                                    <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                                    <input type="password" name="new_password" id="new_password" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                
+                                <div>
+                                    <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                                    <input type="password" name="confirm_password" id="confirm_password" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                
+                                <div>
+                                    <button type="submit" name="change_password" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-green-600 hover:bg-green-700 focus:outline-none">
+                                        Change Password
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
-                    <?php displayHorizontalAd(); ?>
+                </div>
+                
+                <!-- Preferences -->
+                <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">Preferences</h2>
+                        <p class="mt-1 text-sm text-gray-500">
+                            Customize your experience.
+                        </p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form method="POST" action="">
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Theme</label>
+                                    <div class="mt-2 space-y-2">
+                                        <div class="flex items-center">
+                                            <input id="theme-light" name="theme" type="radio" value="light" <?php echo $currentTheme === 'light' ? 'checked' : ''; ?> class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                            <label for="theme-light" class="ml-3 block text-sm font-medium text-gray-700">Light</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="theme-dark" name="theme" type="radio" value="dark" <?php echo $currentTheme === 'dark' ? 'checked' : ''; ?> class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                            <label for="theme-dark" class="ml-3 block text-sm font-medium text-gray-700">Dark</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="theme-system" name="theme" type="radio" value="system" <?php echo $currentTheme === 'system' ? 'checked' : ''; ?> class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                            <label for="theme-system" class="ml-3 block text-sm font-medium text-gray-700">System</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <button type="submit" name="update_preferences" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-green-600 hover:bg-green-700 focus:outline-none">
+                                        Save Preferences
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
-    
-    <script>
-        // Tab switching functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabLinks = document.querySelectorAll('.tab-link');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Remove active class from all tabs
-                    tabLinks.forEach(tab => {
-                        tab.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
-                        tab.classList.add('border-transparent', 'text-gray-500');
-                    });
-                    
-                    // Add active class to clicked tab
-                    this.classList.remove('border-transparent', 'text-gray-500');
-                    this.classList.add('active', 'border-indigo-500', 'text-indigo-600');
-                    
-                    // Hide all tab contents
-                    tabContents.forEach(content => {
-                        content.classList.add('hidden');
-                    });
-                    
-                    // Show the selected tab content
-                    const targetId = this.getAttribute('data-target');
-                    document.getElementById(targetId).classList.remove('hidden');
-                });
-            });
-            
-            // Check if URL has a hash and activate that tab
-            if (window.location.hash) {
-                const hash = window.location.hash.substring(1);
-                const tabLink = document.querySelector(`.tab-link[href="#${hash}"]`);
-                if (tabLink) tabLink.click();
-            }
-        });
-    </script>
 </body>
 </html>

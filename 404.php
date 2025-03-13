@@ -46,18 +46,6 @@ require_once 'includes/header.php';
                 <ul class="space-y-2 text-indigo-600">
                     <li><i class="fas fa-angle-right mr-2"></i><a href="index.php" class="hover:underline">Home Page</a></li>
                     <li><i class="fas fa-angle-right mr-2"></i><a href="search.php" class="hover:underline">Search</a></li>
-                    <?php 
-                    // Display some popular categories
-                    $popularCats = array_slice($categories ?? [], 0, 3);
-                    foreach ($popularCats as $cat): 
-                    ?>
-                        <li>
-                            <i class="fas fa-angle-right mr-2"></i>
-                            <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="hover:underline">
-                                <?php echo htmlspecialchars($cat['name']); ?> Category
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>

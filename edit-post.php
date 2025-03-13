@@ -10,10 +10,7 @@ if (!$user->isLoggedIn()) {
 // Get current user
 $currentUser = $user->getCurrentUser();
 
-// Only allow admins to edit posts
-if (!$user->isAdmin()) {
-    redirect('dashboard.php', 'Only administrators can edit blog posts', 'error');
-}
+// Remove admin-only check
 
 // Get the blog post ID
 $postId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -26,11 +23,13 @@ if (!$blogPost) {
     redirect('dashboard.php', 'Blog post not found', 'error');
 }
 
-// Get all categories for the form
-$categories = $category->getAllCategories();
-// Get current post categories
-$blogCategories = $blog->getBlogCategories($postId);
-$selectedCategoryIds = array_map(function($cat) { return $cat['id']; }, $blogCategories);
+// Check if user is the owner of this post or an admin
+if ($blogPost['user_id'] != $currentUser['id'] && !$user->isAdmin()) {
+    redirect('dashboard.php', 'You do not have permission to edit this post', 'error');
+}
+
+// Remove categories retrieval
+// Remove blog categories retrieval
 
 $errors = [];
 
@@ -39,7 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
     $status = $_POST['status'] ?? 'draft';
-    $categoryIds = isset($_POST['categories']) ? $_POST['categories'] : [];
+    // Remove categories
+    $tags = trim($_POST['tags'] ?? '');
     
     // Validate input
     if (empty($title)) {
@@ -55,7 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'title' => $title,
         'content' => $content,
         'status' => $status,
-        'categories' => $categoryIds
+        // Remove categories
+        'tags' => $tags
     ];
     
     // Handle file upload if present
@@ -106,23 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
     <?php echo getThemeStyles(); ?>
     <?php echo getThemeScript(); ?>
-    <script src="https://cdn.tiny.cloud/1/qjlok8e0o411fa94p28nzfzfmjkhej8y6xf3oazjmya1ldkc/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-      tinymce.init({
-        selector: 'textarea#content',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        height: 400,
-        setup: function(editor) {
-            // Update form before submit to avoid validation issues with hidden textarea
-            editor.on('change', function() {
-                tinymce.triggerSave();
-            });
-        }
-      });
-    </script>
+    <!-- Add Quill Rich Text Editor instead of TinyMCE -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="<?php echo getBodyThemeClass(); ?>">
+<body class="bg-white">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <div class="w-64 bg-indigo-800 text-white">
@@ -207,9 +197,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Excerpt field removed -->
                         
                         <div class="mb-4">
-                            <label for="content" class="block text-gray-700 text-sm font-bold mb-2">Content</label>
-                            <textarea id="content" name="content" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="10"><?php echo htmlspecialchars($_POST['content'] ?? $blogPost['content']); ?></textarea>
+                            <label for="editor-container" class="block text-gray-700 text-sm font-bold mb-2">Content</label>
+                            <!-- Replace textarea with Quill editor container -->
+                            <div id="editor-container" class="border rounded-lg" style="height: 400px;"><?php echo $_POST['content'] ?? $blogPost['content']; ?></div>
+                            <input type="hidden" id="content" name="content" value="<?php echo htmlspecialchars($_POST['content'] ?? $blogPost['content']); ?>">
                             <div class="text-sm text-gray-500 mt-1">Edit your blog post content here.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags (comma-separated)</label>
+                            <div class="flex flex-wrap items-center border rounded p-2 bg-white">
+                                <div class="tag-container flex flex-wrap gap-2 w-full" id="tagContainer">
+                                    <!-- Tags will be added here dynamically -->
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="tagInput" 
+                                    placeholder="Type and press Enter to add tags..."
+                                    class="flex-grow border-none outline-none p-1 text-sm" 
+                                >
+                            </div>
+                            <input type="hidden" id="tags" name="tags" value="<?php echo htmlspecialchars($_POST['tags'] ?? $blogPost['tags'] ?? ''); ?>">
+                            <div class="text-sm text-gray-500 mt-1">Add relevant tags to help readers find your content (e.g., technology, programming, web development)</div>
                         </div>
                         
                         <div class="mb-4">
@@ -224,31 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <p class="text-sm text-gray-500 mt-1">Upload a new image to replace the current one (optional). Recommended size: 1200x628 pixels.</p>
                         </div>
                         
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Categories</label>
-                            <?php if (empty($categories)): ?>
-                                <p class="text-gray-600">No categories available.</p>
-                            <?php else: ?>
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                    <?php foreach ($categories as $cat): ?>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="category_<?php echo $cat['id']; ?>" name="categories[]" value="<?php echo $cat['id']; ?>" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                                <?php 
-                                                if ((isset($_POST['categories']) && in_array($cat['id'], $_POST['categories'])) || 
-                                                    (!isset($_POST['categories']) && in_array($cat['id'], $selectedCategoryIds))) {
-                                                    echo 'checked';
-                                                }
-                                                ?>
-                                            >
-                                            <label for="category_<?php echo $cat['id']; ?>" class="ml-2 text-sm text-gray-700">
-                                                <?php echo htmlspecialchars($cat['name']); ?>
-                                            </label>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
-                            <p class="text-sm text-gray-500 mt-1">Select one or more categories for your blog post.</p>
-                        </div>
+                        <!-- Remove categories section -->
                         
                         <!-- Remove demo_link and download_link form fields -->
                         
@@ -281,8 +266,186 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </form>
                 </div>
                 <?php displayHorizontalAd(); ?>
-            </div>
+            </main>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Quill editor
+            var quill = new Quill('#editor-container', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block', 'link', 'image'],
+                        [{ 'align': [] }],
+                        ['clean']
+                    ]
+                },
+                placeholder: 'Write your content here...'
+            });
+            
+            // Update hidden form field with Quill content before submitting
+            var form = document.querySelector('form');
+            var contentInput = document.querySelector('#content');
+            
+            form.onsubmit = function() {
+                contentInput.value = quill.root.innerHTML;
+                return true;
+            };
+            
+            // Show/hide settings panel functionality (if needed)
+            // ...existing code...
+
+            // Tag management
+            const tagInput = document.getElementById('tagInput');
+            const tagContainer = document.getElementById('tagContainer');
+            const tagsHiddenInput = document.getElementById('tags');
+            const commonTags = ['technology', 'programming', 'web development', 'design', 'marketing', 
+                                'business', 'productivity', 'science', 'health', 'finance', 
+                                'education', 'travel', 'food', 'lifestyle', 'sports'];
+            
+            // Create tag suggestion dropdown
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'tag-suggestions hidden absolute z-10 bg-white border rounded shadow-md w-full max-h-40 overflow-y-auto mt-1';
+            tagInput.parentNode.style.position = 'relative';
+            tagInput.parentNode.appendChild(suggestionsContainer);
+            
+            function addTag(tagText) {
+                if (!tagText) return;
+                
+                // Check for duplicates
+                const existingTags = Array.from(document.querySelectorAll('.tag-item')).map(tag => tag.dataset.value);
+                if (existingTags.includes(tagText.trim())) return;
+                
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag-item inline-flex items-center bg-indigo-100 text-indigo-800 rounded-full px-3 py-1 text-sm';
+                tagElement.dataset.value = tagText.trim();
+                
+                const tagContent = document.createElement('span');
+                tagContent.textContent = tagText.trim();
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'ml-1 text-indigo-600 hover:text-indigo-900 focus:outline-none';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.onclick = function() {
+                    tagContainer.removeChild(tagElement);
+                    updateHiddenTagsInput();
+                };
+                
+                tagElement.appendChild(tagContent);
+                tagElement.appendChild(removeBtn);
+                tagContainer.appendChild(tagElement);
+                
+                // Clear input
+                tagInput.value = '';
+                updateHiddenTagsInput();
+                hideSuggestions();
+            }
+            
+            function updateHiddenTagsInput() {
+                const tags = Array.from(document.querySelectorAll('.tag-item')).map(tag => tag.dataset.value);
+                tagsHiddenInput.value = tags.join(',');
+            }
+            
+            // Add functionality to load tag suggestions from API
+            async function fetchTagSuggestions(inputValue) {
+                try {
+                    const response = await fetch(`./api/suggest-tags.php?q=${encodeURIComponent(inputValue)}`);
+                    const data = await response.json();
+                    return data.tags || [];
+                } catch (error) {
+                    console.error('Error fetching tag suggestions:', error);
+                    return [];
+                }
+            }
+
+            async function showSuggestions(inputValue) {
+                suggestionsContainer.innerHTML = '';
+                hideSuggestions();
+                
+                if (!inputValue) return;
+
+                let matchingTags = [];
+                
+                // First check local common tags
+                const localMatchingTags = commonTags.filter(tag => 
+                    tag.toLowerCase().includes(inputValue.toLowerCase()) &&
+                    !Array.from(document.querySelectorAll('.tag-item')).map(t => t.dataset.value).includes(tag)
+                );
+                
+                // Then fetch from API if needed
+                if (localMatchingTags.length < 5) {
+                    const apiTags = await fetchTagSuggestions(inputValue);
+                    matchingTags = [...new Set([...localMatchingTags, ...apiTags])];
+                } else {
+                    matchingTags = localMatchingTags;
+                }
+                
+                if (matchingTags.length === 0) return;
+                
+                matchingTags.forEach(tag => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item p-2 hover:bg-gray-100 cursor-pointer text-sm';
+                    item.textContent = tag;
+                    item.onclick = function() {
+                        addTag(tag);
+                    };
+                    suggestionsContainer.appendChild(item);
+                });
+                
+                suggestionsContainer.classList.remove('hidden');
+            }
+            
+            function hideSuggestions() {
+                suggestionsContainer.classList.add('hidden');
+            }
+            
+            // Initialize existing tags if present
+            if (tagsHiddenInput.value) {
+                const initialTags = tagsHiddenInput.value.split(',');
+                initialTags.forEach(tag => {
+                    if (tag.trim()) addTag(tag);
+                });
+            }
+            
+            // Event listeners
+            tagInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    const value = tagInput.value.trim();
+                    if (value) {
+                        addTag(value);
+                    }
+                } else if (e.key === 'Escape') {
+                    hideSuggestions();
+                }
+            });
+            
+            tagInput.addEventListener('input', function() {
+                showSuggestions(tagInput.value);
+            });
+            
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!tagInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                    hideSuggestions();
+                }
+            });
+            
+            // Update form submission
+            var form = document.querySelector('form');
+            var contentInput = document.querySelector('#content');
+            
+            form.onsubmit = function() {
+                contentInput.value = quill.root.innerHTML;
+                updateHiddenTagsInput(); // Ensure tags are updated
+                return true;
+            };
+        });
+    </script>
 </body>
 </html>

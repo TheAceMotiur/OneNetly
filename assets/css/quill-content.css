@@ -1,0 +1,166 @@
+/* Medium-inspired styling for Quill content */
+.quill-content {
+    font-family: 'Merriweather', Georgia, serif;
+    color: #292929;
+    line-height: 1.8;
+    letter-spacing: -0.003em;
+    font-size: 1.1rem;
+    max-width: 740px;
+    margin: 0 auto;
+}
+
+/* Typography */
+.quill-content h1 {
+    font-size: 2.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.quill-content h2 {
+    font-size: 2rem;
+    margin-top: 2.2rem;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    line-height: 1.35;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.quill-content h3 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+    line-height: 1.4;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.quill-content p {
+    margin-bottom: 1.5rem;
+}
+
+/* Lists */
+.quill-content ul, .quill-content ol {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+}
+
+.quill-content ul {
+    list-style-type: disc;
+}
+
+.quill-content ol {
+    list-style-type: decimal;
+}
+
+.quill-content li {
+    margin-bottom: 0.5rem;
+}
+
+/* Blockquotes - Medium style */
+.quill-content blockquote {
+    border-left: 3px solid #292929;
+    padding-left: 1.5rem;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: #555;
+}
+
+/* Code blocks */
+.quill-content pre {
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.9rem;
+}
+
+.quill-content code {
+    background-color: #f0f0f0;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.85em;
+}
+
+/* Images */
+.quill-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+    border-radius: 4px;
+}
+
+/* Text formatting */
+.quill-content strong {
+    font-weight: 700;
+}
+
+.quill-content em {
+    font-style: italic;
+}
+
+/* Links */
+.quill-content a {
+    color: #3b82f6;
+    text-decoration: none;
+    border-bottom: 1px solid #3b82f6;
+    padding-bottom: 1px;
+    transition: all 0.2s ease;
+}
+
+.quill-content a:hover {
+    border-bottom-width: 2px;
+}
+
+/* Tables */
+.quill-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.quill-content th, 
+.quill-content td {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.quill-content th {
+    background-color: #f9fafb;
+    font-weight: 600;
+}
+
+/* Medium-style image captions */
+.quill-content .image-caption {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Spacing between paragraphs */
+.quill-content p + p {
+    margin-top: -0.5rem;
+}
+
+/* Medium-style dropcap for first paragraph */
+.quill-content .first-letter:first-letter {
+    float: left;
+    font-size: 4rem;
+    line-height: 1;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    margin-top: 0.1rem;
+}

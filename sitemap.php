@@ -4,9 +4,6 @@ require_once 'includes/init.php';
 // Get current user if logged in
 $currentUser = $user->getCurrentUser();
 
-// Get all categories
-$categories = $category->getAllCategories();
-
 // Get all blog posts (limit to 100 most recent)
 $blogs = $blog->getAllBlogs(1, 100, 'published')['blogs'];
 
@@ -79,23 +76,6 @@ require_once 'includes/header.php';
                     </a>
                 </li>
             </ul>
-        </div>
-        
-        <div class="mb-10">
-            <h2 class="text-xl font-bold mb-4 pb-2 border-b">Categories</h2>
-            <?php if (empty($categories)): ?>
-                <p>No categories found.</p>
-            <?php else: ?>
-                <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <?php foreach ($categories as $cat): ?>
-                        <li>
-                            <a href="category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="text-indigo-600 hover:text-indigo-800 flex items-center">
-                                <i class="fas fa-folder mr-2"></i> <?php echo htmlspecialchars($cat['name']); ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
         </div>
         
         <div>

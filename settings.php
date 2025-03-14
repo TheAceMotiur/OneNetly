@@ -197,10 +197,14 @@ $currentTheme = $userSettings->get('theme', 'light');
                                     <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($currentUser['email'] ?? ''); ?>" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 
-                                <div>
+                                <div class="mb-6">
                                     <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
-                                    <textarea id="bio" name="bio" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"><?php echo htmlspecialchars($currentUser['bio'] ?? ''); ?></textarea>
-                                    <p class="mt-2 text-sm text-gray-500">Brief description for your profile.</p>
+                                    <textarea id="bio" name="bio" rows="4" 
+                                        class="shadow-sm mt-1 block w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        placeholder="Write a brief bio about yourself"><?php echo htmlspecialchars($currentUser['bio'] ?? ''); ?></textarea>
+                                    <p class="mt-2 text-sm text-gray-500">
+                                        Brief description for your profile. This appears on your profile page and in your stories.
+                                    </p>
                                 </div>
                                 
                                 <div>

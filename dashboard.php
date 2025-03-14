@@ -56,17 +56,17 @@ if ($isAdmin) {
                     </span>
                     Home
                 </a>
-                <a href="reading-list.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
-                    <span class="mr-3">
-                        <i class="fas fa-bookmark"></i>
-                    </span>
-                    Reading List
+                <a href="reading-list.php" class="flex items-center py-3 px-4 <?php echo $currentPage === 'reading-list' ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100'; ?>">
+                    <i class="fas fa-bookmark w-5 mr-3 text-gray-400"></i>
+                    <span>Reading List</span>
                 </a>
-                <a href="ai-writer.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
-                    <span class="mr-3">
-                        <i class="fas fa-robot"></i>
-                    </span>
-                    AI Writer
+                <a href="followers.php" class="flex items-center py-3 px-4 <?php echo $currentPage === 'followers' ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100'; ?>">
+                    <i class="fas fa-users w-5 mr-3 text-gray-400"></i>
+                    <span>Followers</span>
+                </a>
+                <a href="ai-writer.php" class="flex items-center py-3 px-4 <?php echo $currentPage === 'ai-writer' ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100'; ?>">
+                    <i class="fas fa-robot w-5 mr-3 text-gray-400"></i>
+                    <span>AI Writer</span>
                 </a>
                 <a href="create-post.php" class="flex items-center py-3 px-4 text-gray-700 hover:bg-gray-50">
                     <span class="mr-3">
@@ -111,7 +111,7 @@ if ($isAdmin) {
                     <!-- Views -->
                     <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
                         <h2 class="text-lg font-medium text-gray-900 mb-1">Story Views</h2>
-                        <p class="text-3xl font-bold text-gray-900">0</p>
+                        <p class="text-3xl font-bold text-gray-900"><?php echo $blog->getTotalViews(); ?></p>
                         <p class="text-sm text-gray-500 mt-2">Views in the last 30 days</p>
                     </div>
                     
@@ -125,7 +125,7 @@ if ($isAdmin) {
                     <!-- Followers -->
                     <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
                         <h2 class="text-lg font-medium text-gray-900 mb-1">Followers</h2>
-                        <p class="text-3xl font-bold text-gray-900">0</p>
+                        <p class="text-3xl font-bold text-gray-900"><?php echo $user->countFollowers($currentUser['id']); ?></p>
                         <p class="text-sm text-gray-500 mt-2">People following you</p>
                     </div>
                 </div>

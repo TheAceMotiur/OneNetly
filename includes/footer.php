@@ -35,62 +35,7 @@
         </script>
     </footer>
 
-    <!-- Mobile menu script -->
-    <script>
-        // Mobile category menu toggle
-        document.getElementById('mobile-category-toggle')?.addEventListener('click', function() {
-            const menu = document.getElementById('mobile-category-menu');
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
-        });
-        
-        // Dropdown menus
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            const menu = dropdown.querySelector('.dropdown-menu');
-            
-            // On smaller screens, handle click events for dropdowns
-            if (window.innerWidth < 1024) {
-                dropdown.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    menu.classList.toggle('hidden');
-                });
-            }
-        });
-        
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
-        
-        // User dropdown menu
-        document.getElementById('user-menu-button')?.addEventListener('click', function() {
-            const dropdown = document.getElementById('user-menu-dropdown');
-            dropdown.classList.toggle('hidden');
-        });
-        
-        // Close mobile menu and dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const userMenuDropdown = document.getElementById('user-menu-dropdown');
-            const userMenuButton = document.getElementById('user-menu-button');
-            
-            // Close mobile menu when clicking outside
-            if (mobileMenu && mobileMenuButton && 
-                !mobileMenu.contains(e.target) && 
-                !mobileMenuButton.contains(e.target)) {
-                mobileMenu.classList.add('hidden');
-            }
-            
-            // Close user menu dropdown when clicking outside
-            if (userMenuDropdown && userMenuButton && 
-                !userMenuDropdown.contains(e.target) && 
-                !userMenuButton.contains(e.target)) {
-                userMenuDropdown.classList.add('hidden');
-            }
-        });
-    </script>
+    <!-- Navigation and Menu Scripts -->
+    <script src="assets/js/navigation.js"></script>
 </body>
 </html>

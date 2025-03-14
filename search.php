@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/init.php';
 require_once 'includes/ads.php';
+require_once 'includes/sidebar-components.php';
 
 // Get search query and current page
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
@@ -86,17 +87,28 @@ require_once 'includes/header.php';
                         <h2 class="text-xl font-semibold mb-2">No results found</h2>
                         <p class="text-gray-600">We couldn't find any content matching "<?php echo htmlspecialchars($searchQuery); ?>"</p>
                         <div class="mt-6">
-                            <h3 class="font-medium mb-2">Suggestions:</h3>
-                            <ul class="text-gray-600 text-sm list-disc list-inside">
-                                <li>Check your spelling</li>
-                                <li>Try more general keywords</li>
-                                <li>Try different keywords</li>
-                                <li>Try fewer keywords</li>
-                            </ul>
+                            <h3 class="font-medium mb-2">You searched for tag: "<?php echo htmlspecialchars($searchQuery); ?>"</h3>
+                            <p class="text-gray-600">Try browsing our other popular tags below:</p>
+                            <div class="flex flex-wrap gap-2 mt-4 justify-center">
+                                <?php 
+                                $popularTags = $blog->getPopularTags(5);
+                                foreach ($popularTags as $tag): ?>
+                                    <a href="search.php?q=<?php echo urlencode($tag['name']); ?>" 
+                                       class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 text-sm rounded-full transition">
+                                        <?php echo htmlspecialchars($tag['name']); ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
                 <?php else: ?>
-                    <p class="text-gray-600 mb-6">Found <?php echo $searchResults['pagination']['total']; ?> results for "<?php echo htmlspecialchars($searchQuery); ?>"</p>
+                    <p class="text-gray-600 mb-6">
+                        <?php if (strpos($searchQuery, ',') === false): ?>
+                            Found <?php echo $searchResults['pagination']['total']; ?> posts tagged with "<?php echo htmlspecialchars($searchQuery); ?>"
+                        <?php else: ?>
+                            Found <?php echo $searchResults['pagination']['total']; ?> results for "<?php echo htmlspecialchars($searchQuery); ?>"
+                        <?php endif; ?>
+                    </p>
                     
                     <?php 
                     // Counter for inserting ads
@@ -219,10 +231,11 @@ require_once 'includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- Remove Categories Widget -->
+        <!-- Who to Follow -->
+        <?php displayWhoToFollow(); ?>
         
-        <!-- Second Sidebar Ad - Removing this ad -->
-        <?php // displaySidebarAd(); ?>
+        <!-- Recommended Topics -->
+        <?php displayRecommendedTopics(); ?>
     </div>
 </div>
 

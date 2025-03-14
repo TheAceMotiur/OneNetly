@@ -200,7 +200,10 @@ createApp({
                 
                 if (contentType.value === 'title') {
                     // Clean up title format when receiving the response
-                    generatedTitle.value = response.data.result.replace(/^Title\s*:\s*/i, '');
+                    generatedTitle.value = response.data.result
+                        .replace(/^"|"$/g, '') // Remove wrapping quotes
+                        .replace(/^Title\s*:\s*/i, '') // Remove "Title:" prefix
+                        .trim();
                 } else if (contentType.value === 'content') {
                     generatedContent.value = response.data.result;
                 } else {

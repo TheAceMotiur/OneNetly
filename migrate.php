@@ -71,6 +71,10 @@ try {
         $output .= "\n<span class='info'>Comments table has been created successfully! The comments feature is now available.</span>\n";
     }
     
+    if (in_array('010_create_follows_table.php', $result['executed'])) {
+        $output .= "\n<span class='info'>Follows table has been created successfully! The follow feature is now available.</span>\n";
+    }
+    
     if ($isBrowser) {
         echo $output;
     } else {

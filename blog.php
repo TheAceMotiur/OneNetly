@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/init.php';
 require_once 'includes/ads.php';
+require_once 'includes/sidebar-components.php';
 
 // Get slug from URL
 $slug = $_GET['slug'] ?? '';
@@ -27,6 +28,11 @@ if (empty($blogPost) || ($blogPost['status'] !== 'published' &&
 
 // Track post view
 $blog->trackPostView($blogPost['id']);
+
+// Track tag views if user is logged in
+if ($user->isLoggedIn() && !empty($blogPost['tags'])) {
+    $blog->trackTagView($currentUser['id'], $blogPost['tags']);
+}
 
 // Get categories for this post
 $blogCategories = $blog->getCategoriesForPost($blogPost['id']);
@@ -162,6 +168,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content']) &&
     }
 }
 
+// Check if user is following the author
+$isFollowing = false;
+$followerCount = $user->countFollowers($blogPost['user_id']);
+
+if ($user->isLoggedIn() && $currentUser['id'] != $blogPost['user_id']) {
+    $isFollowing = $user->isFollowing($currentUser['id'], $blogPost['user_id']);
+}
+
 // Include header
 require_once 'includes/header.php';
 ?>
@@ -196,9 +210,19 @@ require_once 'includes/header.php';
                 <div>
                     <div class="flex items-center">
                         <h3 class="font-medium text-gray-900"><?php echo htmlspecialchars($postAuthor['username'] ?? 'Anonymous'); ?></h3>
-                        <button class="ml-2 px-3 py-1 text-sm bg-gray-100 text-green-600 rounded-full hover:bg-green-50 hover:text-green-700">Follow</button>
+                        <?php if ($user->isLoggedIn() && $currentUser['id'] != $postAuthor['id']): ?>
+                            <button class="follow-btn ml-2 px-3 py-1 text-sm <?php echo $isFollowing ? 'bg-gray-100 text-gray-600' : 'bg-gray-100 text-green-600'; ?> rounded-full hover:<?php echo $isFollowing ? 'bg-gray-200' : 'bg-green-50 hover:text-green-700'; ?>"
+                                    data-user-id="<?php echo $postAuthor['id']; ?>"
+                                    data-action="<?php echo $isFollowing ? 'unfollow' : 'follow'; ?>">
+                                <?php echo $isFollowing ? 'Following' : 'Follow'; ?>
+                            </button>
+                        <?php elseif (!$user->isLoggedIn()): ?>
+                            <a href="login.php" class="ml-2 px-3 py-1 text-sm bg-gray-100 text-green-600 rounded-full hover:bg-green-50 hover:text-green-700">Follow</a>
+                        <?php endif; ?>
                     </div>
                     <div class="flex items-center text-sm text-gray-500 mt-1">
+                        <span class="follower-count"><?php echo $followerCount; ?></span> Followers
+                        <span class="mx-2">·</span>
                         <span><?php echo date('M d, Y', strtotime($blogPost['created_at'])); ?></span>
                         <span class="mx-2">·</span>
                         <span><?php echo ceil(str_word_count(strip_tags($blogPost['content'])) / 200); ?> min read</span>
@@ -218,6 +242,7 @@ require_once 'includes/header.php';
                 <div class="flex space-x-4">
                     <?php if ($user->isLoggedIn()): ?>
                         <form method="POST" action="">
+                            <input type="hidden" name="blog_id" value="<?php echo $blogPost['id']; ?>">
                             <?php if (!$isInReadingList): ?>
                                 <button type="submit" name="add_to_reading_list" class="text-gray-500 hover:text-gray-900 flex items-center">
                                     <i class="far fa-bookmark mr-1"></i> Save
@@ -257,16 +282,16 @@ require_once 'includes/header.php';
             </div>
             
             <?php if (!empty($blogPost['tags'])): ?>
-            <div class="flex flex-wrap gap-2 mb-8 mt-8 pt-6 border-t">
-                <?php foreach (explode(',', $blogPost['tags']) as $tag): ?>
-                    <?php $tag = trim($tag); ?>
-                    <?php if (!empty($tag)): ?>
-                        <a href="search.php?q=<?php echo urlencode($tag); ?>" class="bg-gray-100 text-gray-800 px-3 py-1 text-sm rounded-full hover:bg-gray-200">
-                            <?php echo htmlspecialchars($tag); ?>
-                        </a>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
+                <div class="flex flex-wrap gap-2 mb-8 mt-8 pt-6 border-t">
+                    <?php foreach (explode(',', $blogPost['tags']) as $tag): ?>
+                        <?php $tag = trim($tag); ?>
+                        <?php if (!empty($tag)): ?>
+                            <a href="search.php?q=<?php echo urlencode($tag); ?>" class="bg-gray-100 text-gray-800 px-3 py-1 text-sm rounded-full hover:bg-gray-200">
+                                <?php echo htmlspecialchars($tag); ?>
+                            </a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
             
             <div class="border-t border-b py-6 my-6">
@@ -284,7 +309,11 @@ require_once 'includes/header.php';
                             </p>
                         </div>
                     </div>
-                    <button class="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Follow</button>
+                    <button class="follow-btn px-4 py-2 <?php echo $isFollowing ? 'bg-gray-200 text-gray-700' : 'bg-green-600 text-white'; ?> rounded-full hover:<?php echo $isFollowing ? 'bg-gray-300' : 'bg-green-700'; ?>"
+                            data-user-id="<?php echo $postAuthor['id']; ?>"
+                            data-action="<?php echo $isFollowing ? 'unfollow' : 'follow'; ?>">
+                        <?php echo $isFollowing ? 'Following' : 'Follow'; ?>
+                    </button>
                 </div>
             </div>
         </div>
@@ -301,8 +330,8 @@ require_once 'includes/header.php';
                     <?php if (!empty($post['featured_image'])): ?>
                         <div class="w-full h-40 overflow-hidden">
                             <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" 
-                                 alt="<?php echo htmlspecialchars($post['title']); ?>" 
-                                 class="w-full h-full object-cover">
+                                alt="<?php echo htmlspecialchars($post['title']); ?>" 
+                                class="w-full h-full object-cover">
                         </div>
                     <?php endif; ?>
                     <div class="p-4">
@@ -315,13 +344,11 @@ require_once 'includes/header.php';
                             </div>
                             <span class="text-xs font-medium"><?php echo htmlspecialchars($author['username'] ?? 'Anonymous'); ?></span>
                         </div>
-                        
                         <h3 class="text-lg font-bold mb-2 line-clamp-2">
                             <a href="<?php echo htmlspecialchars($post['slug']); ?>" class="text-gray-900 hover:text-gray-700 transition">
                                 <?php echo htmlspecialchars($post['title']); ?>
                             </a>
                         </h3>
-                        
                         <p class="text-gray-500 text-sm mb-2">
                             <?php echo date('M d', strtotime($post['created_at'])); ?> · 
                             <?php echo ceil(str_word_count(strip_tags($post['content'])) / 200); ?> min read
@@ -332,6 +359,15 @@ require_once 'includes/header.php';
         </div>
     </div>
     <?php endif; ?>
+    
+    <!-- Add sidebar components after related posts section -->
+    <div class="my-12">
+        <!-- Who to Follow -->
+        <?php displayWhoToFollow(); ?>
+        
+        <!-- Recommended Topics -->
+        <?php displayRecommendedTopics(); ?>
+    </div>
     
     <!-- Comments Section -->
     <div id="comments" class="my-12">
@@ -409,5 +445,59 @@ require_once 'includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+// Follow/Unfollow functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all follow buttons
+    const followButtons = document.querySelectorAll('.follow-btn');
+    
+    // Add click event listener to each button
+    followButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            const action = this.getAttribute('data-action');
+            
+            // Send AJAX request
+            fetch('follow.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `action=${action}&user_id=${userId}&referrer=${window.location.href}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button text and styles
+                    if (data.isFollowing) {
+                        this.textContent = 'Following';
+                        this.classList.remove('bg-green-600', 'text-white', 'hover:bg-green-700');
+                        this.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                        this.setAttribute('data-action', 'unfollow');
+                    } else {
+                        this.textContent = 'Follow';
+                        this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                        this.classList.add('bg-green-600', 'text-white', 'hover:bg-green-700');
+                        this.setAttribute('data-action', 'follow');
+                    }
+                    
+                    // Update follower count if present on page
+                    const followerCountElement = document.querySelector('.follower-count');
+                    if (followerCountElement) {
+                        followerCountElement.textContent = data.followerCount;
+                    }
+                } else {
+                    console.error('Error:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

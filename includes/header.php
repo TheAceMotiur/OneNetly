@@ -199,6 +199,11 @@ try {
                                     <span class="block px-4 py-1 text-sm text-gray-900 font-medium">
                                         <?php echo htmlspecialchars($currentUser['username']); ?>
                                     </span>
+                                    <?php if (!empty($currentUser['bio'])): ?>
+                                    <span class="block px-4 py-1 text-xs text-gray-500 line-clamp-2">
+                                        <?php echo htmlspecialchars($currentUser['bio']); ?>
+                                    </span>
+                                    <?php endif; ?>
                                     <span class="block px-4 py-1 text-xs text-gray-500">
                                         <?php echo htmlspecialchars($currentUser['email']); ?>
                                     </span>
@@ -211,6 +216,9 @@ try {
                                     <i class="fas fa-cog w-5 mr-2"></i> Admin
                                 </a>
                                 <?php endif; ?>
+                                <a href="followers.php" class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                                    <i class="fas fa-users w-5 mr-2"></i> Followers
+                                </a>
                                 <a href="reading-list.php" class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                     <i class="fas fa-bookmark w-5 mr-2"></i> Reading List
                                 </a>
@@ -316,6 +324,9 @@ try {
                             <i class="fas fa-cog mr-2"></i> Admin
                         </a>
                         <?php endif; ?>
+                        <a href="followers.php" class="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-users mr-2"></i> Followers
+                        </a>
                         <a href="reading-list.php" class="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">
                             <i class="fas fa-bookmark mr-2"></i> Reading List
                         </a>

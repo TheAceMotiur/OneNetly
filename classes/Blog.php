@@ -1075,4 +1075,133 @@ class Blog {
         
         return implode(', ', $tagArray);
     }
+
+    /**
+     * Get popular tags from blog posts
+     * 
+     * @param int $limit Number of tags to return
+     * @return array List of popular tags with count
+     */
+    public function getPopularTags($limit = 10)
+    {
+        // Get tags from all blog posts, count occurrences and sort by popularity
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT TRIM(t.tag) as name, COUNT(*) as count
+                FROM (
+                    SELECT b.id, SUBSTRING_INDEX(SUBSTRING_INDEX(REPLACE(CONCAT(b.tags, ','), ', ', ','), ',', n.n), ',', -1) tag
+                    FROM blogs b
+                    JOIN (
+                        SELECT 1 + tens.n + hundreds.n * 10 as n
+                        FROM (SELECT 0 as n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) tens
+                        CROSS JOIN (SELECT 0 as n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) hundreds
+                        LIMIT 100
+                    ) n ON LENGTH(REPLACE(CONCAT(b.tags, ','), ', ', ',')) - LENGTH(REPLACE(REPLACE(CONCAT(b.tags, ','), ', ', ','), ',', '')) >= n.n - 1
+                    WHERE b.tags IS NOT NULL AND b.tags != ''
+                ) t
+                WHERE t.tag != ''
+                GROUP BY TRIM(t.tag)
+                ORDER BY count DESC
+                LIMIT :limit
+            ");
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            // Fallback if the query fails
+            return [];
+        }
+    }
+
+    /**
+     * Track a tag view for a user
+     */
+    public function trackTagView($userId, $tags) {
+        try {
+            // Split tags and clean them
+            $tagArray = array_map('trim', explode(',', $tags));
+            
+            foreach ($tagArray as $tag) {
+                if (empty($tag)) continue;
+                
+                $sql = "INSERT INTO tag_views (user_id, tag, view_count) 
+                        VALUES (:user_id, :tag, 1)
+                        ON DUPLICATE KEY UPDATE 
+                        view_count = view_count + 1,
+                        last_viewed = CURRENT_TIMESTAMP";
+                        
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([
+                    'user_id' => $userId,
+                    'tag' => strtolower($tag)
+                ]);
+            }
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get personalized feed based on user's viewing history
+     */
+    public function getPersonalizedFeed($userId, $page = 1, $limit = 10) {
+        try {
+            // Get user's most viewed tags
+            $sql = "SELECT tag FROM tag_views 
+                    WHERE user_id = :user_id 
+                    ORDER BY view_count DESC, last_viewed DESC 
+                    LIMIT 10";
+                    
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['user_id' => $userId]);
+            $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            if (empty($tags)) {
+                // If no tag history, return regular feed
+                return $this->getAllBlogs($page, $limit);
+            }
+
+            // Calculate offset
+            $offset = ($page - 1) * $limit;
+
+            // Build tag conditions
+            $tagConditions = [];
+            $params = [];
+            foreach ($tags as $i => $tag) {
+                $tagConditions[] = "FIND_IN_SET(:tag$i, b.tags)";
+                $params["tag$i"] = $tag;
+            }
+
+            // Get posts that match user's interests, ordered by match relevance
+            $sql = "SELECT b.*, u.username,
+                    SUM(CASE WHEN " . implode(' OR ', $tagConditions) . " THEN 1 ELSE 0 END) as relevance
+                    FROM blogs b
+                    LEFT JOIN users u ON b.user_id = u.id
+                    WHERE b.status = 'published'
+                    GROUP BY b.id
+                    ORDER BY relevance DESC, b.created_at DESC
+                    LIMIT :limit OFFSET :offset";
+
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return [
+                'blogs' => $stmt->fetchAll(),
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $limit,
+                    // ...rest of pagination logic
+                ]
+            ];
+        } catch (PDOException $e) {
+            return $this->getAllBlogs($page, $limit);
+        }
+    }
 }

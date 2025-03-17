@@ -284,8 +284,47 @@ require_once 'includes/header.php';
     <!-- Sidebar -->
     <div class="w-full lg:w-1/3 mt-8 lg:mt-0">
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200">Discover what matters to you</h2>
-            <!-- Categories section removed as feature is deprecated -->
+            <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 flex items-center">
+                <i class="fas fa-compass text-indigo-500 mr-2"></i> Discover what matters to you
+            </h2>
+            <?php 
+            $popularTags = $blog->getPopularTags(5); // Get top 5 tags
+            $recommendedPosts = $blog->getRecommendedPosts(6); // Get 6 recommended posts
+            
+            if (empty($recommendedPosts)): 
+            ?>
+                <p class="text-gray-500">Start exploring topics by reading and tagging stories.</p>
+            <?php else: ?>
+                <!-- Popular Topics Pills -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <?php foreach($popularTags as $tag): ?>
+                        <a href="search.php?q=<?php echo urlencode($tag['name']); ?>" 
+                           class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm transition">
+                            <?php echo htmlspecialchars($tag['name']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                
+                <!-- Recommended Posts -->
+                <div class="space-y-4">
+                    <?php foreach($recommendedPosts as $post): ?>
+                        <a href="<?php echo htmlspecialchars($post['slug']); ?>" 
+                           class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-all">
+                            <?php if (!empty($post['featured_image'])): ?>
+                                <div class="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden">
+                                    <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" 
+                                         alt="<?php echo htmlspecialchars($post['title']); ?>" 
+                                         class="w-full h-full object-cover">
+                                </div>
+                            <?php endif; ?>
+                            <div class="flex-grow min-w-0">
+                                <h3 class="font-medium text-gray-900 truncate"><?php echo htmlspecialchars($post['title']); ?></h3>
+                                <p class="text-sm text-gray-500"><?php echo date('M d, Y', strtotime($post['created_at'])); ?></p>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
         
         <!-- Who to Follow -->

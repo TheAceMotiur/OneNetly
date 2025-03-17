@@ -115,6 +115,14 @@ function getActiveClass($page) {
                     </span>
                     Logout
                 </a>
+                <a href="what-matters.php" class="flex items-center py-3 px-4 text-white <?php echo getActiveClass('what-matters.php'); ?>">
+                    <span class="mr-3">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    What Matters
+                </a>
             </nav>
         </div>
         

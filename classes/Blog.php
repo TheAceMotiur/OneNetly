@@ -1197,11 +1197,37 @@ class Blog {
                 'pagination' => [
                     'current_page' => $page,
                     'per_page' => $limit,
-                    // ...rest of pagination logic
                 ]
             ];
         } catch (PDOException $e) {
             return $this->getAllBlogs($page, $limit);
+        }
+    }
+
+    /**
+     * Get recommended blog posts based on popularity and recency
+     * 
+     * @param int $limit Number of posts to return
+     * @return array Array of recommended blog posts
+     */
+    public function getRecommendedPosts($limit = 6) {
+        try {
+            $sql = "SELECT b.*, u.username, COUNT(v.id) as view_count 
+                    FROM blogs b
+                    LEFT JOIN blog_views v ON b.id = v.blog_id 
+                    LEFT JOIN users u ON b.user_id = u.id
+                    WHERE b.status = 'published'
+                    GROUP BY b.id
+                    ORDER BY view_count DESC, b.created_at DESC
+                    LIMIT :limit";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            return [];
         }
     }
 }

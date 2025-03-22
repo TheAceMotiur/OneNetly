@@ -1,23 +1,18 @@
+# If the FOSSBilling site is installed within a folder such as at
+# e.g. www.example.com/fossbilling/ the robots.txt file MUST be
+# moved to the site root at e.g. www.example.com/robots.txt
+# AND the FOSSBilling folder name MUST be prefixed to the disallowed
+# path, e.g. the Disallow rule for the /data/ folder
+# MUST be changed to read Disallow: /boxbilling/data/
+#
+# For more information about the robots.txt standard, see:
+# https://www.robotstxt.org/orig.html
+
 User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /includes/
-Disallow: /classes/
-Disallow: /assets/js/
-Disallow: /assets/css/
-Disallow: /settings.php
-Disallow: /dashboard.php
-Disallow: /logout.php
-Disallow: /create-post.php
-Disallow: /edit-post.php
-Disallow: /delete-post.php
-Disallow: /migrate.php
-Disallow: /search.php?q=
-Disallow: /*?page=*
-
-# Allow media files
-Allow: /assets/images/
-Allow: /uploads/
-
-# Add your sitemap location
-Sitemap: https://yourdomain.com/sitemaps/sitemap.xml
+Disallow: /data/
+Disallow: /library/
+Disallow: /locale/
+Disallow: /modules/
+Disallow: /uploads/
+Disallow: /vendor/
+Disallow: /install/

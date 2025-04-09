@@ -1,29 +1,32 @@
-# onenetly
+# Text To Image App
 
-This template should help get you started developing with Vue 3 in Vite.
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/text-to-image-template)
 
-## Recommended IDE Setup
+![Text To Image Template Preview](https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/dddfe97e-e689-450b-d5a9-d49801da6a00/public)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+<!-- dash-content-start -->
 
-## Customize configuration
+Generate images based on text prompts using [Workers AI](https://developers.cloudflare.com/workers-ai/). In this example, going to the website will generate an image from the prompt "cyberpunk cat" using the `@cf/stabilityai/stable-diffusion-xl-base-1.0` model. Be patient! Your image may take a few seconds to generate.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+<!-- dash-content-end -->
 
-## Project Setup
+## Getting Started
 
-```sh
-npm install
+Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+
+```bash
+npm create cloudflare@latest -- --template=cloudflare/templates/text-to-image-template
 ```
 
-### Compile and Hot-Reload for Development
+A live public deployment of this template is available at [https://text-to-image-template.templates.workers.dev](https://text-to-image-template.templates.workers.dev)
 
-```sh
-npm run dev
-```
+## Setup Steps
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+1. Install the project dependencies with a package manager of your choice:
+   ```bash
+   npm install
+   ```
+2. Deploy the project!
+   ```bash
+   npx wrangler deploy
+   ```

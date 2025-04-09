@@ -1,24 +1,30 @@
 {
-  "name": "onenetly",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "cf:dev": "wrangler dev",
-    "cf:publish": "npm run build && wrangler publish"
-  },
-  "dependencies": {
-    "vue": "^3.5.13"
+  "name": "text-to-image-template",
+  "description": "Generate images based on text prompts.",
+  "cloudflare": {
+    "label": "Text to Image App",
+    "products": [
+      "Workers",
+      "AI"
+    ],
+    "categories": [
+      "ai"
+    ],
+    "icon_urls": [
+      "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/5ca0ca32-e897-4699-d4c1-6b680512f000/public"
+    ],
+    "preview_image_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/dddfe97e-e689-450b-d5a9-d49801da6a00/public",
+    "dash": true
   },
   "devDependencies": {
-    "@cloudflare/kv-asset-handler": "^0.3.0",
     "@cloudflare/workers-types": "^4.20250409.0",
-    "@vitejs/plugin-vue": "^5.2.3",
-    "vite": "^6.2.4",
-    "vite-plugin-vue-devtools": "^7.7.2",
-    "wrangler": "^3.32.0"
+    "typescript": "5.8.2",
+    "wrangler": "^4.9.1"
+  },
+  "scripts": {
+    "check": "tsc && wrangler --experimental-json-config deploy --dry-run",
+    "deploy": "wrangler --experimental-json-config deploy",
+    "dev": "wrangler --experimental-json-config dev",
+    "types": "wrangler --experimental-json-config types"
   }
 }

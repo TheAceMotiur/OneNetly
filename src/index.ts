@@ -30,12 +30,13 @@ export default {
         const prompt = formData.get("prompt");
         const toolType = formData.get("tool") || "general"; // Get the tool type or default to general
         const shape = formData.get("shape") || "square"; // Get the selected shape
-        
+        const negativePrompt = formData.get("negative_prompt") || "blurry, bad anatomy, bad hands, cropped, worst quality, low quality, deformed, malformed, distorted, disfigured, duplicate, out of frame, watermark, signature, text";
+
         // Set dimensions based on selected shape
         let width = 1024;
         let height = 1024;
-        
-        switch(shape) {
+
+        switch (shape) {
           case "square":
             width = 1024;
             height = 1024;
@@ -62,7 +63,7 @@ export default {
         // Configure inputs based on the tool type
         let inputs = {
           prompt: prompt.trim(),
-          negative_prompt: "blurry, bad anatomy, bad hands, cropped, worst quality, low quality, deformed, malformed, distorted, disfigured, duplicate, out of frame, watermark, signature, text",
+          negative_prompt: negativePrompt.trim(),
           num_inference_steps: 50,
           guidance_scale: 7.5,
           seed: Math.floor(Math.random() * 2147483647),
@@ -86,7 +87,7 @@ export default {
       }
     }
 
-    // Handle different tool requests based on URL paths
+    // Handle different tool requests based on URL path
     if (url.pathname.startsWith("/tool/")) {
       const toolType = url.pathname.split("/tool/")[1];
       const validTools = ["general"];
@@ -107,8 +108,8 @@ export default {
 // Defining the interface for tool information
 interface ToolInfo {
   title: string;
-  description: string;
   placeholder: string;
+  description: string;
 }
 
 // Function to generate HTML for a specific tool
@@ -117,8 +118,8 @@ function getToolHtmlContent(toolType: string): string {
   const toolInfo: Record<string, ToolInfo> = {
     general: {
       title: "AI Image Generator",
+      placeholder: "Describe the image you want to create...",
       description: "Create custom images from text descriptions",
-      placeholder: "Describe the image you want to create..."
     },
   };
 
@@ -199,6 +200,30 @@ function getToolHtmlContent(toolType: string): string {
             class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-blue-500 min-h-[120px]"></textarea>
         </div>
         
+        <!-- Advanced Options Toggle -->
+        <div class="mb-2">
+          <button type="button" id="advancedToggle" class="text-blue-600 flex items-center text-sm font-medium">
+            <i class="fas fa-sliders-h mr-1"></i> Advanced Options
+            <i class="fas fa-chevron-down ml-1 text-xs transition-transform" id="toggleIcon"></i>
+          </button>
+        </div>
+        
+        <!-- Advanced Options Section -->
+        <div id="advancedOptions" class="hidden border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
+          <div class="mb-3">
+            <label for="negativePrompt" class="block text-sm font-medium text-gray-700 mb-1">
+              Negative Prompt (what to avoid in the image)
+            </label>
+            <textarea
+              id="negativePrompt"
+              name="negative_prompt"
+              placeholder="Specify what you don't want in your image..."
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-sm min-h-[80px]"
+            >blurry, bad anatomy, bad hands, cropped, worst quality, low quality, deformed, malformed, distorted, disfigured, duplicate, out of frame, watermark, signature, text</textarea>
+            <p class="text-xs text-gray-500 mt-1">Separate different concepts with commas</p>
+          </div>
+        </div>
+        
         <button type="submit" id="generateBtn" 
           class="bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-lg font-semibold transition">
           <i class="fas fa-paint-brush mr-2"></i> Generate Image
@@ -227,6 +252,16 @@ function getToolHtmlContent(toolType: string): string {
       const loading = document.getElementById('loading');
       const result = document.getElementById('result');
       const error = document.getElementById('error');
+      
+      // Advanced options toggle
+      const advancedToggle = document.getElementById('advancedToggle');
+      const advancedOptions = document.getElementById('advancedOptions');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      advancedToggle.addEventListener('click', () => {
+        advancedOptions.classList.toggle('hidden');
+        toggleIcon.classList.toggle('rotate-180');
+      });
       
       // Shape selection behavior
       const shapeOptions = document.querySelectorAll('.shape-option');
@@ -312,6 +347,11 @@ function getToolHtmlContent(toolType: string): string {
     /* Additional styles for shape selection */
     .shape-option.active div {
       border-width: 2px;
+    }
+    
+    /* Style for the rotate animation */
+    .rotate-180 {
+      transform: rotate(180deg);
     }
   </style>
   

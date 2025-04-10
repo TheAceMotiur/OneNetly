@@ -63,7 +63,8 @@ export default {
         // Configure inputs based on the tool type
         let inputs = {
           prompt: prompt.trim(),
-          negative_prompt: negativePrompt.trim(),
+          negative_prompt: typeof negativePrompt === "string" ? negativePrompt.trim() : 
+            "blurry, bad anatomy, bad hands, cropped, worst quality, low quality, deformed, malformed, distorted, disfigured, duplicate, out of frame, watermark, signature, text",
           num_inference_steps: 50,
           guidance_scale: 7.5,
           seed: Math.floor(Math.random() * 2147483647),

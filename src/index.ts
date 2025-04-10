@@ -343,9 +343,12 @@ function getToolHtmlContent(toolType: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="${info.description} - OneNetly">
   <meta name="robots" content="index, follow">
+  <meta name="google-adsense-account" content="ca-pub-9354746037074515">
   <title>OneNetly - ${info.title}</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9354746037074515"
+     crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 p-0 flex flex-col min-h-screen">
   ${getProHeader('home')}
@@ -444,6 +447,19 @@ function getToolHtmlContent(toolType: string): string {
       
       <!-- Image result -->
       <div id="result" class="mt-6 flex flex-col items-center"></div>
+    </div>
+    
+    <!-- Ad placement -->
+    <div class="bg-gray-100 rounded-lg p-4 mb-8 text-center block min-h-[90px]">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-9354746037074515"
+           data-ad-slot="4878379783"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
   </div>
   
@@ -640,7 +656,7 @@ function getPrivacyPolicyPage() {
     </div>
     
     <!-- Ad placement -->
-    <div class="bg-gray-100 rounded-lg p-4 my-8 text-center overflow-hidden min-h-[90px]">
+    <div class="bg-gray-100 rounded-lg p-4 my-8 text-center block min-h-[90px]">
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-9354746037074515"
@@ -728,7 +744,7 @@ function getTermsOfServicePage() {
     </div>
     
     <!-- Ad placement -->
-    <div class="bg-gray-100 rounded-lg p-4 my-8 text-center overflow-hidden min-h-[90px]">
+    <div class="bg-gray-100 rounded-lg p-4 my-8 text-center block min-h-[90px]">
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-9354746037074515"
@@ -817,7 +833,7 @@ function getAboutPage() {
     </div>
     
     <!-- Ad placement -->
-    <div class="bg-gray-100 rounded-lg p-4 mb-8 text-center overflow-hidden min-h-[90px]">
+    <div class="bg-gray-100 rounded-lg p-4 mb-8 text-center block min-h-[90px]">
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-9354746037074515"
@@ -985,7 +1001,7 @@ function getContactPage() {
     </div>
     
     <!-- Ad placement -->
-    <div class="bg-gray-100 rounded-lg p-4 mb-8 text-center overflow-hidden min-h-[90px]">
+    <div class="bg-gray-100 rounded-lg p-4 mb-8 text-center block min-h-[90px]">
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-9354746037074515"

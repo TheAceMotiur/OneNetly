@@ -83,8 +83,8 @@ export default {
           headers: { "content-type": "image/png" },
         });
       } catch (error) {
-        console.error("Error generating image:", error);
-        return new Response("Error generating image", { status: 500 });
+        console.error("Server busy, please try again:", error);
+        return new Response("Server busy, please try again!", { status: 500 });
       }
     }
 

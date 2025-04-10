@@ -3,6 +3,16 @@ export default {
     // Get the URL object from the request
     const url = new URL(request.url);
 
+    // Serve ads.txt file for Google AdSense
+    if (url.pathname === "/ads.txt") {
+      return new Response("google.com, pub-9354746037074515, DIRECT, f08c47fec0942fa0", {
+        headers: { 
+          "content-type": "text/plain",
+          "cache-control": "public, max-age=86400" 
+        },
+      });
+    }
+
     // Handle static pages for AdSense approval
     if (url.pathname === "/privacy-policy") {
       return new Response(getPrivacyPolicyPage(), {

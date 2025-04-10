@@ -29,12 +29,30 @@ export default {
         const formData = await request.formData();
         const prompt = formData.get("prompt");
         const toolType = formData.get("tool") || "general"; // Get the tool type or default to general
-        const width = parseInt(formData.get("width") as string, 10) || 1024;
-        const height = parseInt(formData.get("height") as string, 10) || 1024;
-
-        // Validate dimensions - ensure they're within acceptable ranges
-        const validWidth = isNaN(width) || width < 256 || width > 1280 ? 1024 : width;
-        const validHeight = isNaN(height) || height < 256 || height > 1280 ? 1024 : height;
+        const shape = formData.get("shape") || "square"; // Get the selected shape
+        
+        // Set dimensions based on selected shape
+        let width = 1024;
+        let height = 1024;
+        
+        switch(shape) {
+          case "square":
+            width = 1024;
+            height = 1024;
+            break;
+          case "portrait":
+            width = 768;
+            height = 1024;
+            break;
+          case "landscape":
+            width = 1024;
+            height = 768;
+            break;
+          case "widescreen":
+            width = 1280;
+            height = 720;
+            break;
+        }
 
         // Validate the prompt
         if (!prompt || typeof prompt !== "string" || prompt.trim() === "") {
@@ -48,8 +66,8 @@ export default {
           num_inference_steps: 50,
           guidance_scale: 7.5,
           seed: Math.floor(Math.random() * 2147483647),
-          width: validWidth,
-          height: validHeight,
+          width: width,
+          height: height,
         };
 
         // Add tool-specific adjustments if needed
@@ -133,11 +151,48 @@ function getToolHtmlContent(toolType: string): string {
     <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
       <h1 class="text-2xl font-bold text-center mb-6">${info.title}</h1>
       
-      <!-- Simple form with just a prompt input and submit button -->
+      <!-- Simple form with prompt input, shape selection and submit button -->
       <form id="promptForm" class="flex flex-col gap-4">
         <input type="hidden" id="toolType" name="tool" value="${toolType}">
-        <input type="hidden" id="width" name="width" value="1024">
-        <input type="hidden" id="height" name="height" value="1024">
+        
+        <!-- Shape Selection Controls -->
+        <div class="mb-2">
+          <label class="block text-gray-700 mb-2">Choose Image Shape:</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <label class="shape-option active cursor-pointer" data-shape="square">
+              <input type="radio" name="shape" value="square" class="sr-only" checked>
+              <div class="flex flex-col items-center border border-gray-300 rounded-lg p-3 hover:bg-gray-50 transition">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg border-2 border-blue-500"></div>
+                <span class="mt-1 text-sm">Square</span>
+                <span class="text-xs text-gray-500">1:1</span>
+              </div>
+            </label>
+            <label class="shape-option cursor-pointer" data-shape="portrait">
+              <input type="radio" name="shape" value="portrait" class="sr-only">
+              <div class="flex flex-col items-center border border-gray-300 rounded-lg p-3 hover:bg-gray-50 transition">
+                <div class="w-9 h-12 bg-gray-100 rounded-lg"></div>
+                <span class="mt-1 text-sm">Portrait</span>
+                <span class="text-xs text-gray-500">3:4</span>
+              </div>
+            </label>
+            <label class="shape-option cursor-pointer" data-shape="landscape">
+              <input type="radio" name="shape" value="landscape" class="sr-only">
+              <div class="flex flex-col items-center border border-gray-300 rounded-lg p-3 hover:bg-gray-50 transition">
+                <div class="w-12 h-9 bg-gray-100 rounded-lg"></div>
+                <span class="mt-1 text-sm">Landscape</span>
+                <span class="text-xs text-gray-500">4:3</span>
+              </div>
+            </label>
+            <label class="shape-option cursor-pointer" data-shape="widescreen">
+              <input type="radio" name="shape" value="widescreen" class="sr-only">
+              <div class="flex flex-col items-center border border-gray-300 rounded-lg p-3 hover:bg-gray-50 transition">
+                <div class="w-12 h-[6.75px] bg-gray-100 rounded-lg"></div>
+                <span class="mt-1 text-sm">Widescreen</span>
+                <span class="text-xs text-gray-500">16:9</span>
+              </div>
+            </label>
+          </div>
+        </div>
         
         <div>
           <textarea id="prompt" name="prompt" placeholder="${info.placeholder}" required 
@@ -172,6 +227,27 @@ function getToolHtmlContent(toolType: string): string {
       const loading = document.getElementById('loading');
       const result = document.getElementById('result');
       const error = document.getElementById('error');
+      
+      // Shape selection behavior
+      const shapeOptions = document.querySelectorAll('.shape-option');
+      shapeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          // Remove active class from all options
+          shapeOptions.forEach(el => {
+            el.classList.remove('active');
+            el.querySelector('div').classList.remove('border-blue-500', 'bg-blue-100');
+            el.querySelector('div').classList.add('bg-gray-100');
+          });
+          
+          // Add active class to selected option
+          option.classList.add('active');
+          option.querySelector('div').classList.remove('bg-gray-100');
+          option.querySelector('div').classList.add('border-2', 'border-blue-500', 'bg-blue-100');
+          
+          // Set the radio as selected
+          option.querySelector('input[type="radio"]').checked = true;
+        });
+      });
       
       // Image generation form submission
       form.addEventListener('submit', async (e) => {
@@ -231,6 +307,13 @@ function getToolHtmlContent(toolType: string): string {
       });
     });
   </script>
+  
+  <style>
+    /* Additional styles for shape selection */
+    .shape-option.active div {
+      border-width: 2px;
+    }
+  </style>
   
   <!-- Simple Footer -->
   <footer class="mt-auto pt-6 text-center text-sm text-gray-500">

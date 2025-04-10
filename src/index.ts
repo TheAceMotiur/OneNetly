@@ -262,8 +262,6 @@ function getProHeader(activePage = '') {
         </div>
         <span class="font-bold text-xl text-white">OneNetly</span>
       </a>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9354746037074515"
-         crossorigin="anonymous"></script>
       <nav>
         <ul class="flex flex-wrap gap-6 items-center">
           <li><a href="/" class="${activePage === 'home' ? 'text-blue-200 border-b-2 border-blue-200' : 'text-white hover:text-blue-200'} transition font-medium">Home</a></li>
@@ -291,18 +289,6 @@ function getProFooter() {
             <span class="font-bold text-lg text-white">OneNetly</span>
           </div>
           <p class="text-gray-300 text-sm">Advanced AI image generation at your fingertips. Transform your ideas into stunning visuals instantly.</p>
-          <!-- OneNetly Ad -->
-          <div class="mt-4 bg-gray-700 rounded-lg p-4 text-center">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-9354746037074515"
-                 data-ad-slot="4878379783"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-          </div>
         </div>
         
         <div>

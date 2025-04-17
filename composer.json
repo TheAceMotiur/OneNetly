@@ -1,0 +1,11 @@
+{
+    "name": "onenetly/app",
+    "description": "OnNetly Application",
+    "type": "project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.4",
+        "onemigrator/onemigrator": "@dev"
+    }
+}

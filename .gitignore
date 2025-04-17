@@ -1,1 +1,2 @@
-/config/app.php
+# Ignore the following files and directories
+config/app.php

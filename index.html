@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sharing Buttons – Simple (HTML + JS)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-bg': '#0f172a',
+            'dark-panel': '#111827',
+            'dark-border': '#1f2937',
+            'dark-text': '#e5e7eb',
+            'dark-muted': '#9ca3af',
+            'accent': '#22c55e'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom gradient background */
+    body {
+      background: linear-gradient(180deg, #0b1220, #0a0f1a) fixed;
+    }
+    
+    /* Theme toggle styles */
+    .theme-dark {
+      background: #f8fafc !important;
+    }
+    .theme-dark .dark\:bg-dark-bg { background-color: #ffffff !important; }
+    .theme-dark .dark\:bg-dark-panel { background-color: #f8fafc !important; }
+    .theme-dark .dark\:text-dark-text { color: #1e293b !important; }
+    .theme-dark .dark\:text-dark-muted { color: #64748b !important; }
+    .theme-dark .dark\:border-dark-border { border-color: #e2e8f0 !important; }
+    
+    /* Animations */
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-dark-text font-sans">
+  <div class="max-w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 pb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+      <div class="text-center sm:text-left">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wide dark:text-dark-text">Sharing Buttons — Simple</h1>
+        <p class="mt-1 text-xs sm:text-sm text-dark-muted dark:text-dark-muted">Plain HTML + JS version of the generator. No build, no framework.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-3 lg:gap-4 items-start min-h-[calc(100vh-120px)]">
+      <!-- Configuration Panel -->
+      <section class="bg-gradient-to-b from-dark-bg to-dark-panel dark:bg-dark-panel border border-dark-border dark:border-dark-border rounded-lg lg:rounded-xl shadow-lg h-fit">
+        <div class="p-3 sm:p-4 lg:p-5">
+          <div class="flex flex-wrap gap-1 sm:gap-2 mb-3">
+            <button onclick="bulkSelectNetworks('popular')" class="text-xs px-2 py-1 bg-accent/10 text-accent rounded hover:bg-accent/20 transition-colors">Popular</button>
+            <button onclick="bulkSelectNetworks('social')" class="text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors">Social</button>
+            <button onclick="bulkSelectNetworks('messaging')" class="text-xs px-2 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors">Messaging</button>
+            <button onclick="bulkSelectNetworks('professional')" class="text-xs px-2 py-1 bg-purple-100 text-purple-600 rounded hover:bg-purple-200 transition-colors">Professional</button>
+          </div>
+          
+          <h3 class="text-xs font-semibold tracking-wider text-dark-muted dark:text-dark-muted uppercase mb-2">Networks</h3>
+          <div id="network-options" class="flex flex-wrap gap-1.5 sm:gap-2" aria-label="Social networks"></div>
+
+          <h3 class="text-xs font-semibold tracking-wider text-dark-muted dark:text-dark-muted uppercase mb-2 mt-4">Size</h3>
+          <div id="size-options" class="flex flex-wrap gap-1.5 sm:gap-2" aria-label="Button size"></div>
+
+          <h3 class="text-xs font-semibold tracking-wider text-dark-muted dark:text-dark-muted uppercase mb-2 mt-4">Icon</h3>
+          <div id="icon-options" class="flex flex-wrap gap-1.5 sm:gap-2" aria-label="Icon style"></div>
+        </div>
+      </section>
+
+      <!-- Preview & Code Panel -->
+      <section class="bg-gradient-to-b from-dark-bg to-dark-panel dark:bg-dark-panel border border-dark-border dark:border-dark-border rounded-lg lg:rounded-xl shadow-lg flex flex-col min-h-[calc(100vh-180px)]">
+        <!-- Preview Section -->
+        <div class="p-3 sm:p-4 lg:p-5 flex-1">
+          <h3 class="text-xs font-semibold tracking-wider text-dark-muted dark:text-dark-muted uppercase mb-2">Preview</h3>
+          <div class="border border-dashed border-dark-border dark:border-dark-border rounded-lg p-3 sm:p-4 lg:p-5 min-h-[120px] flex-1">
+            <div class="h-2.5 bg-dark-bg dark:bg-gray-100 border border-dark-panel dark:border-gray-200 rounded mb-1.5 opacity-70"></div>
+            <div class="h-2.5 bg-dark-bg dark:bg-gray-100 border border-dark-panel dark:border-gray-200 rounded mb-1.5 opacity-70 w-4/5"></div>
+            <div class="h-2.5 bg-dark-bg dark:bg-gray-100 border border-dark-panel dark:border-gray-200 rounded mb-1.5 opacity-70 w-3/5"></div>
+            <div class="h-2.5 bg-dark-bg dark:bg-gray-100 border border-dark-panel dark:border-gray-200 rounded mb-1.5 opacity-70 w-2/5"></div>
+            <div class="h-2.5 bg-dark-bg dark:bg-gray-100 border border-dark-panel dark:border-gray-200 rounded mb-3 opacity-70 w-1/3"></div>
+            <div class="flex flex-wrap gap-2 justify-center sm:justify-start" id="preview"></div>
+          </div>
+        </div>
+
+        <!-- Code Section -->
+        <div class="px-3 sm:px-4 lg:px-5 pb-3 sm:pb-4 lg:pb-5 border-t border-dark-border dark:border-dark-border">
+          <h3 class="text-xs font-semibold tracking-wider text-dark-muted dark:text-dark-muted uppercase mb-2 mt-3">JavaScript (Simple Server-Based Solution)</h3>
+          <pre class="bg-dark-bg dark:bg-gray-50 border border-dark-panel dark:border-gray-200 rounded-lg p-2.5 sm:p-3 overflow-auto max-h-48"><code id="code-js" class="font-mono text-xs text-gray-300 dark:text-gray-700"></code></pre>
+          <button class="w-full sm:w-auto bg-accent hover:bg-green-600 active:bg-green-700 text-white border-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm font-medium cursor-pointer mt-2 transition-colors duration-200" onclick="copyToClipboard('code-js', this)">Copy JavaScript</button>
+          <div class="mt-1.5">
+            <small class="text-dark-muted dark:text-dark-muted text-xs">Just add this tiny script to your page - loads from our fast CDN!</small>
+          </div>
+
+          <div class="mt-1.5 text-dark-muted dark:text-dark-muted text-xs" id="stats"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-3 lg:mt-4 text-dark-muted dark:text-dark-muted text-xs text-center px-2">
+      Tip: URL and page title are automatically detected. Select networks and options to generate your JavaScript code. Copy & paste into your site.
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button class="fixed bottom-3 right-3 w-12 h-12 lg:w-14 lg:h-14 bg-accent hover:bg-green-600 border-0 rounded-full cursor-pointer shadow-lg hover:shadow-xl z-50 transition-all duration-300 ease-in-out flex items-center justify-center text-white text-lg lg:text-xl hover:scale-110" id="floatingBtn" title="Quick Actions">
+    ⚡
+  </button>
+
+  <!-- ShareThis-style Floating Side Panel -->
+  <div id="floating-side-panel" class="fixed left-0 top-1/2 transform -translate-y-1/2 z-40 transition-all duration-300 ease-in-out translate-x-[-80%] hover:translate-x-0">
+    <div class="bg-white dark:bg-dark-panel border border-gray-200 dark:border-dark-border rounded-r-lg shadow-xl">
+      <div class="p-2">
+        <div class="text-xs text-center text-gray-500 dark:text-gray-400 mb-2 font-medium">Share</div>
+        <div class="space-y-1" id="floating-side-buttons">
+          <!-- Buttons will be generated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- Floating Preview Modal -->
+  <div id="floatingPreviewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-dark-panel border border-gray-200 dark:border-dark-border rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto">
+      <div class="p-4 border-b border-gray-200 dark:border-dark-border flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text">Floating Buttons Preview</h3>
+        <button onclick="closeFloatingPreview()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl">×</button>
+      </div>
+      
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Desktop Preview -->
+          <div class="space-y-4">
+            <h4 class="text-md font-medium text-gray-900 dark:text-dark-text flex items-center gap-2">
+              <span>🖥️</span> Desktop View
+            </h4>
+            <div class="relative bg-gray-100 dark:bg-dark-bg border-2 border-gray-300 dark:border-dark-border rounded-lg overflow-hidden" style="height: 300px;">
+              <!-- Simulated browser window -->
+              <div class="bg-gray-200 dark:bg-dark-panel h-8 flex items-center px-3 gap-2">
+                <div class="flex gap-1">
+                  <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                  <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                  <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                </div>
+                <div class="bg-white dark:bg-dark-bg rounded px-2 py-1 text-xs text-gray-600 dark:text-gray-400 ml-2">yoursite.com</div>
+              </div>
+              
+              <!-- Page content simulation -->
+              <div class="p-4 space-y-2">
+                <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-2/3"></div>
+              </div>
+              
+              <!-- Floating button preview -->
+              <div class="absolute bottom-3 right-3">
+                <div class="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                  ⚡
+                </div>
+              </div>
+              
+              <!-- Side panel preview -->
+              <div class="absolute left-0 top-1/2 transform -translate-y-1/2 translate-x-[-70%] hover:translate-x-0 transition-transform duration-300">
+                <div class="bg-white dark:bg-dark-panel border border-gray-200 dark:border-dark-border rounded-r-lg shadow-xl p-2">
+                  <div class="text-xs text-center text-gray-500 mb-1">Share</div>
+                  <div class="space-y-1" id="preview-side-buttons-desktop">
+                    <!-- Buttons will be generated here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mobile Preview -->
+          <div class="space-y-4">
+            <h4 class="text-md font-medium text-gray-900 dark:text-dark-text flex items-center gap-2">
+              <span>📱</span> Mobile View
+            </h4>
+            <div class="relative bg-gray-100 dark:bg-dark-bg border-2 border-gray-800 dark:border-gray-400 rounded-xl overflow-hidden mx-auto" style="width: 200px; height: 300px;">
+              <!-- Simulated mobile status bar -->
+              <div class="bg-gray-800 dark:bg-gray-200 h-6 flex items-center justify-between px-2">
+                <div class="text-white dark:text-black text-xs">9:41</div>
+                <div class="flex gap-1">
+                  <div class="w-4 h-2 bg-white dark:bg-black rounded-sm"></div>
+                  <div class="w-1 h-3 bg-white dark:bg-black rounded-sm"></div>
+                </div>
+              </div>
+              
+              <!-- Page content simulation -->
+              <div class="p-3 space-y-2">
+                <div class="h-2 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+                <div class="h-2 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                <div class="h-2 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+              </div>
+              
+              <!-- Floating button preview (mobile) -->
+              <div class="absolute bottom-3 right-3">
+                <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white shadow-lg text-sm">
+                  ⚡
+                </div>
+              </div>
+              
+              <!-- Side panel preview (mobile) -->
+              <div class="absolute left-0 top-1/2 transform -translate-y-1/2 translate-x-[-80%] hover:translate-x-[-5px] transition-transform duration-300">
+                <div class="bg-white dark:bg-dark-panel border border-gray-200 dark:border-dark-border rounded-r-lg shadow-xl p-1">
+                  <div class="text-xs text-center text-gray-500 mb-1">Share</div>
+                  <div class="space-y-1" id="preview-side-buttons-mobile">
+                    <!-- Buttons will be generated here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Position Options -->
+        <div class="mt-6 border-t border-gray-200 dark:border-dark-border pt-6">
+          <h4 class="text-md font-medium text-gray-900 dark:text-dark-text mb-4">Floating Button Position</h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button onclick="updateFloatingPosition('bottom-right')" class="floating-position-btn p-3 border border-gray-300 dark:border-dark-border rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-dark-border transition-colors active" data-position="bottom-right">
+              <div class="mb-2">📍</div>
+              <div class="text-gray-700 dark:text-gray-300">Bottom Right</div>
+            </button>
+            <button onclick="updateFloatingPosition('bottom-left')" class="floating-position-btn p-3 border border-gray-300 dark:border-dark-border rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-dark-border transition-colors" data-position="bottom-left">
+              <div class="mb-2">📍</div>
+              <div class="text-gray-700 dark:text-gray-300">Bottom Left</div>
+            </button>
+            <button onclick="updateFloatingPosition('top-right')" class="floating-position-btn p-3 border border-gray-300 dark:border-dark-border rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-dark-border transition-colors" data-position="top-right">
+              <div class="mb-2">📍</div>
+              <div class="text-gray-700 dark:text-gray-300">Top Right</div>
+            </button>
+            <button onclick="updateFloatingPosition('top-left')" class="floating-position-btn p-3 border border-gray-300 dark:border-dark-border rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-dark-border transition-colors" data-position="top-left">
+              <div class="mb-2">📍</div>
+              <div class="text-gray-700 dark:text-gray-300">Top Left</div>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Live Preview Controls -->
+        <div class="mt-6 border-t border-gray-200 dark:border-dark-border pt-6">
+          <h4 class="text-md font-medium text-gray-900 dark:text-dark-text mb-4">Live Preview Controls</h4>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="testFloatingAnimation()" class="px-4 py-2 bg-accent text-white rounded-lg hover:bg-green-600 transition-colors text-sm">
+              🎬 Test Animation
+            </button>
+            <button onclick="toggleSidePanelPreview()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
+              👁️ Toggle Side Panel
+            </button>
+            <button onclick="simulateHover()" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm">
+              🖱️ Simulate Hover
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic styles for preview -->
+  <style id="dynamic-styles"></style>
+  
+  <!-- Additional styles for floating side panel -->
+  <style>
+    #floating-side-panel {
+      backdrop-filter: blur(10px);
+    }
+    
+    #floating-side-panel:hover {
+      backdrop-filter: blur(5px);
+    }
+    
+    #floating-side-buttons a {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    #floating-side-buttons a:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transform: translateX(5px) scale(1.1);
+    }
+    
+    /* Smooth reveal animation */
+    #floating-side-panel .bg-white {
+      border-radius: 0 12px 12px 0;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      #floating-side-panel {
+        transform: translateY(-50%) translateX(-85%);
+      }
+      
+      #floating-side-panel:hover {
+        transform: translateY(-50%) translateX(-5px);
+      }
+      
+      #floating-side-buttons a {
+        width: 36px;
+        height: 36px;
+      }
+    }
+    
+    /* Add pulse animation for attention */
+    @keyframes pulse-side {
+      0%, 100% { transform: translateY(-50%) translateX(-80%) scale(1); }
+      50% { transform: translateY(-50%) translateX(-80%) scale(1.02); }
+    }
+    
+    #floating-side-panel.pulse {
+      animation: pulse-side 2s ease-in-out infinite;
+    }
+    
+    /* Floating Preview Modal Styles */
+    .floating-position-btn.active {
+      background-color: #22c55e !important;
+      color: white !important;
+      border-color: #22c55e !important;
+    }
+    
+    .floating-position-btn {
+      text-align: center;
+    }
+    
+    #floatingPreviewModal .relative {
+      transition: all 0.3s ease;
+    }
+    
+    #floatingPreviewModal .w-12:hover,
+    #floatingPreviewModal .w-10:hover {
+      transform: scale(1.1) rotate(5deg) !important;
+    }
+    
+    /* Preview animation styles */
+    @keyframes preview-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    #floatingPreviewModal .w-12,
+    #floatingPreviewModal .w-10 {
+      animation: preview-float 3s ease-in-out infinite;
+    }
+  </style>
+  
+  <script src="./script.js"></script>
+</body>
+</html>

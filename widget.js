@@ -1,5 +1,5 @@
 /**
- * OneShare - Simple Social Media Share Widget
+ * OneNetly - Professional Social Media Share Widget
  * A lightweight, customizable social sharing widget
  */
 (function(window, document) {
@@ -82,8 +82,8 @@
     }
   };
 
-  // OneShare main class
-  class OneShare {
+  // OneNetly main class
+  class OneNetly {
     constructor(config = {}) {
       this.config = { ...defaultConfig, ...config };
       this.isOpen = false;
@@ -103,7 +103,7 @@
     render() {
       // Create main container
       this.container = document.createElement('div');
-      this.container.className = 'oneshare-container';
+      this.container.className = 'onenetly-container';
       this.container.style.cssText = this.getContainerStyles();
       
       // Create floating button
@@ -123,7 +123,7 @@
 
     createFloatingButton() {
       const button = document.createElement('div');
-      button.className = 'oneshare-float-btn';
+      button.className = 'onenetly-float-btn';
       button.style.cssText = this.getFloatingButtonStyles();
       button.innerHTML = this.getShareIcon();
       
@@ -134,19 +134,19 @@
 
     createSharePanel() {
       const panel = document.createElement('div');
-      panel.className = 'oneshare-panel';
+      panel.className = 'onenetly-panel';
       panel.style.cssText = this.getPanelStyles();
       panel.style.display = 'none';
 
       // Header
       const header = document.createElement('div');
-      header.className = 'oneshare-header';
+      header.className = 'onenetly-header';
       header.innerHTML = '<h3>Share this page</h3>';
       panel.appendChild(header);
 
       // Social buttons
       const socialContainer = document.createElement('div');
-      socialContainer.className = 'oneshare-socials';
+      socialContainer.className = 'onenetly-socials';
       socialContainer.style.cssText = 'display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;';
 
       // Get visible socials
@@ -179,7 +179,7 @@
 
     createSocialButton(social) {
       const btn = document.createElement('button');
-      btn.className = 'oneshare-social-btn';
+      btn.className = 'onenetly-social-btn';
       btn.style.cssText = this.getSocialButtonStyles(social.color);
       btn.innerHTML = `
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -195,7 +195,7 @@
 
     createMoreButton(count) {
       const btn = document.createElement('button');
-      btn.className = 'oneshare-social-btn oneshare-more-btn';
+      btn.className = 'onenetly-social-btn onenetly-more-btn';
       btn.style.cssText = this.getSocialButtonStyles('#6366f1');
       btn.innerHTML = `
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -211,7 +211,7 @@
 
     createUrlSection() {
       const section = document.createElement('div');
-      section.className = 'oneshare-url-section';
+      section.className = 'onenetly-url-section';
       section.style.cssText = 'border-top: 1px solid #e5e7eb; padding-top: 16px;';
 
       const inputGroup = document.createElement('div');
@@ -253,12 +253,12 @@
     showAllSocials() {
       // Create modal overlay
       const overlay = document.createElement('div');
-      overlay.className = 'oneshare-modal-overlay';
+      overlay.className = 'onenetly-modal-overlay';
       overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1001;';
       
       // Create modal content
       const modal = document.createElement('div');
-      modal.className = 'oneshare-modal';
+      modal.className = 'onenetly-modal';
       modal.style.cssText = 'background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;';
       
       // Modal header
@@ -312,8 +312,8 @@
     }
 
     togglePanel() {
-      const panel = this.container.querySelector('.oneshare-panel');
-      const button = this.container.querySelector('.oneshare-float-btn');
+      const panel = this.container.querySelector('.onenetly-panel');
+      const button = this.container.querySelector('.onenetly-float-btn');
       
       if (this.isOpen) {
         this.closePanel();
@@ -326,8 +326,8 @@
     }
 
     closePanel() {
-      const panel = this.container.querySelector('.oneshare-panel');
-      const button = this.container.querySelector('.oneshare-float-btn');
+      const panel = this.container.querySelector('.onenetly-panel');
+      const button = this.container.querySelector('.onenetly-float-btn');
       
       panel.style.display = 'none';
       button.innerHTML = this.getShareIcon();
@@ -392,22 +392,22 @@
 
     addStyles() {
       const styles = `
-        .oneshare-float-btn:hover {
+        .onenetly-float-btn:hover {
           transform: scale(1.1);
           box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
         }
-        .oneshare-social-btn:hover {
+        .onenetly-social-btn:hover {
           transform: translateY(-1px);
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
-        .oneshare-header h3 {
+        .onenetly-header h3 {
           margin: 0 0 16px 0;
           font-size: 16px;
           font-weight: 600;
           color: ${this.config.customizations.textColor};
         }
         @media (max-width: 640px) {
-          .oneshare-panel {
+          .onenetly-panel {
             width: calc(100vw - 32px) !important;
             right: -260px !important;
           }
@@ -421,15 +421,15 @@
   }
 
   // Global initialization
-  window.OneShare = {
+  window.OneNetly = {
     init: function(config) {
-      return new OneShare(config);
+      return new OneNetly(config);
     }
   };
 
   // Auto-initialize if config is provided
-  if (window.oneShareConfig) {
-    window.OneShare.init(window.oneShareConfig);
+  if (window.oneNetlyConfig) {
+    window.OneNetly.init(window.oneNetlyConfig);
   }
 
 })(window, document);

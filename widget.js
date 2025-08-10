@@ -7,13 +7,13 @@
 
   // Default configuration
   const defaultConfig = {
-    socials: ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Reddit'],
+    networks: ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Reddit'],
     visibleCount: 6,
     position: 'bottom-right',
-    theme: 'light',
+    theme: 'black',
     customizations: {
-      buttonColor: '#6366f1',
-      panelColor: '#ffffff',
+      buttonColor: '#000000',
+      panelColor: '#ffffff', 
       textColor: '#111827'
     }
   };
@@ -47,7 +47,7 @@
     Telegram: {
       name: 'Telegram',
       color: '#0088cc',
-      icon: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-.962 6.502-.613 1.887-1.313 2.073-1.632 2.073-.674 0-.898-.484-1.653-2.073 0 0-.182-.487-.484-1.046l-1.808-3.535a.405.405 0 0 0-.251-.26.944.944 0 0 0-.354-.043c-.158.014-.62.05-.62.05l-2.367.92s-.357.108-.357.646c0 .537.335.822.484 1.046.148.223.484 1.046.484 1.046.77 1.589.77 2.073 1.444 2.073.675 0 1.019-.186 1.632-2.073 0 0 .782-4.604.962-6.502.016-.166-.004-.379.02-.472a.506.506 0 0 1 .171-.325c.144-.117.365-.142.465-.14zm.056 8.15c-.674 0-.898-.484-1.653-2.073 0 0-.182-.487-.484-1.046l-1.808-3.535a.405.405 0 0 0-.251-.26.944.944 0 0 0-.354-.043c-.158.014-.62.05-.62.05l-2.367.92s-.357.108-.357.646c0 .537.335.822.484 1.046.148.223.484 1.046.484 1.046.77 1.589.77 2.073 1.444 2.073.675 0 1.019-.186 1.632-2.073 0 0 .782-4.604.962-6.502.016-.166-.004-.379.02-.472a.506.506 0 0 1 .171-.325c.144-.117.365-.142.465-.14.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-.962 6.502-.613 1.887-1.313 2.073-1.632 2.073z',
+      icon: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z',
       shareUrl: (url, title) => `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
     },
     Reddit: {
@@ -59,26 +59,14 @@
     Pinterest: {
       name: 'Pinterest',
       color: '#bd081c',
-      icon: 'M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.1.12.112.225.085.346-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.162-1.499-.7-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-12C24.007 5.367 18.641.001.012.001z',
+      icon: 'M12.017 0C5.396 0 .029 5.367 .029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.1.12.112.225.085.346-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.162-1.499-.7-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-12C24.007 5.367 18.641.001 12.017.001z',
       shareUrl: (url, title) => `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(title)}`
-    },
-    Tumblr: {
-      name: 'Tumblr',
-      color: '#00cf35',
-      icon: 'M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116c-.457 0-.81-.344-.81-.799s.353-.812.81-.812h2.416V6.411C7.532 2.882 9.963.45 13.818.45s6.285 2.432 6.285 5.961v1.775h2.416c.457 0 .81.355.81.812s-.353.799-.81.799h-2.416v7.842C20.103 20.244 18.165 24 14.563 24zM9.563 17.178c0 1.889 1.235 4.655 5 4.655s5-2.766 5-4.655V8.135h1.649c.457 0 .81-.355.81-.812s-.353-.799-.81-.799H19.25V5.961c0-2.766-1.5-4.227-4.432-4.227s-4.432 1.461-4.432 4.227v.563h1.649c.457 0 .81.344.81.799s-.353.812-.81.812H9.563v7.842z',
-      shareUrl: (url, title) => `https://www.tumblr.com/share/link?url=${encodeURIComponent(url)}&name=${encodeURIComponent(title)}`
     },
     Email: {
       name: 'Email',
-      color: '#6b7280',
+      color: '#374151',
       icon: 'M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z',
       shareUrl: (url, title) => `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`
-    },
-    Print: {
-      name: 'Print',
-      color: '#374151',
-      icon: 'M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z',
-      shareUrl: () => 'print'
     }
   };
 
@@ -119,6 +107,9 @@
 
       // Add global styles
       this.addStyles();
+
+      // Add pulse rings
+      this.addPulseRings();
     }
 
     createFloatingButton() {
@@ -141,17 +132,16 @@
       // Header
       const header = document.createElement('div');
       header.className = 'onenetly-header';
-      header.innerHTML = '<h3>Share this page</h3>';
+      header.innerHTML = '<h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 700; color: #111827;">Share this page</h3>';
       panel.appendChild(header);
 
       // Social buttons
       const socialContainer = document.createElement('div');
       socialContainer.className = 'onenetly-socials';
-      socialContainer.style.cssText = 'display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;';
+      socialContainer.style.cssText = 'display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px;';
 
       // Get visible socials
-      const visibleSocials = this.config.socials.slice(0, this.config.visibleCount);
-      const hiddenSocials = this.config.socials.slice(this.config.visibleCount);
+      const visibleSocials = this.config.networks.slice(0, this.config.visibleCount);
 
       // Add visible social buttons
       visibleSocials.forEach(socialName => {
@@ -161,12 +151,6 @@
           socialContainer.appendChild(btn);
         }
       });
-
-      // Add "More" button if there are hidden socials
-      if (hiddenSocials.length > 0) {
-        const moreBtn = this.createMoreButton(hiddenSocials.length);
-        socialContainer.appendChild(moreBtn);
-      }
 
       panel.appendChild(socialContainer);
 
@@ -182,10 +166,10 @@
       btn.className = 'onenetly-social-btn';
       btn.style.cssText = this.getSocialButtonStyles(social.color);
       btn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="${social.icon}"/>
         </svg>
-        <span>${social.name}</span>
+        <span style="font-weight: 600;">${social.name}</span>
       `;
       
       btn.addEventListener('click', () => this.shareOn(social));
@@ -193,26 +177,15 @@
       return btn;
     }
 
-    createMoreButton(count) {
-      const btn = document.createElement('button');
-      btn.className = 'onenetly-social-btn onenetly-more-btn';
-      btn.style.cssText = this.getSocialButtonStyles('#6366f1');
-      btn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-        </svg>
-        <span>${count} More</span>
-      `;
-      
-      btn.addEventListener('click', () => this.showAllSocials());
-      
-      return btn;
-    }
-
     createUrlSection() {
       const section = document.createElement('div');
       section.className = 'onenetly-url-section';
-      section.style.cssText = 'border-top: 1px solid #e5e7eb; padding-top: 16px;';
+      section.style.cssText = 'border-top: 2px solid #f3f4f6; padding-top: 20px;';
+
+      const label = document.createElement('p');
+      label.style.cssText = 'margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #6b7280;';
+      label.textContent = 'Copy Link';
+      section.appendChild(label);
 
       const inputGroup = document.createElement('div');
       inputGroup.style.cssText = 'display: flex; gap: 8px;';
@@ -221,11 +194,11 @@
       input.type = 'text';
       input.value = window.location.href;
       input.readOnly = true;
-      input.style.cssText = 'flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: #f9fafb;';
+      input.style.cssText = 'flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 14px; background: #f9fafb; color: #6b7280; font-weight: 500;';
 
       const copyBtn = document.createElement('button');
       copyBtn.textContent = 'Copy';
-      copyBtn.style.cssText = 'padding: 8px 12px; background: #6366f1; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;';
+      copyBtn.style.cssText = 'padding: 12px 20px; background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);';
       
       copyBtn.addEventListener('click', () => this.copyUrl(input, copyBtn));
 
@@ -240,73 +213,28 @@
       const url = window.location.href;
       const title = document.title;
       
-      if (social.name === 'Print') {
-        window.print();
-        return;
-      }
-      
       const shareUrl = social.shareUrl(url, title);
-      window.open(shareUrl, '_blank', 'width=600,height=400');
+      window.open(shareUrl, '_blank', 'width=600,height=400,scrollbars=yes,resizable=yes');
       this.closePanel();
-    }
-
-    showAllSocials() {
-      // Create modal overlay
-      const overlay = document.createElement('div');
-      overlay.className = 'onenetly-modal-overlay';
-      overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1001;';
-      
-      // Create modal content
-      const modal = document.createElement('div');
-      modal.className = 'onenetly-modal';
-      modal.style.cssText = 'background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;';
-      
-      // Modal header
-      const header = document.createElement('div');
-      header.innerHTML = '<h3 style="margin: 0 0 20px 0;">Share on Social Networks</h3>';
-      modal.appendChild(header);
-      
-      // Social buttons grid
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;';
-      
-      this.config.socials.forEach(socialName => {
-        const social = socialConfigs[socialName];
-        if (social) {
-          const btn = this.createSocialButton(social);
-          btn.style.width = '100%';
-          grid.appendChild(btn);
-        }
-      });
-      
-      modal.appendChild(grid);
-      overlay.appendChild(modal);
-      
-      // Close on overlay click
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          document.body.removeChild(overlay);
-        }
-      });
-      
-      document.body.appendChild(overlay);
     }
 
     async copyUrl(input, btn) {
       try {
         await navigator.clipboard.writeText(input.value);
         btn.textContent = 'Copied!';
-        btn.style.background = '#10b981';
+        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
         setTimeout(() => {
           btn.textContent = 'Copy';
-          btn.style.background = '#6366f1';
+          btn.style.background = 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)';
         }, 2000);
       } catch (err) {
         input.select();
         document.execCommand('copy');
         btn.textContent = 'Copied!';
+        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
         setTimeout(() => {
           btn.textContent = 'Copy';
+          btn.style.background = 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)';
         }, 2000);
       }
     }
@@ -319,8 +247,13 @@
         this.closePanel();
       } else {
         panel.style.display = 'block';
+        setTimeout(() => {
+          panel.style.opacity = '1';
+          panel.style.transform = 'translateY(0) scale(1)';
+        }, 10);
         button.innerHTML = this.getCloseIcon();
-        button.style.background = '#ef4444';
+        button.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+        button.style.transform = 'scale(1.1) rotate(90deg)';
         this.isOpen = true;
       }
     }
@@ -329,94 +262,155 @@
       const panel = this.container.querySelector('.onenetly-panel');
       const button = this.container.querySelector('.onenetly-float-btn');
       
-      panel.style.display = 'none';
+      panel.style.opacity = '0';
+      panel.style.transform = 'translateY(10px) scale(0.95)';
+      setTimeout(() => {
+        panel.style.display = 'none';
+      }, 400);
+      
       button.innerHTML = this.getShareIcon();
-      button.style.background = this.config.customizations.buttonColor;
+      button.style.background = 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)';
+      button.style.transform = 'scale(1) rotate(0deg)';
       this.isOpen = false;
+    }
+
+    addPulseRings() {
+      const button = this.container.querySelector('.onenetly-float-btn');
+      
+      // Create pulse rings
+      for (let i = 0; i < 3; i++) {
+        const ring = document.createElement('div');
+        ring.className = `onenetly-pulse-ring onenetly-pulse-ring-${i + 1}`;
+        ring.style.cssText = `
+          position: absolute;
+          top: -4px;
+          left: -4px;
+          right: -4px;
+          bottom: -4px;
+          border: 2px solid rgba(0, 0, 0, 0.1);
+          border-radius: 50%;
+          animation: onenetlyPulse 2s infinite;
+          animation-delay: ${i * 0.6}s;
+          pointer-events: none;
+        `;
+        button.appendChild(ring);
+      }
     }
 
     // Style methods
     getContainerStyles() {
       const positions = {
-        'bottom-right': 'bottom: 20px; right: 20px;',
-        'bottom-left': 'bottom: 20px; left: 20px;',
-        'top-right': 'top: 20px; right: 20px;',
-        'top-left': 'top: 20px; left: 20px;'
+        'bottom-right': 'bottom: 24px; right: 24px;',
+        'bottom-left': 'bottom: 24px; left: 24px;',
+        'top-right': 'top: 24px; right: 24px;',
+        'top-left': 'top: 24px; left: 24px;'
       };
       
-      return `position: fixed; ${positions[this.config.position]} z-index: 1000;`;
+      return `position: fixed; ${positions[this.config.position]} z-index: 999999; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;`;
     }
 
     getFloatingButtonStyles() {
       return `
-        width: 56px; height: 56px; background: ${this.config.customizations.buttonColor};
+        width: 64px; height: 64px; background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        transition: all 0.3s ease; color: white; border: none;
+        cursor: pointer; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); color: white; border: none;
+        position: relative; overflow: visible;
       `;
     }
 
     getPanelStyles() {
+      const positions = {
+        'bottom-right': 'bottom: 80px; right: 0;',
+        'bottom-left': 'bottom: 80px; left: 0;',
+        'top-right': 'top: 80px; right: 0;',
+        'top-left': 'top: 80px; left: 0;'
+      };
+      
       return `
-        position: absolute; bottom: 70px; right: 0; width: 320px;
-        background: ${this.config.customizations.panelColor}; border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12); padding: 20px;
-        border: 1px solid #e5e7eb;
+        position: absolute; ${positions[this.config.position]} width: 280px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        padding: 24px; backdrop-filter: blur(20px);
+        border: 2px solid rgba(0, 0, 0, 0.05);
+        transform: translateY(10px) scale(0.95); opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       `;
     }
 
     getSocialButtonStyles(color) {
       return `
-        display: flex; align-items: center; gap: 8px; padding: 10px 12px;
-        border: none; border-radius: 8px; cursor: pointer; font-size: 13px;
-        font-weight: 500; transition: all 0.2s; color: white; background: ${color};
-        width: 100%;
+        display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+        border: none; border-radius: 16px; cursor: pointer; font-size: 15px;
+        font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        color: white; background: ${color};
+        width: 100%; position: relative; overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-family: inherit;
       `;
     }
 
     getShareIcon() {
       return `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.50-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
         </svg>
       `;
     }
 
     getCloseIcon() {
       return `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       `;
     }
 
     addStyles() {
-      const styles = `
+      if (document.getElementById('onenetly-widget-styles')) return;
+      
+      const styles = document.createElement('style');
+      styles.id = 'onenetly-widget-styles';
+      styles.textContent = `
+        @keyframes onenetlyPulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(1.4);
+            opacity: 0;
+          }
+        }
+        
         .onenetly-float-btn:hover {
           transform: scale(1.1);
-          box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
         }
+        
         .onenetly-social-btn:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
         }
-        .onenetly-header h3 {
-          margin: 0 0 16px 0;
-          font-size: 16px;
-          font-weight: 600;
-          color: ${this.config.customizations.textColor};
+        
+        .onenetly-social-btn:active {
+          transform: translateY(0);
         }
+        
         @media (max-width: 640px) {
           .onenetly-panel {
-            width: calc(100vw - 32px) !important;
-            right: -260px !important;
+            width: calc(100vw - 48px) !important;
+            right: -240px !important;
+          }
+          
+          .onenetly-container[style*="left"] .onenetly-panel {
+            left: -240px !important;
+            right: auto !important;
           }
         }
       `;
       
-      const styleElement = document.createElement('style');
-      styleElement.textContent = styles;
-      document.head.appendChild(styleElement);
+      document.head.appendChild(styles);
     }
   }
 
@@ -424,7 +418,8 @@
   window.OneNetly = {
     init: function(config) {
       return new OneNetly(config);
-    }
+    },
+    version: '2.0.0'
   };
 
   // Auto-initialize if config is provided

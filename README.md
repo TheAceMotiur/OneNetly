@@ -1,26 +1,14 @@
 # OneNetly Social Share Widget
 
-A customizable floating social share widget similar to ShareThis, allowing users to easily share content across multiple social media platforms.
-
-## Features
-
-- **Floating Design**: Unobtrusive floating buttons that stay visible while scrolling
-- **Customizable**: Choose position, shape, size, animation, and colors
-- **6 Primary Networks**: Select up to 6 main social networks to display
-- **More Button**: Additional networks available through a modal popup
-- **Responsive**: Works on desktop and mobile devices
-- **Easy Integration**: Simple JavaScript snippet for implementation
-- **Copy & Print**: Built-in copy link and print functionality
+A lightweight, customizable floating social share widget for websites.
 
 ## Quick Start
 
-### 1. Include the Widget Script
-
-Add this code to your website's HTML, preferably before the closing `</body>` tag:
-
+### Option 1: Use CDN (Recommended)
 ```html
-<!-- OneNetly Social Share Widget -->
-<script src="https://yourserver.com/share-widget.js"></script>
+<!-- Add to your HTML head or before closing body tag -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/gh/onenetly/share-widget@main/share-widget.js"></script>
 <script>
 OneNetlyShare.init({
     position: 'left',
@@ -32,18 +20,18 @@ OneNetlyShare.init({
 </script>
 ```
 
-### 2. Auto-Initialization (Alternative)
-
-You can also use data attributes for automatic initialization:
+### Option 2: Self-hosted
+1. Download `share-widget.js` from this repository
+2. Upload it to your website
+3. Include it in your HTML:
 
 ```html
-<script 
-    src="https://yourserver.com/share-widget.js"
-    data-position="left"
-    data-shape="circle"
-    data-size="50px"
-    data-animation="scale"
-    data-networks='["facebook","twitter","linkedin","pinterest","whatsapp","telegram"]'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="./path/to/share-widget.js"></script>
+<script>
+OneNetlyShare.init({
+    // Your configuration options
+});
 </script>
 ```
 
@@ -51,102 +39,73 @@ You can also use data attributes for automatic initialization:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `position` | String | `'left'` | Position of the widget (`'left'` or `'right'`) |
-| `shape` | String | `'circle'` | Button shape (`'circle'` or `'square'`) |
-| `size` | String | `'50px'` | Button size in pixels |
-| `animation` | String | `'scale'` | Hover animation (`'scale'`, `'bounce'`, or `'rotate'`) |
-| `networks` | Array | See below | Primary social networks to display (max 6) |
-| `customCSS` | Object | `{}` | Custom colors for each network |
-| `showMoreButton` | Boolean | `true` | Show/hide the "More" button |
-| `moreNetworks` | Array | See below | Networks shown in the modal |
+| `position` | string | `'left'` | Widget position: `'left'` or `'right'` |
+| `shape` | string | `'circle'` | Button shape: `'circle'` or `'square'` |
+| `size` | string | `'50px'` | Button size in pixels |
+| `animation` | string | `'scale'` | Hover animation: `'scale'`, `'bounce'`, or `'rotate'` |
+| `networks` | array | See below | Array of social networks to display |
+| `showMoreButton` | boolean | `true` | Show "more options" button |
+| `moreNetworks` | array | See below | Additional networks in modal |
+| `customCSS` | object | `{}` | Custom colors for networks |
 
-### Default Networks
+### Available Social Networks
+Primary networks (for main widget):
+- `facebook`, `twitter`, `linkedin`, `pinterest`, `whatsapp`, `telegram`
 
-**Primary networks (default):**
-```javascript
-['facebook', 'twitter', 'linkedin', 'pinterest', 'whatsapp', 'telegram']
-```
+Additional networks (for "more" modal):
+- `reddit`, `tumblr`, `vk`, `email`, `copy`, `print`
 
-**More networks (default):**
-```javascript
-['reddit', 'tumblr', 'vk', 'email', 'copy', 'print']
-```
-
-## Available Social Networks
-
-- `facebook` - Facebook
-- `twitter` - Twitter
-- `linkedin` - LinkedIn
-- `pinterest` - Pinterest
-- `whatsapp` - WhatsApp
-- `telegram` - Telegram
-- `reddit` - Reddit
-- `tumblr` - Tumblr
-- `vk` - VKontakte
-- `email` - Email
-- `copy` - Copy Link
-- `print` - Print Page
-
-## Advanced Configuration Examples
-
-### Custom Colors
-
-```javascript
-OneNetlyShare.init({
-    networks: ['facebook', 'twitter', 'linkedin', 'email'],
-    customCSS: {
-        facebook: '#4267B2',
-        twitter: '#1DA1F2',
-        linkedin: '#0077B5',
-        email: '#34495e'
-    }
-});
-```
-
-### Right-Side Square Buttons
-
+### Example with Custom Configuration
 ```javascript
 OneNetlyShare.init({
     position: 'right',
     shape: 'square',
-    size: '45px',
+    size: '60px',
     animation: 'bounce',
-    networks: ['facebook', 'twitter', 'reddit', 'email']
+    networks: ['facebook', 'twitter', 'whatsapp', 'email'],
+    showMoreButton: true,
+    moreNetworks: ['reddit', 'linkedin', 'copy', 'print'],
+    customCSS: {
+        facebook: '#4267B2',
+        twitter: '#1DA1F2',
+        whatsapp: '#25D366'
+    }
 });
 ```
 
-### Minimal Setup (Only Copy and Email)
+## Demo & Configuration Tool
 
-```javascript
+Visit our [demo page](./index.html) to:
+- See the widget in action
+- Customize settings with live preview
+- Generate code for your specific configuration
+
+### Using the Configuration Tool
+
+1. **Open** `index.html` in your browser
+2. **Customize** position, shape, size, and animation
+3. **Select** up to 6 social networks
+4. **Click** "Generate Widget Code"
+5. **Copy** the generated code
+6. **Paste** into your website
+
+The generated code will be simple and clean:
+```html
+<!-- OneNetly Social Share Widget -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/gh/onenetly/share-widget@main/share-widget.js"></script>
+<script>
 OneNetlyShare.init({
-    networks: ['copy', 'email'],
-    showMoreButton: false
+    position: 'left',
+    shape: 'circle',
+    size: '50px',
+    animation: 'scale',
+    networks: ['facebook', 'twitter', 'linkedin', 'pinterest', 'whatsapp', 'telegram'],
+    showMoreButton: true,
+    moreNetworks: ['reddit', 'tumblr', 'vk', 'email', 'copy', 'print']
 });
+</script>
 ```
-
-## API Methods
-
-### Initialize Widget
-
-```javascript
-OneNetlyShare.init(config);
-```
-
-### Destroy Widget
-
-```javascript
-OneNetlyShare.destroy();
-```
-
-## Customization Generator
-
-Use the main `index.html` file to:
-
-1. **Preview** the widget in real-time
-2. **Customize** all settings through a visual interface
-3. **Select** your preferred social networks
-4. **Generate** the complete JavaScript code
-5. **Copy** the code for implementation
 
 ## File Structure
 

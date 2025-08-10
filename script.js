@@ -317,17 +317,184 @@
     const config = {
       networks: Object.keys(data.networks).filter(id => data.networks[id].visible),
       size: currentSize(),
-      iconStyle: currentIconKey()
+      iconStyle: currentIconKey(),
+      floatingOnly: true // Only show floating buttons
     };
     
-    // Generate short script that loads from server
-    return `<script src="https://onenetly.com/sharing-buttons.js" data-config='${JSON.stringify(config)}'></script>
-
-<!-- Alternative: Inline configuration -->
+    // Generate floating-only script
+    const script = `<!-- Floating Share Buttons - Auto-detects URL & Title -->
 <script>
-  window.SharingButtonsConfig = ${JSON.stringify(config, null, 2)};
-</script>
-<script src="https://onenetly.com/sharing-buttons.js"></script>`;
+(function() {
+  const config = ${JSON.stringify(config, null, 2)};
+  
+  // Auto-detect page info
+  const pageUrl = encodeURIComponent(window.location.href);
+  const pageTitle = encodeURIComponent(document.title || 'Check out this page!');
+  
+  // Network sharing URLs
+  const shareUrls = {
+    facebook: 'https://facebook.com/sharer/sharer.php?u=' + pageUrl,
+    twitter: 'https://twitter.com/intent/tweet/?text=' + pageTitle + '&url=' + pageUrl,
+    linkedin: 'https://www.linkedin.com/shareArticle?mini=true&url=' + pageUrl + '&title=' + pageTitle,
+    whatsapp: 'whatsapp://send?text=' + pageTitle + '%20' + pageUrl,
+    telegram: 'https://t.me/share/url?url=' + pageUrl + '&text=' + pageTitle,
+    pinterest: 'https://pinterest.com/pin/create/button/?url=' + pageUrl + '&description=' + pageTitle,
+    reddit: 'https://reddit.com/submit/?url=' + pageUrl + '&title=' + pageTitle,
+    tumblr: 'https://www.tumblr.com/widgets/share/tool?posttype=link&title=' + pageTitle + '&content=' + pageUrl,
+    email: 'mailto:?subject=' + pageTitle + '&body=' + pageUrl,
+    copy: '#',
+    print: '#',
+    sms: 'sms:?body=' + pageTitle + '%20' + pageUrl
+  };
+  
+  // Network colors and icons
+  const networkData = {
+    facebook: { color: '#3b5998', icon: '📘', name: 'Facebook' },
+    twitter: { color: '#55acee', icon: '🐦', name: 'Twitter' },
+    linkedin: { color: '#0077b5', icon: '💼', name: 'LinkedIn' },
+    whatsapp: { color: '#25D366', icon: '💬', name: 'WhatsApp' },
+    telegram: { color: '#0088cc', icon: '✈️', name: 'Telegram' },
+    pinterest: { color: '#bd081c', icon: '📌', name: 'Pinterest' },
+    reddit: { color: '#5f99cf', icon: '🤖', name: 'Reddit' },
+    tumblr: { color: '#35465C', icon: '📝', name: 'Tumblr' },
+    email: { color: '#777777', icon: '✉️', name: 'Email' },
+    copy: { color: '#6c757d', icon: '📋', name: 'Copy Link' },
+    print: { color: '#6c757d', icon: '🖨️', name: 'Print' },
+    sms: { color: '#6c757d', icon: '💬', name: 'SMS' }
+  };
+  
+  // Create floating share panel
+  function createFloatingSharePanel() {
+    // Remove existing panel if any
+    const existing = document.getElementById('floating-share-panel');
+    if (existing) existing.remove();
+    
+    // Create panel container
+    const panel = document.createElement('div');
+    panel.id = 'floating-share-panel';
+    panel.style.cssText = 'position: fixed; left: 0; top: 50%; transform: translateY(-50%) translateX(-80%); z-index: 9999; transition: all 0.3s ease; background: white; border: 1px solid #e5e7eb; border-radius: 0 12px 12px 0; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); padding: 8px; backdrop-filter: blur(10px);';
+    
+    // Hover effect
+    panel.addEventListener('mouseenter', function() {
+      panel.style.transform = 'translateY(-50%) translateX(0)';
+    });
+    
+    panel.addEventListener('mouseleave', function() {
+      panel.style.transform = 'translateY(-50%) translateX(-80%)';
+    });
+    
+    // Create title
+    const title = document.createElement('div');
+    title.textContent = 'Share';
+    title.style.cssText = 'text-align: center; font-size: 12px; color: #6b7280; margin-bottom: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;';
+    panel.appendChild(title);
+    
+    // Create buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.style.cssText = 'display: flex; flex-direction: column; gap: 4px;';
+    
+    // Add network buttons
+    config.networks.forEach(function(networkId) {
+      if (!networkData[networkId]) return;
+      
+      const network = networkData[networkId];
+      const button = document.createElement('a');
+      
+      if (networkId === 'copy') {
+        button.href = '#';
+        button.onclick = function(e) {
+          e.preventDefault();
+          navigator.clipboard.writeText(window.location.href).then(function() {
+            showToast('Link copied to clipboard!');
+          });
+        };
+      } else if (networkId === 'print') {
+        button.href = '#';
+        button.onclick = function(e) {
+          e.preventDefault();
+          window.print();
+        };
+      } else {
+        button.href = shareUrls[networkId];
+        button.target = '_blank';
+        button.rel = 'noopener';
+      }
+      
+      button.style.cssText = 'display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: ' + network.color + '; color: white; border-radius: 50%; text-decoration: none; font-size: 16px; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);';
+      button.innerHTML = network.icon;
+      button.title = 'Share on ' + network.name;
+      
+      // Hover effects
+      button.addEventListener('mouseenter', function() {
+        button.style.transform = 'translateX(5px) scale(1.1)';
+        button.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.25)';
+      });
+      
+      button.addEventListener('mouseleave', function() {
+        button.style.transform = '';
+        button.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
+      });
+      
+      buttonsContainer.appendChild(button);
+    });
+    
+    panel.appendChild(buttonsContainer);
+    
+    // Add to page
+    document.body.appendChild(panel);
+    
+    // Mobile adjustments
+    if (window.innerWidth <= 768) {
+      panel.style.transform = 'translateY(-50%) translateX(-85%)';
+      panel.addEventListener('mouseenter', function() {
+        panel.style.transform = 'translateY(-50%) translateX(-5px)';
+      });
+      panel.addEventListener('mouseleave', function() {
+        panel.style.transform = 'translateY(-50%) translateX(-85%)';
+      });
+      
+      // Make buttons smaller on mobile
+      buttonsContainer.querySelectorAll('a').forEach(function(btn) {
+        btn.style.width = '36px';
+        btn.style.height = '36px';
+        btn.style.fontSize = '14px';
+      });
+    }
+  }
+  
+  // Toast notification function
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transform: translateX(100%); transition: transform 0.3s ease;';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Animate in
+    setTimeout(function() {
+      toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(function() {
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(function() {
+        if (document.body.contains(toast)) {
+          document.body.removeChild(toast);
+        }
+      }, 300);
+    }, 3000);
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createFloatingSharePanel);
+  } else {
+    createFloatingSharePanel();
+  }
+})();
+</script>`;
+
+    return script;
   }
 
   // Render option groups

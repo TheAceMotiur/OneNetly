@@ -95,7 +95,7 @@
         }
     };
 
-    // CSS styles
+    // CSS styles - Now supporting both custom CSS and Tailwind CSS
     const widgetCSS = `
         .onenetly-share-widget {
             position: fixed;

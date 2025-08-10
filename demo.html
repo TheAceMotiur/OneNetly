@@ -1,172 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OneNetly Share Widget - Demo Implementation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .implementation-examples {
-            margin-top: 40px;
-        }
-        .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 5px;
-            margin: 15px 0;
-            overflow-x: auto;
-        }
-        .example {
-            margin: 30px 0;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #f9f9f9;
-        }
-        .note {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>OneNetly Share Widget - Implementation Demo</h1>
-        
-        <p>This page demonstrates how to implement the OneNetly Social Share Widget on your website. The floating share buttons should appear on the left side of this page.</p>
-
-        <div class="note">
-            <strong>Note:</strong> This demo loads the widget from a local file. In production, you would host the share-widget.js file on your server or CDN.
-        </div>
-
-        <h2>Basic Implementation</h2>
-        <p>Add this code to your website's HTML:</p>
-        
-        <div class="code-block">
-&lt;!-- OneNetly Social Share Widget --&gt;
-&lt;script src="https://yourserver.com/share-widget.js"&gt;&lt;/script&gt;
-&lt;script&gt;
+<!-- OneNetly Social Share Widget -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://onenetly.com/share-widget.js"></script>
+<script>
 OneNetlyShare.init({
-    position: 'left',           // 'left' or 'right'
-    shape: 'circle',           // 'circle' or 'square'
-    size: '50px',              // Button size
-    animation: 'scale',        // 'scale', 'bounce', or 'rotate'
-    networks: ['facebook', 'twitter', 'linkedin', 'pinterest', 'whatsapp', 'telegram']
-});
-&lt;/script&gt;
-        </div>
-
-        <div class="implementation-examples">
-            <h2>Implementation Examples</h2>
-
-            <div class="example">
-                <h3>Example 1: Auto-initialization with data attributes</h3>
-                <div class="code-block">
-&lt;script 
-    src="https://yourserver.com/share-widget.js"
-    data-position="right"
-    data-shape="square"
-    data-size="60px"
-    data-animation="bounce"
-    data-networks='["facebook","twitter","linkedin","email"]'&gt;
-&lt;/script&gt;
-                </div>
-            </div>
-
-            <div class="example">
-                <h3>Example 2: Custom configuration</h3>
-                <div class="code-block">
-&lt;script src="https://yourserver.com/share-widget.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-OneNetlyShare.init({
-    position: 'right',
-    shape: 'square',
-    size: '45px',
-    animation: 'rotate',
-    networks: ['facebook', 'twitter', 'reddit', 'email'],
+    position: 'left',
+    shape: 'circle',
+    size: '50px',
+    animation: 'scale',
+    networks: ["twitter","linkedin","pinterest","whatsapp","facebook"],
+    // Add your custom styling
     customCSS: {
-        facebook: '#4267B2',    // Custom Facebook color
-        twitter: '#1DA1F2',     // Custom Twitter color
-        reddit: '#FF4500',      // Custom Reddit color
-        email: '#34495e'        // Custom Email color
-    },
-    showMoreButton: true,
-    moreNetworks: ['linkedin', 'pinterest', 'whatsapp', 'telegram', 'copy', 'print']
+        // Optional: Override default colors
+        // facebook: '#1877f2',
+        // twitter: '#1da1f2',
+        // etc.
+    }
 });
-&lt;/script&gt;
-                </div>
-            </div>
-
-            <div class="example">
-                <h3>Example 3: Minimal setup</h3>
-                <div class="code-block">
-&lt;script src="https://yourserver.com/share-widget.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-OneNetlyShare.init();  // Uses default settings
-&lt;/script&gt;
-                </div>
-            </div>
-        </div>
-
-        <h2>Available Configuration Options</h2>
-        <ul>
-            <li><strong>position:</strong> 'left' or 'right' (default: 'left')</li>
-            <li><strong>shape:</strong> 'circle' or 'square' (default: 'circle')</li>
-            <li><strong>size:</strong> Button size in pixels (default: '50px')</li>
-            <li><strong>animation:</strong> 'scale', 'bounce', or 'rotate' (default: 'scale')</li>
-            <li><strong>networks:</strong> Array of social networks to display (max 6)</li>
-            <li><strong>customCSS:</strong> Object with custom colors for each network</li>
-            <li><strong>showMoreButton:</strong> Boolean to show/hide the "More" button (default: true)</li>
-            <li><strong>moreNetworks:</strong> Array of networks shown in the modal</li>
-        </ul>
-
-        <h2>Available Social Networks</h2>
-        <p>facebook, twitter, linkedin, pinterest, whatsapp, telegram, reddit, tumblr, vk, email, copy, print</p>
-
-        <h2>Content for Testing</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        
-        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        
-        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-    </div>
-
-    <!-- OneNetly Social Share Widget Implementation -->
-    <script src="./share-widget.js"></script>
-    <script>
-        OneNetlyShare.init({
-            position: 'left',
-            shape: 'circle',
-            size: '50px',
-            animation: 'scale',
-            networks: ['facebook', 'twitter', 'linkedin', 'pinterest', 'whatsapp', 'telegram'],
-            showMoreButton: true,
-            moreNetworks: ['reddit', 'tumblr', 'vk', 'email', 'copy', 'print']
-        });
-    </script>
-</body>
-</html>
+</script>

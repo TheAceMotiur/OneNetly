@@ -197,6 +197,30 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
+        .share-btn.animation-scale:hover {
+            transform: scale(1.1);
+        }
+
+        .share-btn.animation-bounce:hover {
+            animation: bounce-effect 0.6s;
+        }
+
+        .share-btn.animation-rotate:hover {
+            transform: rotate(360deg);
+        }
+
+        @keyframes bounce-effect {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
         .share-btn.facebook { background: #1877f2; }
         .share-btn.twitter { background: #1da1f2; }
         .share-btn.linkedin { background: #0077b5; }
@@ -325,6 +349,10 @@
         
         <div class="demo-content">
             <p>This is a demo page showing the floating share widget in action. The widget appears on the left side of the screen with customizable social media buttons.</p>
+            <div id="currentSettings" style="background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px;">
+                <strong>Current Demo Settings:</strong> 
+                <span id="settingsDisplay">Position: Left, Shape: Circle, Size: Medium, Animation: Scale</span>
+            </div>
         </div>
 
         <div class="customization-panel">
@@ -366,7 +394,7 @@
                 </div>
             </div>
 
-            <h4>Select 6 Primary Social Networks:</h4>
+            <h4>Select 6 Primary Social Networks: <span id="selectionCounter">(6/6 selected)</span></h4>
             <div class="social-selector">
                 <div class="social-option selected" data-network="facebook">
                     <i class="fab fa-facebook-f facebook"></i>
@@ -542,6 +570,134 @@
         // Customization functionality
         let selectedNetworks = ['facebook', 'twitter', 'linkedin', 'pinterest', 'whatsapp', 'telegram'];
 
+        // Network configuration for demo widget
+        const networkConfig = {
+            facebook: { icon: 'fab fa-facebook-f', color: '#1877f2', title: 'Share on Facebook' },
+            twitter: { icon: 'fab fa-twitter', color: '#1da1f2', title: 'Share on Twitter' },
+            linkedin: { icon: 'fab fa-linkedin-in', color: '#0077b5', title: 'Share on LinkedIn' },
+            pinterest: { icon: 'fab fa-pinterest-p', color: '#bd081c', title: 'Share on Pinterest' },
+            whatsapp: { icon: 'fab fa-whatsapp', color: '#25d366', title: 'Share on WhatsApp' },
+            telegram: { icon: 'fab fa-telegram-plane', color: '#0088cc', title: 'Share on Telegram' },
+            reddit: { icon: 'fab fa-reddit-alien', color: '#ff4500', title: 'Share on Reddit' },
+            tumblr: { icon: 'fab fa-tumblr', color: '#35465d', title: 'Share on Tumblr' },
+            vk: { icon: 'fab fa-vk', color: '#4680c2', title: 'Share on VKontakte' },
+            email: { icon: 'fas fa-envelope', color: '#6c757d', title: 'Share via Email' }
+        };
+
+        function updateDemoWidget() {
+            const widget = document.getElementById('shareWidget');
+            const currentConfig = {
+                position: document.getElementById('position').value,
+                shape: document.getElementById('shape').value,
+                size: document.getElementById('size').value,
+                animation: document.getElementById('animation').value
+            };
+
+            // Clear existing buttons except the last one (more button)
+            const moreButton = widget.lastElementChild;
+            widget.innerHTML = '';
+
+            // Create buttons for selected networks
+            selectedNetworks.forEach(network => {
+                if (networkConfig[network]) {
+                    const btn = document.createElement('a');
+                    btn.href = '#';
+                    btn.className = `share-btn ${network}`;
+                    btn.dataset.network = network;
+                    btn.title = networkConfig[network].title;
+                    btn.style.backgroundColor = networkConfig[network].color;
+                    btn.innerHTML = `<i class="${networkConfig[network].icon}"></i>`;
+                    widget.appendChild(btn);
+                }
+            });
+
+            // Re-add the more button
+            widget.appendChild(moreButton);
+
+            // Apply current styling
+            applyWidgetStyling(currentConfig);
+        }
+
+        function applyWidgetStyling(config) {
+            const widget = document.getElementById('shareWidget');
+            const buttons = widget.querySelectorAll('.share-btn');
+            
+            // Position
+            if (config.position === 'right') {
+                widget.style.left = 'auto';
+                widget.style.right = '20px';
+            } else {
+                widget.style.left = '20px';
+                widget.style.right = 'auto';
+            }
+
+            // Size mapping
+            const sizeMap = {
+                small: '40px',
+                medium: '50px',
+                large: '60px'
+            };
+
+            buttons.forEach(btn => {
+                // Shape
+                if (config.shape === 'square') {
+                    btn.style.borderRadius = '10px';
+                } else {
+                    btn.style.borderRadius = '50%';
+                }
+
+                // Size
+                btn.style.width = sizeMap[config.size];
+                btn.style.height = sizeMap[config.size];
+
+                // Remove old animation classes
+                btn.classList.remove('animation-scale', 'animation-bounce', 'animation-rotate');
+                
+                // Add current animation class
+                btn.classList.add(`animation-${config.animation}`);
+            });
+        }
+
+        function updateSettingsDisplay() {
+            const position = document.getElementById('position').value;
+            const shape = document.getElementById('shape').value;
+            const size = document.getElementById('size').value;
+            const animation = document.getElementById('animation').value;
+            
+            const displayText = `Position: ${position.charAt(0).toUpperCase() + position.slice(1)}, Shape: ${shape.charAt(0).toUpperCase() + shape.slice(1)}, Size: ${size.charAt(0).toUpperCase() + size.slice(1)}, Animation: ${animation.charAt(0).toUpperCase() + animation.slice(1)}`;
+            
+            document.getElementById('settingsDisplay').textContent = displayText;
+        }
+
+        function updateSelectionCounter() {
+            const counter = document.getElementById('selectionCounter');
+            counter.textContent = `(${selectedNetworks.length}/6 selected)`;
+            
+            if (selectedNetworks.length === 6) {
+                counter.style.color = '#28a745';
+            } else if (selectedNetworks.length === 0) {
+                counter.style.color = '#dc3545';
+            } else {
+                counter.style.color = '#ffc107';
+            }
+        }
+
+        function initializeCustomization() {
+            // Update demo widget on page load
+            updateDemoWidget();
+            updateSelectionCounter();
+            updateSettingsDisplay();
+            
+            // Apply initial styling
+            const initialConfig = {
+                position: document.getElementById('position').value,
+                shape: document.getElementById('shape').value,
+                size: document.getElementById('size').value,
+                animation: document.getElementById('animation').value
+            };
+            applyWidgetStyling(initialConfig);
+        }
+
         document.querySelectorAll('.social-option').forEach(option => {
             option.addEventListener('click', function() {
                 const network = this.dataset.network;
@@ -556,11 +712,21 @@
                     selectedNetworks.push(network);
                 } else {
                     alert('You can only select up to 6 primary social networks.');
+                    return;
                 }
+                
+                // Update the demo widget and counter
+                updateDemoWidget();
+                updateSelectionCounter();
             });
         });
 
         function generateCode() {
+            if (selectedNetworks.length === 0) {
+                alert('Please select at least one social network.');
+                return;
+            }
+
             const position = document.getElementById('position').value;
             const shape = document.getElementById('shape').value;
             const size = document.getElementById('size').value;
@@ -594,6 +760,12 @@ OneNetlyShare.init({
 
             document.getElementById('generatedCode').textContent = code;
             document.getElementById('codeOutput').style.display = 'block';
+            
+            // Scroll to the generated code
+            document.getElementById('codeOutput').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
 
         function copyCode() {
@@ -612,39 +784,60 @@ OneNetlyShare.init({
 
         // Apply customization changes in real-time
         document.getElementById('position').addEventListener('change', function() {
-            const widget = document.getElementById('shareWidget');
-            if (this.value === 'right') {
-                widget.style.left = 'auto';
-                widget.style.right = '20px';
-            } else {
-                widget.style.left = '20px';
-                widget.style.right = 'auto';
-            }
+            const config = {
+                position: this.value,
+                shape: document.getElementById('shape').value,
+                size: document.getElementById('size').value,
+                animation: document.getElementById('animation').value
+            };
+            applyWidgetStyling(config);
+            updateSettingsDisplay();
         });
 
         document.getElementById('shape').addEventListener('change', function() {
-            const buttons = document.querySelectorAll('.share-btn');
-            buttons.forEach(btn => {
-                if (this.value === 'square') {
-                    btn.style.borderRadius = '10px';
-                } else {
-                    btn.style.borderRadius = '50%';
-                }
-            });
+            const config = {
+                position: document.getElementById('position').value,
+                shape: this.value,
+                size: document.getElementById('size').value,
+                animation: document.getElementById('animation').value
+            };
+            applyWidgetStyling(config);
+            updateSettingsDisplay();
         });
 
         document.getElementById('size').addEventListener('change', function() {
-            const sizeMap = {
-                small: '40px',
-                medium: '50px',
-                large: '60px'
+            const config = {
+                position: document.getElementById('position').value,
+                shape: document.getElementById('shape').value,
+                size: this.value,
+                animation: document.getElementById('animation').value
             };
-            const buttons = document.querySelectorAll('.share-btn');
-            buttons.forEach(btn => {
-                btn.style.width = sizeMap[this.value];
-                btn.style.height = sizeMap[this.value];
-            });
+            applyWidgetStyling(config);
+            updateSettingsDisplay();
         });
+
+        document.getElementById('animation').addEventListener('change', function() {
+            const config = {
+                position: document.getElementById('position').value,
+                shape: document.getElementById('shape').value,
+                size: document.getElementById('size').value,
+                animation: this.value
+            };
+            applyWidgetStyling(config);
+            updateSettingsDisplay();
+        });
+
+        // Initialize customization on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCustomization();
+        });
+
+        // If DOM is already loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeCustomization);
+        } else {
+            initializeCustomization();
+        }
     </script>
 </body>
 </html>

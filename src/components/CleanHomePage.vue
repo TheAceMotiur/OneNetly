@@ -104,14 +104,14 @@
             <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.85] tracking-tight mb-10">
               <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.3s; animation-fill-mode: forwards;">Enterprise</span>
               <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">Social</span>
-              <span class="block bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent opacity-0 animate-fade-in-up" style="animation-delay: 0.7s; animation-fill-mode: forwards;">Sharing</span>
+              <span class="block bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent opacity-0 animate-fade-in-up" style="animation-delay: 0.7s; animation-fill-mode: forwards;">Sharing Widget</span>
             </h1>
             
             <!-- Professional Description -->
-            <p class="text-xl sm:text-2xl lg:text-3xl text-gray-600 mb-12 max-w-3xl leading-[1.4] opacity-0 animate-fade-in-up" style="animation-delay: 0.9s; animation-fill-mode: forwards;">
+            <h2 class="text-xl sm:text-2xl lg:text-3xl text-gray-600 mb-12 max-w-3xl leading-[1.4] opacity-0 animate-fade-in-up font-semibold" style="animation-delay: 0.9s; animation-fill-mode: forwards;">
               The most <span class="font-black text-gray-900">advanced social sharing solution</span> for modern websites. 
               <span class="font-bold text-gray-800 block mt-2">Zero dependencies • Privacy-first • Completely free</span>
-            </p>
+            </h2>
             <!-- Enhanced Professional Stats -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 justify-center lg:justify-start opacity-0 animate-fade-in-up" style="animation-delay: 1.3s; animation-fill-mode: forwards;">
               <div class="text-center lg:text-left group">
@@ -609,7 +609,7 @@
               <li><router-link to="/" class="text-gray-400 hover:text-white transition-colors">Home</router-link></li>
               <li><router-link to="/docs" class="text-gray-400 hover:text-white transition-colors">Documentation</router-link></li>
               <li><router-link to="/about" class="text-gray-400 hover:text-white transition-colors">About</router-link></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a></li>
+              <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
             </ul>
           </div>
           <div>

@@ -45,9 +45,8 @@
     }
   };
 
-  // Default configuration for main and additional socials
-  const mainSocials = ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp'];
-  const moreSocials = ['Telegram', 'Pinterest', 'Tumblr', 'Email', 'Print', 'Copy Link'];
+  // All available social networks
+  const allSocials = ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Pinterest', 'Tumblr', 'Email', 'Print', 'Copy Link'];
 
   class OneNetly {
     constructor(options = {}) {
@@ -166,15 +165,13 @@
       `;
       panel.appendChild(header);
 
-      // Main Social Networks
+      // Main Social Networks - Show ALL selected networks
       const mainSocialContainer = document.createElement('div');
       mainSocialContainer.className = 'onenetly-main-socials';
       mainSocialContainer.style.cssText = 'display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;';
 
-      // Filter networks based on config
-      const selectedMainSocials = mainSocials.filter(social => this.config.networks.includes(social));
-      
-      selectedMainSocials.forEach(socialName => {
+      // Show all user-selected networks in main area
+      this.config.networks.forEach(socialName => {
         const social = socialConfigs[socialName];
         if (social) {
           const btn = this.createMainSocialButton(social);
@@ -184,29 +181,30 @@
 
       panel.appendChild(mainSocialContainer);
 
-      // More Button
-      const moreBtn = this.createMoreButton();
-      panel.appendChild(moreBtn);
+      // Get unselected networks for "More" section
+      const unselectedSocials = allSocials.filter(social => !this.config.networks.includes(social));
 
-      // Additional Social Networks (hidden by default)
-      const moreSocialContainer = document.createElement('div');
-      moreSocialContainer.className = 'onenetly-more-socials';
-      moreSocialContainer.style.cssText = 'display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; max-height: 0; overflow: hidden; opacity: 0; transition: all 0.3s ease;';
+      // Only show "More" button if there are unselected networks
+      if (unselectedSocials.length > 0) {
+        // More Button
+        const moreBtn = this.createMoreButton();
+        panel.appendChild(moreBtn);
 
-      // Filter additional networks
-      const selectedMoreSocials = moreSocials.filter(social => 
-        this.config.networks.includes(social) || social === 'Print' || social === 'Email'
-      );
+        // Additional Social Networks (hidden by default) - Show UNSELECTED networks
+        const moreSocialContainer = document.createElement('div');
+        moreSocialContainer.className = 'onenetly-more-socials';
+        moreSocialContainer.style.cssText = 'display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; max-height: 0; overflow: hidden; opacity: 0; transition: all 0.3s ease;';
 
-      selectedMoreSocials.forEach(socialName => {
-        const social = socialConfigs[socialName];
-        if (social) {
-          const btn = this.createMainSocialButton(social);
-          moreSocialContainer.appendChild(btn);
-        }
-      });
+        unselectedSocials.forEach(socialName => {
+          const social = socialConfigs[socialName];
+          if (social) {
+            const btn = this.createMainSocialButton(social);
+            moreSocialContainer.appendChild(btn);
+          }
+        });
 
-      panel.appendChild(moreSocialContainer);
+        panel.appendChild(moreSocialContainer);
+      }
 
       // Footer
       const footer = document.createElement('div');
@@ -340,14 +338,16 @@
 
     toggleMoreSocials(icon) {
       const moreSocialContainer = this.panel.querySelector('.onenetly-more-socials');
-      if (this.showMore) {
-        moreSocialContainer.style.maxHeight = '300px';
-        moreSocialContainer.style.opacity = '1';
-        icon.style.transform = 'rotate(180deg)';
-      } else {
-        moreSocialContainer.style.maxHeight = '0';
-        moreSocialContainer.style.opacity = '0';
-        icon.style.transform = 'rotate(0deg)';
+      if (moreSocialContainer) {
+        if (this.showMore) {
+          moreSocialContainer.style.maxHeight = '300px';
+          moreSocialContainer.style.opacity = '1';
+          icon.style.transform = 'rotate(180deg)';
+        } else {
+          moreSocialContainer.style.maxHeight = '0';
+          moreSocialContainer.style.opacity = '0';
+          icon.style.transform = 'rotate(0deg)';
+        }
       }
     }
 

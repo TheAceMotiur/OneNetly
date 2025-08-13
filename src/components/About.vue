@@ -56,6 +56,14 @@
         </p>
       </div>
 
+      <!-- Ad Placement: After Hero Section -->
+      <AdSense 
+        ad-slot="4878379783"
+        :show-label="true"
+        container-class="mb-20"
+        :lazy-load="true"
+      />
+
       <!-- Mission Section -->
       <section class="mb-20">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -126,6 +134,14 @@
           </div>
         </div>
       </section>
+
+      <!-- Ad Placement: Middle of About Page -->
+      <AdSense 
+        ad-slot="4878379783"
+        :show-label="true"
+        container-class="my-20"
+        :lazy-load="true"
+      />
 
       <!-- Technology Section -->
       <section class="mb-20">
@@ -270,8 +286,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'About'
-}
+<script setup>
+import AdSense from './AdSense.vue'
 </script>

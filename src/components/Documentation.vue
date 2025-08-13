@@ -78,6 +78,14 @@
 
         <!-- Main Content -->
         <div class="lg:col-span-3">
+          <!-- Ad Placement: Top of Documentation -->
+          <AdSense 
+            ad-slot="4878379783"
+            :show-label="true"
+            container-class="mb-12"
+            :lazy-load="true"
+          />
+          
           <div class="prose prose-lg max-w-none">
             <h1 class="text-4xl font-bold text-black mb-8">OneNetly Documentation</h1>
             <p class="text-xl text-gray-600 mb-12">Learn how to integrate OneNetly's free social sharing widget into your website in minutes.</p>
@@ -147,6 +155,14 @@
 &lt;/div&gt;</code></pre>
               </div>
             </section>
+
+            <!-- Ad Placement: Middle of Documentation -->
+            <AdSense 
+              ad-slot="4878379783"
+              :show-label="true"
+              container-class="my-16"
+              :lazy-load="true"
+            />
 
             <!-- Data Attributes -->
             <section id="data-attributes" class="mb-16">
@@ -306,16 +322,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Documentation',
-  mounted() {
-    // Load the widget for demo purposes
-    if (!document.querySelector('script[src*="widget.js"]')) {
-      const script = document.createElement('script');
-      script.src = '/widget.js';
-      document.body.appendChild(script);
-    }
+<script setup>
+import { onMounted } from 'vue'
+import AdSense from './AdSense.vue'
+
+onMounted(() => {
+  // Load the widget for demo purposes
+  if (!document.querySelector('script[src*="widget.js"]')) {
+    const script = document.createElement('script');
+    script.src = '/widget.js';
+    document.body.appendChild(script);
   }
-}
+})
 </script>

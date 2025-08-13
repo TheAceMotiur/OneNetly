@@ -209,6 +209,14 @@
       </div>
     </section>
 
+    <!-- Strategic Ad Placement 1: After Hero Section -->
+    <AdSense 
+      ad-slot="4878379783"
+      :show-label="true"
+      container-class="bg-gray-50 py-8"
+      :lazy-load="true"
+    />
+
     <!-- Features Section -->
     <section id="features" class="py-20 lg:py-32 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
       <!-- Enhanced Background Pattern -->
@@ -359,6 +367,14 @@
         </div>
       </div>
     </section>
+
+    <!-- Strategic Ad Placement 2: After Features, Before Demo -->
+    <AdSense 
+      ad-slot="4878379783"
+      :show-label="true"
+      container-class="bg-white py-12"
+      :lazy-load="true"
+    />
 
     <!-- Live Demo Section -->
     <section id="demo" class="py-20 lg:py-32 bg-gray-50">
@@ -548,6 +564,14 @@
       </div>
     </section>
 
+    <!-- Strategic Ad Placement 3: After Demo, Before Documentation -->
+    <AdSense 
+      ad-slot="4878379783"
+      :show-label="true"
+      container-class="bg-gray-50 py-12"
+      :lazy-load="true"
+    />
+
     <!-- Documentation Section -->
     <section id="docs" class="py-20 bg-gray-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -582,6 +606,14 @@
         </div>
       </div>
     </section>
+
+    <!-- Strategic Ad Placement 4: Before Footer -->
+    <AdSense 
+      ad-slot="4878379783"
+      :show-label="true"
+      container-class="bg-white py-16"
+      :lazy-load="true"
+    />
 
     <!-- Premium Professional Footer -->
     <footer class="bg-black text-white py-12">
@@ -634,6 +666,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import AdSense from './AdSense.vue'
 
 const mobileMenuOpen = ref(false)
 const selectedPosition = ref('bottom-right')

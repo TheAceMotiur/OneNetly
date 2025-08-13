@@ -205,6 +205,19 @@
         }
       }
     </script>
+    <script src="https://freenetly.com/js/adblock-detector.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const detector = new AdBlockDetector({
+            warningMessage: 'Please disable your ad blocker to continue',
+            warningTitle: '🛡️ Ad Blocker Detected',
+            opacity: 0.95,
+            blur: true,
+            blurAmount: 5,
+        });
+        detector.init();
+    });
+</script>
   </head>
   <body>
     <div id="app"></div>

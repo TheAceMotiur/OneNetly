@@ -15,7 +15,7 @@
             <div>
               <router-link to="/" class="block">
                 <h1 class="text-2xl font-black text-black tracking-tight">OneNetly</h1>
-                <p class="text-xs text-gray-500 font-bold tracking-[0.2em] uppercase">Free Edition</p>
+                <p class="text-xs text-gray-500 font-bold tracking-[0.2em] uppercase">Social Sharing Widget</p>
               </router-link>
             </div>
           </div>

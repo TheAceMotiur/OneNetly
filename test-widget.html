@@ -55,8 +55,8 @@
 
     <div class="test-case">
         <h3>Test Case 2: Popular Social Networks</h3>
-        <p>Selected: Facebook, Twitter, Instagram, TikTok, YouTube, Reddit, Discord</p>
-        <p>Expected: All 7 should show in main area, remaining networks in More section</p>
+        <p>Selected: Facebook, Twitter, LinkedIn, Reddit, Pinterest, Tumblr</p>
+        <p>Expected: All 6 should show in main area, remaining networks in More section</p>
         <button class="init-btn" onclick="initTest2()">Initialize Widget</button>
         <button class="init-btn" onclick="destroyWidget()">Destroy Widget</button>
     </div>
@@ -107,7 +107,7 @@
         function initTest2() {
             destroyWidget();
             currentWidget = new OneNetly({
-                networks: ['Facebook', 'Twitter', 'Instagram', 'TikTok', 'YouTube', 'Reddit', 'Discord'],
+                networks: ['Facebook', 'Twitter', 'LinkedIn', 'Reddit', 'Pinterest', 'Tumblr'],
                 position: 'bottom-right'
             });
         }
@@ -123,7 +123,7 @@
         function initTest4() {
             destroyWidget();
             currentWidget = new OneNetly({
-                networks: ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Pinterest', 'Tumblr', 'Reddit', 'Discord', 'YouTube', 'TikTok', 'Snapchat', 'Instagram', 'Viber', 'WeChat', 'Skype', 'VKontakte', 'Line', 'QR Code', 'SMS', 'Email', 'Print', 'Copy Link'],
+                networks: ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Pinterest', 'Tumblr', 'Reddit', 'Viber', 'WeChat', 'Skype', 'VKontakte', 'Line', 'QR Code', 'SMS', 'Email', 'Print', 'Copy Link'],
                 position: 'bottom-right'
             });
         }

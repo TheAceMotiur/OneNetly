@@ -184,7 +184,7 @@
               </div>
             </div>
             <p class="text-muted mb-0">
-              Free social sharing widget for modern websites. No registration required, completely open source.
+              Social Sharing Widget for modern websites. No registration required, completely open source.
             </p>
           </div>
           <div class="col-md-4">

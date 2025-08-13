@@ -1,4 +1,6 @@
 /* Reset and base styles */
+@import './responsive.css';
+
 html {
   scroll-behavior: smooth;
   line-height: 1.6;

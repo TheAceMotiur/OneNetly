@@ -15,7 +15,7 @@
             <div>
               <router-link to="/" class="block">
                 <h1 class="text-2xl font-black text-black tracking-tight">OneNetly</h1>
-                <p class="text-xs text-gray-500 font-bold tracking-[0.2em] uppercase">Free Edition</p>
+                <p class="text-xs text-gray-500 font-bold tracking-[0.2em] uppercase">Social Sharing Widget</p>
               </router-link>
             </div>
           </div>
@@ -62,7 +62,7 @@
           <section>
             <h2 class="text-3xl font-bold mb-6 text-black">Service Description</h2>
             <p class="text-gray-700 leading-relaxed text-lg">
-              OneNetly provides a free social sharing widget that can be embedded on websites to enable social media sharing functionality. The service is provided "as is" without warranties of any kind.
+              OneNetly provides a Social Sharing Widget that can be embedded on websites to enable social media sharing functionality. The service is provided "as is" without warranties of any kind.
             </p>
           </section>
 

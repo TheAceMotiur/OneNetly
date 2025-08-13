@@ -1,7 +1,7 @@
 # OneNetly Widget - Available Social Networks
 
 ## Overview
-The OneNetly widget now supports **23 different social networks and sharing options**! Here's the complete list of available networks:
+The OneNetly widget now supports **18 different social networks and sharing options**! Here's the complete list of available networks:
 
 ## Social Media Platforms
 
@@ -9,14 +9,9 @@ The OneNetly widget now supports **23 different social networks and sharing opti
 - **Facebook** - Share to Facebook timeline
 - **Twitter** - Tweet with link and title
 - **LinkedIn** - Share to LinkedIn feed
-- **Instagram** - Copy link for Instagram sharing
-- **YouTube** - Copy link for YouTube sharing
-- **TikTok** - Copy link for TikTok sharing
-- **Snapchat** - Copy link for Snapchat sharing
 
 ### Discussion Platforms
 - **Reddit** - Submit to Reddit with title and URL
-- **Discord** - Copy link formatted for Discord
 - **Tumblr** - Share to Tumblr blog
 
 ### Visual & Creative Platforms
@@ -67,7 +62,7 @@ new OneNetly({
 ### All Social Media Platforms
 ```javascript
 new OneNetly({
-    networks: ['Facebook', 'Twitter', 'Instagram', 'TikTok', 'YouTube', 'Reddit', 'Discord', 'Snapchat'],
+    networks: ['Facebook', 'Twitter', 'LinkedIn', 'Reddit', 'Pinterest', 'Tumblr'],
     position: 'top-right'
 });
 ```
@@ -85,8 +80,7 @@ new OneNetly({
 new OneNetly({
     networks: [
         'Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 
-        'Pinterest', 'Tumblr', 'Reddit', 'Discord', 'YouTube', 
-        'TikTok', 'Snapchat', 'Instagram', 'Viber', 'WeChat', 
+        'Pinterest', 'Tumblr', 'Reddit', 'Viber', 'WeChat', 
         'Skype', 'VKontakte', 'Line', 'QR Code', 'SMS', 
         'Email', 'Print', 'Copy Link'
     ],
@@ -106,7 +100,6 @@ new OneNetly({
 - Falls back to clipboard copy on desktop
 
 ### Platform-Specific Handling
-- Some platforms (Instagram, TikTok, YouTube, Discord) copy formatted text to clipboard
 - Direct web sharing URLs for platforms that support it
 - Mobile app integration where available
 
@@ -135,4 +128,4 @@ Each social network maintains its brand colors for instant recognition:
 - **WhatsApp**: #25d366
 - **And many more...**
 
-The OneNetly widget is now the most comprehensive social sharing solution available, supporting virtually every major platform and communication method!
+The OneNetly widget is now a comprehensive social sharing solution, supporting all major platforms and communication methods!

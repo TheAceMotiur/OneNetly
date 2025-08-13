@@ -1,0 +1,116 @@
+/* Additional responsive utilities for OneNetly homepage */
+
+/* Extra small devices (phones, 320px to 474px) */
+@media (max-width: 474px) {
+  /* Ensure proper scaling on very small screens */
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  
+  /* Adjust spacing for very small screens */
+  .space-y-responsive > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  /* Ensure touch targets are at least 44px */
+  button, .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Improve readability on small screens */
+  .text-responsive {
+    line-height: 1.5;
+  }
+}
+
+/* Small devices (landscape phones, 475px to 639px) */
+@media (min-width: 475px) and (max-width: 639px) {
+  /* Optimize layout for small landscape screens */
+  .grid-responsive-sm {
+    gap: 1rem;
+  }
+}
+
+/* Custom animation keyframes for better performance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes bounceGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure good contrast and accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .bg-gradient-to-r,
+  .bg-gradient-to-br,
+  .bg-gradient-to-tl {
+    background: #000000;
+    color: #ffffff;
+  }
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  /* Prepare for dark mode if needed */
+}
+
+/* Improve focus visibility for keyboard navigation */
+*:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Better hover states for touch devices */
+@media (hover: none) {
+  .hover\:scale-105:hover,
+  .hover\:scale-110:hover {
+    transform: none;
+  }
+  
+  .hover\:shadow-2xl:hover,
+  .hover\:shadow-3xl:hover {
+    box-shadow: none;
+  }
+}

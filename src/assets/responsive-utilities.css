@@ -1,0 +1,626 @@
+/* OneNetly - Comprehensive Responsive Utilities */
+
+/* =====================================================
+   RESPONSIVE BREAKPOINT MIXINS & UTILITIES
+   ===================================================== */
+
+/* Container System */
+.container-xs { max-width: 375px; margin: 0 auto; padding: 0 1rem; }
+.container-sm { max-width: 640px; margin: 0 auto; padding: 0 1rem; }
+.container-md { max-width: 768px; margin: 0 auto; padding: 0 1.5rem; }
+.container-lg { max-width: 1024px; margin: 0 auto; padding: 0 2rem; }
+.container-xl { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
+.container-2xl { max-width: 1536px; margin: 0 auto; padding: 0 3rem; }
+
+/* Full-width container that respects safe areas */
+.container-full {
+  width: 100%;
+  max-width: 100vw;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  margin: 0 auto;
+}
+
+/* =====================================================
+   RESPONSIVE TEXT SIZES (FLUID TYPOGRAPHY)
+   ===================================================== */
+
+.text-fluid-xs { font-size: clamp(0.75rem, 1.5vw, 0.875rem); }
+.text-fluid-sm { font-size: clamp(0.875rem, 2vw, 1rem); }
+.text-fluid-base { font-size: clamp(1rem, 2.5vw, 1.125rem); }
+.text-fluid-lg { font-size: clamp(1.125rem, 3vw, 1.25rem); }
+.text-fluid-xl { font-size: clamp(1.25rem, 3.5vw, 1.5rem); }
+.text-fluid-2xl { font-size: clamp(1.5rem, 4vw, 2rem); }
+.text-fluid-3xl { font-size: clamp(1.875rem, 5vw, 2.5rem); }
+.text-fluid-4xl { font-size: clamp(2.25rem, 6vw, 3rem); }
+.text-fluid-5xl { font-size: clamp(3rem, 7vw, 4rem); }
+.text-fluid-6xl { font-size: clamp(3.75rem, 8vw, 5rem); }
+.text-fluid-7xl { font-size: clamp(4.5rem, 9vw, 6rem); }
+.text-fluid-8xl { font-size: clamp(6rem, 10vw, 8rem); }
+.text-fluid-9xl { font-size: clamp(8rem, 12vw, 10rem); }
+
+/* Responsive headings */
+.heading-hero { font-size: clamp(2rem, 8vw, 6rem); line-height: 0.9; font-weight: 900; }
+.heading-section { font-size: clamp(1.5rem, 5vw, 3rem); line-height: 1.1; font-weight: 800; }
+.heading-card { font-size: clamp(1.125rem, 3vw, 1.5rem); line-height: 1.3; font-weight: 700; }
+
+/* =====================================================
+   RESPONSIVE SPACING SYSTEM
+   ===================================================== */
+
+.space-fluid-xs { gap: clamp(0.25rem, 1vw, 0.5rem); }
+.space-fluid-sm { gap: clamp(0.5rem, 2vw, 1rem); }
+.space-fluid-md { gap: clamp(1rem, 3vw, 1.5rem); }
+.space-fluid-lg { gap: clamp(1.5rem, 4vw, 2rem); }
+.space-fluid-xl { gap: clamp(2rem, 5vw, 3rem); }
+.space-fluid-2xl { gap: clamp(2.5rem, 6vw, 4rem); }
+
+.padding-fluid-xs { padding: clamp(0.5rem, 2vw, 1rem); }
+.padding-fluid-sm { padding: clamp(1rem, 3vw, 1.5rem); }
+.padding-fluid-md { padding: clamp(1.5rem, 4vw, 2rem); }
+.padding-fluid-lg { padding: clamp(2rem, 5vw, 3rem); }
+.padding-fluid-xl { padding: clamp(2.5rem, 6vw, 4rem); }
+
+.margin-fluid-xs { margin: clamp(0.5rem, 2vw, 1rem); }
+.margin-fluid-sm { margin: clamp(1rem, 3vw, 1.5rem); }
+.margin-fluid-md { margin: clamp(1.5rem, 4vw, 2rem); }
+.margin-fluid-lg { margin: clamp(2rem, 5vw, 3rem); }
+.margin-fluid-xl { margin: clamp(2.5rem, 6vw, 4rem); }
+
+/* Section spacing */
+.section-spacing { padding: clamp(3rem, 8vw, 6rem) 0; }
+.section-spacing-sm { padding: clamp(2rem, 6vw, 4rem) 0; }
+.section-spacing-lg { padding: clamp(4rem, 10vw, 8rem) 0; }
+
+/* =====================================================
+   RESPONSIVE GRID SYSTEMS
+   ===================================================== */
+
+.grid-auto-fit-xs { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  gap: clamp(1rem, 3vw, 2rem); 
+}
+
+.grid-auto-fit-sm { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+  gap: clamp(1rem, 3vw, 2rem); 
+}
+
+.grid-auto-fit-md { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+  gap: clamp(1rem, 3vw, 2rem); 
+}
+
+.grid-auto-fit-lg { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+  gap: clamp(1rem, 3vw, 2rem); 
+}
+
+/* Responsive column layouts */
+.cols-responsive-1 { columns: 1; }
+.cols-responsive-2 { columns: 1; }
+.cols-responsive-3 { columns: 1; }
+
+@media (min-width: 640px) {
+  .cols-responsive-2 { columns: 2; }
+  .cols-responsive-3 { columns: 2; }
+}
+
+@media (min-width: 1024px) {
+  .cols-responsive-3 { columns: 3; }
+}
+
+/* =====================================================
+   RESPONSIVE FLEXBOX UTILITIES
+   ===================================================== */
+
+.flex-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+.flex-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.5rem, 2vw, 1rem);
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+.flex-responsive {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 3vw, 2rem);
+}
+
+@media (min-width: 768px) {
+  .flex-responsive {
+    flex-direction: row;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE ASPECT RATIOS
+   ===================================================== */
+
+.aspect-square { aspect-ratio: 1 / 1; }
+.aspect-video { aspect-ratio: 16 / 9; }
+.aspect-photo { aspect-ratio: 4 / 3; }
+.aspect-portrait { aspect-ratio: 3 / 4; }
+.aspect-golden { aspect-ratio: 1.618 / 1; }
+
+/* =====================================================
+   RESPONSIVE IMAGES & MEDIA
+   ===================================================== */
+
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.img-contain {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.video-responsive {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 */
+  overflow: hidden;
+  border-radius: clamp(0.5rem, 2vw, 1rem);
+}
+
+.video-responsive iframe,
+.video-responsive video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* =====================================================
+   RESPONSIVE BUTTONS & INTERACTIVE ELEMENTS
+   ===================================================== */
+
+.btn-responsive {
+  padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 4vw, 1.5rem);
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  min-height: 44px; /* Minimum touch target */
+  min-width: 44px;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn-responsive-lg {
+  padding: clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 5vw, 2rem);
+  font-size: clamp(1rem, 3vw, 1.125rem);
+  border-radius: clamp(0.5rem, 2vw, 0.75rem);
+  min-height: 48px;
+}
+
+.btn-responsive-sm {
+  padding: clamp(0.375rem, 1.5vw, 0.5rem) clamp(0.75rem, 3vw, 1rem);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  border-radius: clamp(0.25rem, 0.5vw, 0.375rem);
+  min-height: 40px;
+}
+
+/* Touch-friendly interactive elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE CARDS & COMPONENTS
+   ===================================================== */
+
+.card-responsive {
+  background: white;
+  border-radius: clamp(0.5rem, 2vw, 1rem);
+  padding: clamp(1rem, 4vw, 2rem);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.card-responsive:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: clamp(1rem, 4vw, 2rem) 0;
+}
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE NAVIGATION
+   ===================================================== */
+
+.nav-responsive {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 4vw, 2rem);
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.nav-menu {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: clamp(1rem, 3vw, 2rem);
+}
+
+.nav-menu.open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .nav-menu {
+    display: flex;
+    flex-direction: row;
+    position: static;
+    box-shadow: none;
+    padding: 0;
+  }
+  
+  .nav-toggle {
+    display: none;
+  }
+}
+
+.nav-link {
+  padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
+  text-decoration: none;
+  color: inherit;
+  border-radius: clamp(0.25rem, 1vw, 0.5rem);
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* =====================================================
+   RESPONSIVE FORMS
+   ===================================================== */
+
+.form-responsive {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 3vw, 1.5rem);
+  width: 100%;
+  max-width: 600px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.25rem, 1vw, 0.5rem);
+}
+
+.form-input {
+  padding: clamp(0.75rem, 2vw, 1rem);
+  border: 1px solid #ccc;
+  border-radius: clamp(0.25rem, 1vw, 0.5rem);
+  font-size: 16px; /* Prevent zoom on iOS */
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+.form-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.form-label {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 600;
+  color: #374151;
+}
+
+/* =====================================================
+   RESPONSIVE MODALS & OVERLAYS
+   ===================================================== */
+
+.modal-responsive {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.modal-content {
+  background: white;
+  border-radius: clamp(0.5rem, 2vw, 1rem);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  width: 100%;
+  max-width: clamp(300px, 90vw, 600px);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* =====================================================
+   UTILITY CLASSES FOR RESPONSIVE DESIGN
+   ===================================================== */
+
+/* Visibility utilities */
+.show-xs { display: block; }
+.show-sm { display: none; }
+.show-md { display: none; }
+.show-lg { display: none; }
+.show-xl { display: none; }
+
+@media (min-width: 640px) {
+  .show-xs { display: none; }
+  .show-sm { display: block; }
+  .hide-sm { display: none; }
+}
+
+@media (min-width: 768px) {
+  .show-sm { display: none; }
+  .show-md { display: block; }
+  .hide-md { display: none; }
+}
+
+@media (min-width: 1024px) {
+  .show-md { display: none; }
+  .show-lg { display: block; }
+  .hide-lg { display: none; }
+}
+
+@media (min-width: 1280px) {
+  .show-lg { display: none; }
+  .show-xl { display: block; }
+  .hide-xl { display: none; }
+}
+
+/* Text alignment utilities */
+.text-center-mobile {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .text-center-mobile {
+    text-align: left;
+  }
+}
+
+/* Flex direction utilities */
+.flex-col-mobile {
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .flex-col-mobile {
+    flex-direction: row;
+  }
+}
+
+/* =====================================================
+   PERFORMANCE OPTIMIZATIONS
+   ===================================================== */
+
+/* Enable hardware acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimize scroll performance */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* =====================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ===================================================== */
+
+/* Focus management */
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color 0.2s ease;
+}
+
+.focus-ring:focus {
+  outline-color: #3b82f6;
+}
+
+.focus-ring:focus:not(:focus-visible) {
+  outline-color: transparent;
+}
+
+/* Skip links for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  z-index: 1000;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =====================================================
+   PRINT OPTIMIZATIONS
+   ===================================================== */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  .container-responsive,
+  .container-full {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  
+  .card-responsive {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+}
+
+/* =====================================================
+   DARK MODE SUPPORT
+   ===================================================== */
+
+@media (prefers-color-scheme: dark) {
+  .auto-dark-bg {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+  
+  .auto-dark-card {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border-color: #404040;
+  }
+  
+  .auto-dark-input {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+  }
+  
+  .auto-dark-input::placeholder {
+    color: #888888;
+  }
+}
+
+/* =====================================================
+   REDUCED MOTION SUPPORT
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .respect-motion-preference {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .respect-motion-preference * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* =====================================================
+   HIGH CONTRAST MODE SUPPORT
+   ===================================================== */
+
+@media (prefers-contrast: high) {
+  .auto-contrast {
+    border: 2px solid currentColor !important;
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+  
+  .auto-contrast-btn {
+    border: 2px solid ButtonText !important;
+    background: ButtonFace !important;
+    color: ButtonText !important;
+  }
+}

@@ -102,15 +102,15 @@
             
             <!-- Professional Main Title -->
             <h1 class="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black leading-[0.95] xs:leading-[0.9] tracking-tight mb-4 xs:mb-6 sm:mb-8">
-              <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.3s; animation-fill-mode: forwards;">Enterprise</span>
-              <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">Social</span>
-              <span class="block bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent opacity-0 animate-fade-in-up" style="animation-delay: 0.7s; animation-fill-mode: forwards;">Sharing Widget</span>
+              <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.3s; animation-fill-mode: forwards;">Best Social Sharing Widget</span>
+              <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">for Modern</span>
+              <span class="block bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent opacity-0 animate-fade-in-up" style="animation-delay: 0.7s; animation-fill-mode: forwards;">Websites</span>
             </h1>
             
             <!-- Professional Description -->
             <h2 class="text-sm xs:text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-600 mb-4 xs:mb-6 sm:mb-8 max-w-3xl leading-[1.5] xs:leading-[1.4] opacity-0 animate-fade-in-up font-semibold" style="animation-delay: 0.9s; animation-fill-mode: forwards;">
-              The most <span class="font-black text-gray-900">advanced social sharing solution</span> for modern websites. 
-              <span class="font-bold text-gray-800 block mt-2 xs:mt-3">Zero dependencies • Privacy-first • Completely free</span>
+              OneNetly is the most <span class="font-black text-gray-900">advanced social sharing widget</span> and <span class="font-bold text-gray-800">social media buttons solution</span> for websites. 
+              <span class="font-bold text-gray-800 block mt-2 xs:mt-3">Free social sharing plugin • Privacy-first • Zero dependencies • 5KB lightweight</span>
             </h2>
             <!-- Enhanced Professional Stats -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6 justify-center lg:justify-start opacity-0 animate-fade-in-up" style="animation-delay: 1.3s; animation-fill-mode: forwards;">
@@ -246,15 +246,14 @@
           
           <!-- Enhanced section title -->
           <h2 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-8 text-gray-900 tracking-tight">
-            Why Choose{' '}
+            Why OneNetly is the{' '}
             <span class="relative inline-block">
-              <span class="bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent">OneNetly</span>
+              <span class="bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent">Best Social Sharing Widget</span>
               <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-black to-gray-600 rounded-full transform scale-x-0 animate-fade-in-up" style="animation-delay: 1s; animation-fill-mode: forwards;"></div>
             </span>
-            ?
           </h2>
           <p class="text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">
-            Built with <span class="font-semibold text-gray-800">simplicity</span> and <span class="font-semibold text-gray-800">performance</span> in mind, OneNetly provides everything you need for seamless social sharing.
+            Our <span class="font-semibold text-gray-800">free social sharing widget</span> combines <span class="font-semibold text-gray-800">performance, privacy, and simplicity</span> to deliver the ultimate social media buttons solution for your website.
           </p>
         </div>
         
@@ -571,6 +570,56 @@
       container-class="bg-gray-50 py-12"
       :lazy-load="true"
     />
+
+    <!-- FAQ Section for SEO -->
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4 text-gray-900">
+            Frequently Asked Questions About Social Sharing Widgets
+          </h2>
+          <p class="text-xl text-gray-600">
+            Everything you need to know about OneNetly social sharing widget
+          </p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="space-y-6">
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-900">What is a social sharing widget?</h3>
+              <p class="text-gray-600">A social sharing widget is a tool that allows website visitors to easily share content on social media platforms like Facebook, Twitter, LinkedIn, and WhatsApp. OneNetly provides the best free social sharing widget with privacy-first design.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-900">Why choose OneNetly over other social sharing widgets?</h3>
+              <p class="text-gray-600">OneNetly is the best social sharing widget because it's only 5KB, completely free, privacy-first, has zero dependencies, and supports all major social platforms. Unlike other social sharing plugins, it doesn't track users.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-900">How to install OneNetly social sharing widget?</h3>
+              <p class="text-gray-600">Installing our social sharing widget is simple - just add one script tag to your website. No registration required, no complex setup. It's the easiest social sharing plugin to integrate.</p>
+            </div>
+          </div>
+          
+          <div class="space-y-6">
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-900">Is OneNetly social sharing widget free?</h3>
+              <p class="text-gray-600">Yes! OneNetly is completely free and open-source. Unlike other social sharing widgets that charge for premium features, all OneNetly features are free forever.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-900">Which social media platforms does the widget support?</h3>
+              <p class="text-gray-600">Our social sharing widget supports Facebook, Twitter, LinkedIn, WhatsApp, Telegram, Pinterest, Reddit, Email, and more. It's the most comprehensive free social media buttons solution available.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-900">Is the social sharing widget mobile-friendly?</h3>
+              <p class="text-gray-600">Absolutely! OneNetly social sharing widget is fully responsive and optimized for mobile devices. The social media buttons work perfectly on all screen sizes and touch devices.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Documentation Section -->
     <section id="docs" class="py-20 bg-gray-50">

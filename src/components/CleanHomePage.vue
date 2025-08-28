@@ -719,7 +719,7 @@ import AdSense from './AdSense.vue'
 
 const mobileMenuOpen = ref(false)
 const selectedPosition = ref('bottom-right')
-const selectedSocials = ref(['Facebook', 'Twitter', 'LinkedIn'])
+const selectedSocials = ref(['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Reddit'])
 const generatedCode = ref('')
 const copied = ref(false)
 

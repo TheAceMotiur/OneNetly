@@ -5,8 +5,8 @@
         <!-- Enhanced Logo -->
         <router-link to="/" class="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
           <div class="relative group">
-            <div class="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-black via-gray-800 to-black rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-105">
-              <span class="text-white font-black text-sm xs:text-base sm:text-lg tracking-wide">ON</span>
+            <div class="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-black via-gray-800 to-black rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-105 relative">
+              <span class="text-white font-black text-sm xs:text-base sm:text-lg tracking-wide absolute inset-0 flex items-center justify-center">ON</span>
               <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg xs:rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
           </div>

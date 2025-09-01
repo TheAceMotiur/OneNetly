@@ -1,48 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white text-black">
-    <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50 shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
-          <!-- Enhanced Logo -->
-          <div class="flex items-center space-x-4">
-            <div class="relative group">
-              <router-link to="/" class="w-12 h-12 bg-gradient-to-br from-black via-gray-800 to-black rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-105">
-                <span class="text-white font-black text-lg tracking-wide">ON</span>
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </router-link>
-            </div>
-            <div>
-              <router-link to="/" class="block">
-                <h1 class="text-2xl font-black text-black tracking-tight">OneNetly</h1>
-                <p class="text-xs text-gray-500 font-bold tracking-[0.2em] uppercase">Social Sharing Widget</p>
-              </router-link>
-            </div>
-          </div>
-          
-          <!-- Enhanced Desktop Menu -->
-          <div class="hidden md:flex items-center space-x-12">
-            <router-link to="/#features" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              Features
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </router-link>
-            <router-link to="/#demo" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              Live Demo
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </router-link>
-            <router-link to="/docs" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              Documentation
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </router-link>
-            <router-link to="/about" class="relative text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              About
-              <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-black"></span>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </nav>
-
+  <div>
     <!-- Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
       <!-- Hero Section -->

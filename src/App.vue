@@ -1,10 +1,13 @@
 <script setup>
 import CleanShareButton from './components/CleanShareButton.vue'
+import AppLayout from './components/AppLayout.vue'
 </script>
 
 <template>
   <div class="min-h-screen-safe safe-area-inset">
-    <router-view />
+    <AppLayout>
+      <router-view />
+    </AppLayout>
     
     <!-- Clean Share Button - only show on homepage -->
     <CleanShareButton v-if="$route.path === '/'" />

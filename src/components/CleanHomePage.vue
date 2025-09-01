@@ -1,64 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white text-black">
-    <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50 shadow-lg safe-area-top">
-      <div class="max-w-7xl mx-auto px-4 xs:px-6 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-14 xs:h-16 sm:h-20">
-          <!-- Enhanced Logo -->
-          <div class="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
-            <div class="relative group">
-              <div class="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-black via-gray-800 to-black rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-105">
-                <span class="text-white font-black text-sm xs:text-base sm:text-lg tracking-wide">ON</span>
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg xs:rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </div>
-            </div>
-            <div>
-              <h1 class="text-lg xs:text-xl sm:text-2xl font-black text-black tracking-tight">OneNetly</h1>
-              <p class="text-xs text-gray-500 font-bold tracking-[0.1em] xs:tracking-[0.2em] uppercase hidden xs:block sm:block">Social Sharing Widget</p>
-            </div>
-          </div>
-          
-          <!-- Enhanced Desktop Menu -->
-          <div class="hidden lg:flex items-center space-x-8 xl:space-x-12">
-            <a href="#features" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              Features
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a href="#demo" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              Live Demo
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <router-link to="/docs" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              Documentation
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </router-link>
-            <router-link to="/about" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-              About
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </router-link>
-          </div>
-          <!-- Mobile menu button -->
-          <div class="lg:hidden">
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-gray-600 hover:text-black p-2 touch-manipulation" aria-label="Toggle menu">
-              <svg class="w-5 h-5 xs:w-6 xs:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        
-        <!-- Mobile menu -->
-        <div v-if="mobileMenuOpen" class="lg:hidden border-t border-gray-200 py-4">
-          <div class="flex flex-col space-y-4">
-            <a href="#features" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Features</a>
-            <a href="#demo" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Demo</a>
-            <router-link to="/docs" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Docs</router-link>
-            <router-link to="/about" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">About</router-link>
-          </div>
-        </div>
-      </div>
-    </nav>
-
+  <div>
     <!-- Hero Section -->
     <section class="relative pt-12 xs:pt-16 sm:pt-20 md:pt-28 lg:pt-40 pb-8 xs:pb-12 sm:pb-16 lg:pb-32 bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden safe-area-left safe-area-right">
       <!-- Professional Background Effects -->
@@ -663,53 +604,6 @@
       container-class="bg-white py-16"
       :lazy-load="true"
     />
-
-    <!-- Premium Professional Footer -->
-    <footer class="bg-black text-white py-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid md:grid-cols-4 gap-8">
-          <div class="md:col-span-2">
-            <div class="flex items-center space-x-3 mb-4">
-              <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.50-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92S19.61 16.08 18 16.08z"/>
-                </svg>
-              </div>
-              <div>
-                <h3 class="text-xl font-black">OneNetly</h3>
-                <p class="text-sm text-gray-400 font-semibold">Free & Open Source</p>
-              </div>
-            </div>
-            <p class="text-gray-300 max-w-md">
-              Social Sharing Widget for modern websites. No registration required, completely open source.
-            </p>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-4">Resources</h4>
-            <ul class="space-y-2">
-              <li><router-link to="/" class="text-gray-400 hover:text-white transition-colors">Home</router-link></li>
-              <li><router-link to="/docs" class="text-gray-400 hover:text-white transition-colors">Documentation</router-link></li>
-              <li><router-link to="/about" class="text-gray-400 hover:text-white transition-colors">About</router-link></li>
-              <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-4">Legal</h4>
-            <ul class="space-y-2">
-              <li><router-link to="/privacy" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</router-link></li>
-              <li><router-link to="/terms" class="text-gray-400 hover:text-white transition-colors">Terms of Service</router-link></li>
-              <li><router-link to="/cookies" class="text-gray-400 hover:text-white transition-colors">Cookie Policy</router-link></li>
-              <li><a href="https://opensource.org/licenses/MIT" target="_blank" class="text-gray-400 hover:text-white transition-colors">MIT License</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p class="text-gray-400 text-sm">
-            © 2024 OneNetly. Free & open source social sharing widget.
-          </p>
-        </div>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -717,7 +611,6 @@
 import { ref, onMounted } from 'vue'
 import AdSense from './AdSense.vue'
 
-const mobileMenuOpen = ref(false)
 const selectedPosition = ref('bottom-right')
 const selectedSocials = ref(['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Reddit'])
 const generatedCode = ref('')

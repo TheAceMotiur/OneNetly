@@ -198,74 +198,67 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.95);
+        background: rgba(0, 0, 0, 0.8);
         z-index: 999999;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         padding: 20px;
         box-sizing: border-box;
       `;
 
-      // Create modern message box
+      // Create simple message box
       const messageBox = document.createElement('div');
       messageBox.style.cssText = `
-        background: #000000;
-        color: #ffffff;
-        padding: 48px;
-        border-radius: 16px;
+        background: white;
+        color: #333;
+        padding: 40px;
+        border-radius: 12px;
         text-align: center;
-        max-width: 480px;
+        max-width: 400px;
         width: 100%;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-        border: 1px solid #333333;
-        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       `;
 
       messageBox.innerHTML = `
-        <h2 style="margin: 0 0 24px 0; font-size: 28px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em;">
+        <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 600; color: #e74c3c;">
           Ad Blocker Detected
         </h2>
-        <p style="margin: 0 0 32px 0; font-size: 16px; line-height: 1.6; color: #a1a1aa; font-weight: 400;">
-          Please disable your ad blocker to continue accessing this content.
+        <p style="margin: 0 0 30px 0; font-size: 16px; line-height: 1.5; color: #555;">
+          Please disable your ad blocker to continue browsing this website.
         </p>
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px;">
-          <button onclick="window.location.reload()" style="
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            width: 100%;
-          " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#ffffff'">
-            Refresh Page
-          </button>
-          <button onclick="
-            localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
-            document.querySelector('.onenetly-adblocker-overlay').remove();
-          " style="
-            background: transparent;
-            color: #a1a1aa;
-            border: 1px solid #333333;
-            padding: 16px 32px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            width: 100%;
-          " onmouseover="this.style.borderColor='#525252'; this.style.color='#ffffff'" onmouseout="this.style.borderColor='#333333'; this.style.color='#a1a1aa'">
-            Continue (12h)
-          </button>
-        </div>
-        <div style="padding-top: 24px; border-top: 1px solid #333333; text-align: center;">
-          <p style="margin: 0; font-size: 13px; color: #71717a; font-weight: 500;">
-            Powered by <a href="https://onenetly.com/" target="_blank" rel="dofollow" style="color: #ffffff; text-decoration: none; font-weight: 600; transition: opacity 0.2s ease;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">OneNetly</a>
+        <button onclick="window.location.reload()" style="
+          background: #3498db;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          margin-right: 10px;
+        ">
+          Refresh Page
+        </button>
+        <button onclick="
+          localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
+          document.querySelector('.onenetly-adblocker-overlay').remove();
+        " style="
+          background: #95a5a6;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+        ">
+          Continue Without Disabling
+        </button>
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; text-align: center;">
+          <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+            Powered by <a href="https://onenetly.com/" target="_blank" rel="dofollow" style="color: #667eea; text-decoration: none; font-weight: 500;">OneNetly</a>
           </p>
         </div>
       `;

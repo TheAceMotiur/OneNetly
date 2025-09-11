@@ -189,7 +189,7 @@
         }
       }
 
-      // Create full-screen overlay
+      // Create full-screen overlay with premium backdrop
       const overlay = document.createElement('div');
       overlay.className = 'onenetly-adblocker-overlay';
       overlay.style.cssText = `
@@ -198,72 +198,159 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 999999;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(20px);
+        z-index: 2147483647;
         display: flex;
         align-items: center;
         justify-content: center;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         padding: 20px;
         box-sizing: border-box;
+        animation: fadeIn 0.6s ease-out;
       `;
 
-      // Create simple message box
+      // Create premium message box with gradient background
       const messageBox = document.createElement('div');
       messageBox.style.cssText = `
-        background: white;
-        color: #333;
-        padding: 40px;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+        color: white;
+        padding: 48px;
+        border-radius: 24px;
         text-align: center;
-        max-width: 400px;
+        max-width: 560px;
         width: 100%;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
+        animation: slideIn 0.6s ease-out 0.2s both;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
       `;
 
-      messageBox.innerHTML = `
-        <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 600; color: #e74c3c;">
-          Ad Blocker Detected
-        </h2>
-        <p style="margin: 0 0 30px 0; font-size: 16px; line-height: 1.5; color: #555;">
-          Please disable your ad blocker to continue browsing this website.
-        </p>
-        <button onclick="window.location.reload()" style="
-          background: #3498db;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 14px;
-          font-weight: 500;
-          margin-right: 10px;
-        ">
-          Refresh Page
-        </button>
-        <button onclick="
-          localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
-          document.querySelector('.onenetly-adblocker-overlay').remove();
-        " style="
-          background: #95a5a6;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 14px;
-          font-weight: 500;
-        ">
-          Continue Without Disabling
-        </button>
-        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; text-align: center;">
-          <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-            Powered by <a href="https://onenetly.com/" target="_blank" rel="dofollow" style="color: #667eea; text-decoration: none; font-weight: 500;">OneNetly</a>
+      // Add subtle pattern overlay
+      const patternOverlay = document.createElement('div');
+      patternOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%);
+        pointer-events: none;
+      `;
+      messageBox.appendChild(patternOverlay);
+
+      // Create content container
+      const contentContainer = document.createElement('div');
+      contentContainer.style.cssText = 'position: relative; z-index: 2;';
+
+      contentContainer.innerHTML = `
+        <div style="margin-bottom: 32px;">
+          <!-- Premium Icon -->
+          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="m4.9 4.9 14.2 14.2"/>
+            </svg>
+          </div>
+          
+          <!-- Professional Title -->
+          <h2 style="color: #f87171; margin: 0 0 16px 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2;">
+            Ad Blocker Detected
+          </h2>
+          
+          <!-- Enhanced Description -->
+          <p style="color: #e5e7eb; line-height: 1.6; margin: 0 0 32px 0; font-size: 18px; opacity: 0.9;">
+            To continue browsing and support our content, please disable your ad blocker for this website.
+          </p>
+        </div>
+        
+        <!-- Premium Action Buttons -->
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px;">
+          <button onclick="window.location.reload()" style="
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(59, 130, 246, 0.3)'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+              <path d="M3 21v-5h5"/>
+            </svg>
+            Refresh Page
+          </button>
+          
+          <button onclick="
+            localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
+            document.querySelector('.onenetly-adblocker-overlay').remove();
+          " style="
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+          " onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            Continue (12h)
+          </button>
+        </div>
+        
+        <!-- Professional Watermark -->
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center;">
+          <p style="margin: 0; font-size: 14px; color: #9ca3af; font-weight: 500;">
+            Powered by <a href="https://onenetly.com/" target="_blank" rel="dofollow" style="color: #667eea; text-decoration: none; font-weight: 600; transition: color 0.3s ease;" onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#667eea'">OneNetly</a>
           </p>
         </div>
       `;
 
+      messageBox.appendChild(contentContainer);
       overlay.appendChild(messageBox);
+
+      // Add premium CSS animations
+      if (!document.querySelector('#onenetly-adblocker-styles')) {
+        const style = document.createElement('style');
+        style.id = 'onenetly-adblocker-styles';
+        style.textContent = `
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          @keyframes slideIn {
+            from { 
+              opacity: 0; 
+              transform: translateY(30px) scale(0.95); 
+            }
+            to { 
+              opacity: 1; 
+              transform: translateY(0) scale(1); 
+            }
+          }
+          
+          .onenetly-adblocker-overlay button:active {
+            transform: translateY(0) scale(0.98) !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
       document.body.appendChild(overlay);
 
       // Check every 3 seconds if ad blocker is still active

@@ -88,6 +88,7 @@
         showLabels: options.showLabels !== false,
         theme: options.theme || 'light',
         size: options.size || 'medium',
+        adBlockerDetector: options.adBlockerDetector === true, // Default disabled
         ...options
       };
 
@@ -95,13 +96,167 @@
       this.showMore = false;
       this.container = null;
       this.panel = null;
+      this.adBlockerDetected = false;
 
       this.init();
     }
 
     init() {
       this.addStyles();
+      if (this.config.adBlockerDetector) {
+        this.detectAdBlocker();
+      }
       this.createWidget();
+    }
+
+    detectAdBlocker() {
+      // Method 1: Test for blocked ad scripts
+      const testAdScript = document.createElement('script');
+      testAdScript.type = 'text/javascript';
+      testAdScript.async = true;
+      testAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+      
+      const testPromise = new Promise((resolve) => {
+        testAdScript.onload = () => resolve(false);
+        testAdScript.onerror = () => resolve(true);
+        setTimeout(() => resolve(true), 2000); // Timeout fallback
+      });
+
+      // Method 2: Test for blocked elements
+      const testDiv = document.createElement('div');
+      testDiv.innerHTML = '&nbsp;';
+      testDiv.className = 'adsbox ad advertisement ads banner-ad';
+      testDiv.style.cssText = 'position:absolute!important;left:-10000px!important;top:-1000px!important;width:1px!important;height:1px!important;';
+      document.body.appendChild(testDiv);
+
+      // Method 3: Check for common ad blocker indicators
+      const commonBlockedSelectors = [
+        '.ads',
+        '.advertisement', 
+        '.banner-ad',
+        '[id*="google_ads"]',
+        '[class*="adsbygoogle"]'
+      ];
+
+      testPromise.then((scriptBlocked) => {
+        // Check if test element is hidden/blocked
+        const elementBlocked = testDiv.offsetHeight === 0 || 
+                              testDiv.style.display === 'none' || 
+                              testDiv.style.visibility === 'hidden';
+        
+        // Check for blocked selectors
+        const selectorsBlocked = commonBlockedSelectors.some(selector => {
+          const elements = document.querySelectorAll(selector);
+          return elements.length === 0 && selector === '.ads'; // Basic test
+        });
+
+        this.adBlockerDetected = scriptBlocked || elementBlocked;
+        
+        // Clean up test element
+        if (testDiv.parentNode) {
+          testDiv.parentNode.removeChild(testDiv);
+        }
+
+        // Show notification if ad blocker detected
+        if (this.adBlockerDetected) {
+          this.showAdBlockerNotification();
+        }
+      });
+    }
+
+    showAdBlockerNotification() {
+      // Only show if the widget is already created and user hasn't dismissed it recently
+      const dismissedTime = localStorage.getItem('onenetly-adblocker-dismissed');
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000; // 24 hours
+
+      if (dismissedTime && (now - parseInt(dismissedTime)) < oneDay) {
+        return; // Don't show if dismissed within last 24 hours
+      }
+
+      // Create ad blocker notification
+      const notification = document.createElement('div');
+      notification.className = 'onenetly-adblocker-notification';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 10001;
+        max-width: 320px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+      `;
+
+      notification.innerHTML = `
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <div style="flex-shrink: 0; margin-top: 2px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; margin-bottom: 4px;">Ad Blocker Detected</div>
+            <div style="opacity: 0.9; font-size: 13px;">
+              We respect your choice! Our sharing widget works great with ad blockers and doesn't track you.
+            </div>
+          </div>
+          <button onclick="this.parentElement.parentElement.remove(); localStorage.setItem('onenetly-adblocker-dismissed', Date.now())" 
+                  style="background: none; border: none; color: white; cursor: pointer; padding: 4px; margin: -4px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(notification);
+
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 100);
+
+      // Auto dismiss after 8 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.transform = 'translateX(400px)';
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 300);
+        }
+      }, 8000);
+    }
+
+    // Public API methods for controlling ad blocker detection
+    isAdBlockerDetected() {
+      return this.adBlockerDetected;
+    }
+
+    enableAdBlockerDetector() {
+      this.config.adBlockerDetector = true;
+      if (!this.adBlockerDetected) {
+        this.detectAdBlocker();
+      }
+    }
+
+    disableAdBlockerDetector() {
+      this.config.adBlockerDetector = false;
+      // Remove any existing notifications
+      const existingNotification = document.querySelector('.onenetly-adblocker-notification');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
     }
 
     createWidget() {
@@ -690,6 +845,9 @@
       if (script.dataset.position) config.position = script.dataset.position;
       if (script.dataset.networks) config.networks = script.dataset.networks.split(',');
       if (script.dataset.theme) config.theme = script.dataset.theme;
+      if (script.dataset.adBlockerDetector !== undefined) {
+        config.adBlockerDetector = script.dataset.adBlockerDetector !== 'false';
+      }
     });
     
     new OneNetly(config);
@@ -704,5 +862,29 @@
 
   // Global access
   window.OneNetly = OneNetly;
+
+  // Global utility methods
+  window.OneNetly.detectAdBlocker = function() {
+    // Simple global ad blocker detection without creating widget
+    return new Promise((resolve) => {
+      const testDiv = document.createElement('div');
+      testDiv.innerHTML = '&nbsp;';
+      testDiv.className = 'adsbox ad advertisement ads banner-ad';
+      testDiv.style.cssText = 'position:absolute!important;left:-10000px!important;top:-1000px!important;width:1px!important;height:1px!important;';
+      document.body.appendChild(testDiv);
+      
+      setTimeout(() => {
+        const detected = testDiv.offsetHeight === 0 || 
+                        testDiv.style.display === 'none' || 
+                        testDiv.style.visibility === 'hidden';
+        
+        if (testDiv.parentNode) {
+          testDiv.parentNode.removeChild(testDiv);
+        }
+        
+        resolve(detected);
+      }, 100);
+    });
+  };
 
 })(window, document);

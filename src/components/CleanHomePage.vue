@@ -304,6 +304,46 @@
               <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Simple copy-paste integration. Works with any website, CMS, or framework.</p>
             </div>
           </div>
+
+          <!-- Feature 7 - Ad Blocker Detector (NEW) -->
+          <div class="group bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-gray-200 hover:border-black hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:rotate-1 relative overflow-hidden cursor-pointer lg:col-span-1">
+            <!-- Animated background gradient -->
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-3xl"></div>
+            <!-- Shine effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style="animation-delay: 0.3s;"></div>
+            
+            <div class="relative z-10">
+              <div class="w-16 h-16 bg-gradient-to-br from-orange-600 via-red-600 to-orange-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-lg group-hover:shadow-2xl">
+                <svg class="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 group-hover:text-black transition-colors duration-300">
+                Ad Blocker Detector
+                <span class="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full ml-2">NEW</span>
+              </h3>
+              <p class="text-sm sm:text-base text-gray-600 group-hover:text-gray-800 leading-relaxed transition-colors duration-300">
+                <span class="font-semibold text-gray-800">Privacy-friendly detection</span> with respectful notifications. No tracking, just a gentle heads-up to users with ad blockers.
+              </p>
+              
+              <!-- Hover indicator -->
+              <div class="absolute top-4 right-4 w-3 h-3 bg-orange-400 rounded-full opacity-0 group-hover:opacity-100 animate-pulse transition-opacity duration-300"></div>
+            </div>
+          </div>
+
+          <!-- Feature 8 - Fill the grid -->
+          <div class="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden lg:col-span-1">
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative">
+              <div class="w-14 h-14 bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 9v8a1 1 0 001 1h8a1 1 0 001-1v-8M7 9h10l-1 9H8L7 9z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">SEO Friendly</h3>
+              <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Doesn't interfere with your page's SEO. Clean, semantic markup with proper meta tags support.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -385,6 +425,56 @@
                   >
                   <span class="text-xs sm:text-sm font-semibold">{{ social.name }}</span>
                 </label>
+              </div>
+            </div>
+
+            <!-- Ad Blocker Detector -->
+            <div class="mb-6 sm:mb-8">
+              <label class="block text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">
+                Ad Blocker Detector
+                <span class="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full ml-2">NEW</span>
+              </label>
+              <div class="space-y-3">
+                <label 
+                  :class="[
+                    'flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-105',
+                    adBlockerDetector
+                      ? 'bg-orange-50 text-orange-900 border-orange-300 shadow-lg'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:shadow-md'
+                  ]"
+                >
+                  <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-sm font-semibold">{{ adBlockerDetector ? 'Enabled' : 'Disabled' }}</div>
+                      <div class="text-xs text-gray-500">{{ adBlockerDetector ? 'Shows friendly notifications to users with ad blockers' : 'No ad blocker detection' }}</div>
+                    </div>
+                  </div>
+                  <input 
+                    type="checkbox" 
+                    v-model="adBlockerDetector"
+                    :class="[
+                      'w-5 h-5 rounded transition-colors duration-200',
+                      adBlockerDetector 
+                        ? 'bg-orange-500 border-orange-500 text-white' 
+                        : 'bg-white border-gray-300'
+                    ]"
+                  >
+                </label>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div class="flex items-start space-x-2">
+                    <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="text-xs text-blue-700">
+                      <strong>Privacy-friendly:</strong> No tracking or data collection. Just a respectful notification that appears briefly and can be dismissed by users.
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -540,6 +630,14 @@
               <h3 class="text-lg font-bold mb-3 text-gray-900">How to install OneNetly social sharing widget?</h3>
               <p class="text-gray-600">Installing our social sharing widget is simple - just add one script tag to your website. No registration required, no complex setup. It's the easiest social sharing plugin to integrate.</p>
             </div>
+
+            <div class="bg-orange-50 border border-orange-200 rounded-2xl p-6">
+              <h3 class="text-lg font-bold mb-3 text-orange-900 flex items-center">
+                <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full mr-2">NEW</span>
+                Does OneNetly detect ad blockers?
+              </h3>
+              <p class="text-orange-800">Yes! OneNetly includes an optional privacy-friendly ad blocker detector that shows respectful notifications to users with ad blockers. It doesn't track users or interfere with ad blocking - just provides a friendly heads-up that can be easily dismissed.</p>
+            </div>
           </div>
           
           <div class="space-y-6">
@@ -613,6 +711,7 @@ import AdSense from './AdSense.vue'
 
 const selectedPosition = ref('bottom-right')
 const selectedSocials = ref(['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Reddit'])
+const adBlockerDetector = ref(false)
 const generatedCode = ref('')
 const copied = ref(false)
 
@@ -647,7 +746,8 @@ function getPositionClass(position) {
 function generateCode() {
   generatedCode.value = `<script src="https://onenetly.com/widget.js" 
         data-position="${selectedPosition.value}"
-        data-networks="${selectedSocials.value.join(',')}">
+        data-networks="${selectedSocials.value.join(',')}"
+        data-ad-blocker-detector="${adBlockerDetector.value}">
 <\/script>`
 }
 
@@ -666,6 +766,7 @@ onMounted(() => {
   script.src = '/widget.js'
   script.setAttribute('data-position', 'bottom-right')
   script.setAttribute('data-networks', 'Facebook,Twitter,LinkedIn,WhatsApp,Telegram,Pinterest,Tumblr,Email,Print,Copy Link')
+  script.setAttribute('data-ad-blocker-detector', 'true')
   document.head.appendChild(script)
 })
 </script>

@@ -12,6 +12,7 @@
                 <li><a href="#installation" class="text-gray-600 hover:text-black font-medium transition-colors">Installation</a></li>
                 <li><a href="#basic-usage" class="text-gray-600 hover:text-black font-medium transition-colors">Basic Usage</a></li>
                 <li><a href="#configuration" class="text-gray-600 hover:text-black font-medium transition-colors">Configuration</a></li>
+                <li><a href="#ad-blocker-detector" class="text-gray-600 hover:text-black font-medium transition-colors">Ad Blocker Detector</a></li>
               </ul>
             </div>
             <div>
@@ -100,6 +101,36 @@
 &gt;&lt;/script&gt;</code></pre>
               </div>
 
+              <h3 class="text-xl font-semibold text-black mb-4">Ad Blocker Detector</h3>
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="flex-shrink-0 mt-1">
+                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-blue-800 mb-2">Privacy-Friendly Detection (Optional)</h4>
+                    <p class="text-blue-700 text-sm">
+                      OneNetly can optionally detect when users have ad blockers enabled and show a friendly notification. 
+                      This feature is <strong>disabled by default</strong> and respects user privacy without tracking or interfering with ad blocking functionality.
+                    </p>
+                  </div>
+                </div>
+                
+                <h5 class="font-medium text-blue-800 mb-2">Usage Examples:</h5>
+                <div class="space-y-3">
+                  <div>
+                    <p class="text-sm font-mono text-blue-600 mb-1">Enable detection:</p>
+                    <code class="text-xs bg-blue-100 px-2 py-1 rounded">data-ad-blocker-detector="true"</code>
+                  </div>
+                  <div>
+                    <p class="text-sm font-mono text-blue-600 mb-1">Disable detection (default):</p>
+                    <code class="text-xs bg-blue-100 px-2 py-1 rounded">data-ad-blocker-detector="false"</code>
+                  </div>
+                </div>
+              </div>
+
               <h3 class="text-xl font-semibold text-black mb-4">Page Content Override</h3>
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
                 <pre class="text-sm"><code>&lt;div 
@@ -110,6 +141,64 @@
 &gt;
     &lt;!-- Your content --&gt;
 &lt;/div&gt;</code></pre>
+              </div>
+            </section>
+
+            <!-- Ad Blocker Detector Feature -->
+            <section id="ad-blocker-detector" class="mb-16">
+              <h2 class="text-3xl font-bold text-black mb-6">Ad Blocker Detector</h2>
+              <p class="text-gray-600 mb-6">OneNetly includes a privacy-friendly ad blocker detection feature that shows a respectful notification to users with ad blockers enabled.</p>
+              
+              <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                  <div class="flex items-center mb-3">
+                    <svg class="w-6 h-6 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="font-semibold text-green-800">Privacy Focused</h3>
+                  </div>
+                  <p class="text-green-700 text-sm">
+                    No tracking, no interference with ad blockers, just a friendly notification respecting user choice.
+                  </p>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <div class="flex items-center mb-3">
+                    <svg class="w-6 h-6 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="font-semibold text-blue-800">Configurable</h3>
+                  </div>
+                  <p class="text-blue-700 text-sm">
+                    Easy to enable or disable through data attributes. Works seamlessly with your site.
+                  </p>
+                </div>
+              </div>
+
+              <h3 class="text-xl font-semibold text-black mb-4">How It Works</h3>
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                  <li>OneNetly performs non-intrusive tests to detect ad blocking software</li>
+                  <li>If detected, a friendly notification appears briefly in the corner</li>
+                  <li>Users can dismiss the notification, and it won't show again for 24 hours</li>
+                  <li>The detection doesn't interfere with ad blocker functionality</li>
+                  <li>No user data is collected or tracked during this process</li>
+                </ol>
+              </div>
+
+              <h3 class="text-xl font-semibold text-black mb-4">Configuration Options</h3>
+              <div class="space-y-4">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 class="font-semibold mb-2">Enable Detection</h4>
+                  <code class="text-sm bg-white px-3 py-1 rounded border">data-ad-blocker-detector="true"</code>
+                  <p class="text-gray-600 text-sm mt-2">Shows ad blocker notifications when detected</p>
+                </div>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 class="font-semibold mb-2">Disable Detection (Default)</h4>
+                  <code class="text-sm bg-white px-3 py-1 rounded border">data-ad-blocker-detector="false"</code>
+                  <p class="text-gray-600 text-sm mt-2">Completely disables ad blocker detection</p>
+                </div>
               </div>
             </section>
 
@@ -149,6 +238,11 @@
                       <td class="px-4 py-3 font-mono text-sm">data-networks</td>
                       <td class="px-4 py-3 text-gray-600">all</td>
                       <td class="px-4 py-3 text-gray-600">Comma-separated list of social networks to show</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-3 font-mono text-sm">data-ad-blocker-detector</td>
+                      <td class="px-4 py-3 text-gray-600">false</td>
+                      <td class="px-4 py-3 text-gray-600">Enable/disable ad blocker detection notifications (true, false)</td>
                     </tr>
                     <tr>
                       <td class="px-4 py-3 font-mono text-sm">data-share-url</td>
@@ -192,6 +286,14 @@
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <h4 class="font-mono text-sm font-semibold mb-2">OneNetly.updateConfig(options)</h4>
                   <p class="text-gray-600 text-sm">Updates the widget configuration dynamically</p>
+                </div>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 class="font-mono text-sm font-semibold mb-2">OneNetly.detectAdBlocker()</h4>
+                  <p class="text-gray-600 text-sm">Manually trigger ad blocker detection</p>
+                </div>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 class="font-mono text-sm font-semibold mb-2">OneNetly.isAdBlockerDetected()</h4>
+                  <p class="text-gray-600 text-sm">Returns true if ad blocker is detected</p>
                 </div>
               </div>
             </section>

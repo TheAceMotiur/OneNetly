@@ -198,9 +198,9 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(15, 23, 42, 0.98);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
         z-index: 999999;
         display: flex;
         align-items: center;
@@ -211,8 +211,8 @@
         box-sizing: border-box;
       `;
 
-      // Add blur to body content
-      document.body.style.filter = 'blur(8px)';
+      // Add heavy blur to body content
+      document.body.style.filter = 'blur(20px)';
       document.body.style.pointerEvents = 'none';
 
       // Create main content box with responsive design

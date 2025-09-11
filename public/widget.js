@@ -189,145 +189,12 @@
         }
       }
 
-      // Create full-screen overlay with premium backdrop
-      const overlay = document.createElement('div');
-      overlay.className = 'onenetly-adblocker-overlay';
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(20px);
-        z-index: 2147483647;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        padding: 20px;
-        box-sizing: border-box;
-        animation: fadeIn 0.6s ease-out;
-      `;
-
-      // Create premium message box with gradient background
-      const messageBox = document.createElement('div');
-      messageBox.style.cssText = `
-        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-        color: white;
-        padding: 48px;
-        border-radius: 24px;
-        text-align: center;
-        max-width: 560px;
-        width: 100%;
-        box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
-        animation: slideIn 0.6s ease-out 0.2s both;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.08);
-      `;
-
-      // Add subtle pattern overlay
-      const patternOverlay = document.createElement('div');
-      patternOverlay.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%);
-        pointer-events: none;
-      `;
-      messageBox.appendChild(patternOverlay);
-
-      // Create content container
-      const contentContainer = document.createElement('div');
-      contentContainer.style.cssText = 'position: relative; z-index: 2;';
-
-      contentContainer.innerHTML = `
-        <div style="margin-bottom: 32px;">
-          <!-- Premium Icon -->
-          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="m4.9 4.9 14.2 14.2"/>
-            </svg>
-          </div>
-          
-          <!-- Professional Title -->
-          <h2 style="color: #f87171; margin: 0 0 16px 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2;">
-            Ad Blocker Detected
-          </h2>
-          
-          <!-- Enhanced Description -->
-          <p style="color: #e5e7eb; line-height: 1.6; margin: 0 0 32px 0; font-size: 18px; opacity: 0.9;">
-            To continue browsing and support our content, please disable your ad blocker for this website.
-          </p>
-        </div>
-        
-        <!-- Premium Action Buttons -->
-        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px;">
-          <button onclick="window.location.reload()" style="
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-            position: relative;
-            overflow: hidden;
-          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(59, 130, 246, 0.3)'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-              <path d="M21 3v5h-5"/>
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-              <path d="M3 21v-5h5"/>
-            </svg>
-            Refresh Page
-          </button>
-          
-          <button onclick="
-            localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
-            document.querySelector('.onenetly-adblocker-overlay').remove();
-          " style="
-            background: rgba(255, 255, 255, 0.1);
-            color: #cbd5e1;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 16px 32px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
-          " onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-            Continue (12h)
-          </button>
-        </div>
-        
-        <!-- Professional Watermark -->
-        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center;">
-          <p style="margin: 0; font-size: 14px; color: #9ca3af; font-weight: 500;">
-            Powered by <a href="https://onenetly.com/" target="_blank" rel="dofollow" style="color: #667eea; text-decoration: none; font-weight: 600; transition: color 0.3s ease;" onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#667eea'">OneNetly</a>
-          </p>
-        </div>
-      `;
-
-      messageBox.appendChild(contentContainer);
-      overlay.appendChild(messageBox);
-
-      // Add premium CSS animations
+      // Add responsive CSS styles
       if (!document.querySelector('#onenetly-adblocker-styles')) {
         const style = document.createElement('style');
         style.id = 'onenetly-adblocker-styles';
         style.textContent = `
+          /* Responsive keyframes */
           @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -344,14 +211,259 @@
             }
           }
           
-          .onenetly-adblocker-overlay button:active {
-            transform: translateY(0) scale(0.98) !important;
+          /* Touch device optimizations */
+          @media (pointer: coarse) {
+            .onenetly-touch-target {
+              min-height: 48px !important;
+              min-width: 48px !important;
+              padding: 14px 24px !important;
+              font-size: 16px !important;
+            }
+          }
+          
+          /* Fine pointer devices */
+          @media (pointer: fine) {
+            .onenetly-touch-target {
+              min-height: 44px !important;
+              padding: 12px 20px !important;
+            }
+          }
+          
+          /* Remove hover effects on touch devices */
+          @media (hover: none) {
+            .onenetly-hover-effect:hover {
+              transform: translateY(0) !important;
+              box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1) !important;
+            }
+          }
+          
+          /* Reduced motion support */
+          @media (prefers-reduced-motion: reduce) {
+            .onenetly-adblocker-overlay,
+            .onenetly-modal-content {
+              animation: none !important;
+              transition: none !important;
+            }
+          }
+          
+          /* High contrast mode */
+          @media (prefers-contrast: high) {
+            .onenetly-modal-content {
+              border: 2px solid currentColor !important;
+              background: Canvas !important;
+              color: CanvasText !important;
+            }
           }
         `;
         document.head.appendChild(style);
       }
 
+      // Create full-screen overlay with responsive backdrop
+      const overlay = document.createElement('div');
+      overlay.className = 'onenetly-adblocker-overlay';
+      overlay.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(15, 23, 42, 0.85) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        z-index: 2147483647 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        padding: clamp(1rem, 4vw, 2rem) !important;
+        box-sizing: border-box !important;
+        animation: fadeIn 0.6s ease-out !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      `;
+
+      // Create responsive message box with fluid design
+      const messageBox = document.createElement('div');
+      messageBox.className = 'onenetly-modal-content onenetly-hover-effect';
+      messageBox.style.cssText = `
+        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%) !important;
+        color: white !important;
+        padding: clamp(2rem, 6vw, 3rem) !important;
+        border-radius: clamp(1rem, 3vw, 1.5rem) !important;
+        text-align: center !important;
+        max-width: clamp(300px, 90vw, 560px) !important;
+        width: 100% !important;
+        max-height: 90vh !important;
+        box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1) !important;
+        animation: slideIn 0.6s ease-out 0.2s both !important;
+        position: relative !important;
+        overflow: hidden !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        transition: all 0.3s ease !important;
+        margin: auto !important;
+      `;
+
+      // Add pattern overlay
+      const patternOverlay = document.createElement('div');
+      patternOverlay.style.cssText = `
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%) !important;
+        pointer-events: none !important;
+      `;
+      messageBox.appendChild(patternOverlay);
+
+      // Create content container
+      const contentContainer = document.createElement('div');
+      contentContainer.style.cssText = 'position: relative !important; z-index: 2 !important;';
+
+      contentContainer.innerHTML = `
+        <div style="margin-bottom: clamp(1.5rem, 5vw, 2rem) !important;">
+          <!-- Responsive Icon -->
+          <div style="
+            width: clamp(60px, 15vw, 80px) !important; 
+            height: clamp(60px, 15vw, 80px) !important; 
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; 
+            border-radius: 50% !important; 
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+            margin: 0 auto clamp(1rem, 4vw, 1.5rem) !important; 
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3) !important;
+          ">
+            <svg width="clamp(24, 6vw, 36)" height="clamp(24, 6vw, 36)" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="m4.9 4.9 14.2 14.2"/>
+            </svg>
+          </div>
+          
+          <!-- Responsive Title -->
+          <h2 style="
+            color: #f87171 !important; 
+            margin: 0 0 clamp(0.75rem, 3vw, 1rem) 0 !important; 
+            font-size: clamp(1.5rem, 5vw, 1.75rem) !important; 
+            font-weight: 800 !important; 
+            letter-spacing: -0.025em !important; 
+            line-height: 1.2 !important;
+          ">
+            Ad Blocker Detected
+          </h2>
+          
+          <!-- Responsive Description -->
+          <p style="
+            color: #e5e7eb !important; 
+            line-height: 1.6 !important; 
+            margin: 0 0 clamp(1.5rem, 4vw, 2rem) 0 !important; 
+            font-size: clamp(0.875rem, 3vw, 1.125rem) !important; 
+            opacity: 0.9 !important;
+          ">
+            To continue browsing and support our content, please disable your ad blocker for this website.
+          </p>
+        </div>
+        
+        <!-- Responsive Action Buttons -->
+        <div style="
+          display: flex !important; 
+          gap: clamp(0.75rem, 3vw, 1rem) !important; 
+          justify-content: center !important; 
+          flex-wrap: wrap !important; 
+          margin-bottom: clamp(1.5rem, 4vw, 2rem) !important;
+        ">
+          <button onclick="window.location.reload()" class="onenetly-touch-target" style="
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: clamp(0.5rem, 2vw, 0.75rem) !important;
+            cursor: pointer !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3) !important;
+            position: relative !important;
+            overflow: hidden !important;
+            flex: 1 1 auto !important;
+            min-width: 140px !important;
+            font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(59, 130, 246, 0.3)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+              <path d="M3 21v-5h5"/>
+            </svg>
+            <span>Refresh Page</span>
+          </button>
+          
+          <button onclick="
+            localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
+            document.querySelector('.onenetly-adblocker-overlay').remove();
+          " class="onenetly-touch-target" style="
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #cbd5e1 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: clamp(0.5rem, 2vw, 0.75rem) !important;
+            cursor: pointer !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            backdrop-filter: blur(8px) !important;
+            flex: 1 1 auto !important;
+            min-width: 140px !important;
+            font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+          " onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <span>Continue (12h)</span>
+          </button>
+        </div>
+        
+        <!-- Responsive Watermark -->
+        <div style="
+          margin-top: clamp(1.5rem, 4vw, 2rem) !important; 
+          padding-top: clamp(1rem, 3vw, 1.5rem) !important; 
+          border-top: 1px solid rgba(255, 255, 255, 0.1) !important; 
+          text-align: center !important;
+        ">
+          <p style="
+            margin: 0 !important; 
+            font-size: clamp(0.75rem, 2.5vw, 0.875rem) !important; 
+            color: #9ca3af !important; 
+            font-weight: 500 !important;
+          ">
+            Powered by <a href="https://onenetly.com/" target="_blank" rel="dofollow" style="
+              color: #667eea !important; 
+              text-decoration: none !important; 
+              font-weight: 600 !important; 
+              transition: color 0.3s ease !important;
+            " onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#667eea'">OneNetly</a>
+          </p>
+        </div>
+      `;
+
+      messageBox.appendChild(contentContainer);
+      overlay.appendChild(messageBox);
       document.body.appendChild(overlay);
+
+      // Responsive button behavior
+      const buttons = overlay.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.addEventListener('touchstart', function() {
+          this.style.transform = 'scale(0.98)';
+        });
+        button.addEventListener('touchend', function() {
+          this.style.transform = '';
+        });
+      });
 
       // Check every 3 seconds if ad blocker is still active
       const checkInterval = setInterval(() => {

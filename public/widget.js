@@ -110,132 +110,344 @@
     }
 
     detectAdBlocker() {
-      // Method 1: Test for blocked ad scripts
-      const testAdScript = document.createElement('script');
-      testAdScript.type = 'text/javascript';
-      testAdScript.async = true;
-      testAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-      
-      const testPromise = new Promise((resolve) => {
-        testAdScript.onload = () => resolve(false);
-        testAdScript.onerror = () => resolve(true);
-        setTimeout(() => resolve(true), 2000); // Timeout fallback
-      });
-
-      // Method 2: Test for blocked elements
-      const testDiv = document.createElement('div');
-      testDiv.innerHTML = '&nbsp;';
-      testDiv.className = 'adsbox ad advertisement ads banner-ad';
-      testDiv.style.cssText = 'position:absolute!important;left:-10000px!important;top:-1000px!important;width:1px!important;height:1px!important;';
-      document.body.appendChild(testDiv);
-
-      // Method 3: Check for common ad blocker indicators
-      const commonBlockedSelectors = [
-        '.ads',
-        '.advertisement', 
-        '.banner-ad',
-        '[id*="google_ads"]',
-        '[class*="adsbygoogle"]'
-      ];
-
-      testPromise.then((scriptBlocked) => {
-        // Check if test element is hidden/blocked
-        const elementBlocked = testDiv.offsetHeight === 0 || 
-                              testDiv.style.display === 'none' || 
-                              testDiv.style.visibility === 'hidden';
+      return new Promise((mainResolve) => {
+        // Method 1: Test for blocked ad scripts
+        const testAdScript = document.createElement('script');
+        testAdScript.type = 'text/javascript';
+        testAdScript.async = true;
+        testAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
         
-        // Check for blocked selectors
-        const selectorsBlocked = commonBlockedSelectors.some(selector => {
-          const elements = document.querySelectorAll(selector);
-          return elements.length === 0 && selector === '.ads'; // Basic test
+        const testPromise = new Promise((resolve) => {
+          testAdScript.onload = () => resolve(false);
+          testAdScript.onerror = () => resolve(true);
+          setTimeout(() => resolve(true), 2000); // Timeout fallback
         });
 
-        this.adBlockerDetected = scriptBlocked || elementBlocked;
-        
-        // Clean up test element
-        if (testDiv.parentNode) {
-          testDiv.parentNode.removeChild(testDiv);
-        }
+        // Method 2: Test for blocked elements
+        const testDiv = document.createElement('div');
+        testDiv.innerHTML = '&nbsp;';
+        testDiv.className = 'adsbox ad advertisement ads banner-ad';
+        testDiv.style.cssText = 'position:absolute!important;left:-10000px!important;top:-1000px!important;width:1px!important;height:1px!important;';
+        document.body.appendChild(testDiv);
 
-        // Show notification if ad blocker detected
-        if (this.adBlockerDetected) {
-          this.showAdBlockerNotification();
-        }
+        // Method 3: Check for common ad blocker indicators
+        const commonBlockedSelectors = [
+          '.ads',
+          '.advertisement', 
+          '.banner-ad',
+          '[id*="google_ads"]',
+          '[class*="adsbygoogle"]'
+        ];
+
+        testPromise.then((scriptBlocked) => {
+          // Check if test element is hidden/blocked
+          const elementBlocked = testDiv.offsetHeight === 0 || 
+                                testDiv.style.display === 'none' || 
+                                testDiv.style.visibility === 'hidden';
+          
+          // Check for blocked selectors
+          const selectorsBlocked = commonBlockedSelectors.some(selector => {
+            const elements = document.querySelectorAll(selector);
+            return elements.length === 0 && selector === '.ads'; // Basic test
+          });
+
+          const detected = scriptBlocked || elementBlocked;
+          this.adBlockerDetected = detected;
+          
+          // Clean up test element
+          if (testDiv.parentNode) {
+            testDiv.parentNode.removeChild(testDiv);
+          }
+
+          // Show overlay if ad blocker detected
+          if (detected) {
+            this.showAdBlockerNotification();
+          }
+
+          // Resolve with detection result
+          mainResolve(detected);
+        });
+
+        // Add test script to head
+        document.head.appendChild(testAdScript);
       });
     }
 
     showAdBlockerNotification() {
-      // Only show if the widget is already created and user hasn't dismissed it recently
-      const dismissedTime = localStorage.getItem('onenetly-adblocker-dismissed');
-      const now = Date.now();
-      const oneDay = 24 * 60 * 60 * 1000; // 24 hours
-
-      if (dismissedTime && (now - parseInt(dismissedTime)) < oneDay) {
-        return; // Don't show if dismissed within last 24 hours
+      // Check if overlay already exists
+      if (document.querySelector('.onenetly-adblocker-overlay')) {
+        return;
       }
 
-      // Create ad blocker notification
-      const notification = document.createElement('div');
-      notification.className = 'onenetly-adblocker-notification';
-      notification.style.cssText = `
+      // Check if user chose to continue without disabling (12 hour grace period)
+      const continueTime = localStorage.getItem('onenetly-continue-without-disable');
+      if (continueTime) {
+        const now = Date.now();
+        const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+        if ((now - parseInt(continueTime)) < twelveHours) {
+          return; // Don't show overlay if within 12 hour grace period
+        }
+      }
+
+      // Create full-screen overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'onenetly-adblocker-overlay';
+      overlay.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 16px 20px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        z-index: 10001;
-        max-width: 320px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 14px;
-        line-height: 1.4;
-        transform: translateX(400px);
-        transition: transform 0.3s ease;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        animation: fadeIn 0.6s ease-out;
+        padding: 20px;
+        box-sizing: border-box;
       `;
 
-      notification.innerHTML = `
-        <div style="display: flex; align-items: flex-start; gap: 12px;">
-          <div style="flex-shrink: 0; margin-top: 2px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      // Add blur to body content
+      document.body.style.filter = 'blur(8px)';
+      document.body.style.pointerEvents = 'none';
+
+      // Create main content box with responsive design
+      const contentBox = document.createElement('div');
+      contentBox.style.cssText = `
+        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 24px;
+        text-align: center;
+        max-width: 560px;
+        width: 100%;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        animation: slideIn 0.6s ease-out 0.2s both;
+        position: relative;
+        overflow: hidden;
+      `;
+
+      // Add subtle pattern overlay
+      const patternOverlay = document.createElement('div');
+      patternOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+        pointer-events: none;
+      `;
+      contentBox.appendChild(patternOverlay);
+
+      const contentInner = document.createElement('div');
+      contentInner.style.cssText = 'position: relative; z-index: 2;';
+
+      contentInner.innerHTML = `
+        <div style="margin-bottom: 32px;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 50%; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="white" style="opacity: 0.95;">
+              <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+              <path d="M19 15L20.09 17.26L22 18L20.09 18.74L19 21L17.91 18.74L16 18L17.91 17.26L19 15Z"/>
+              <path d="M5 15L6.09 17.26L8 18L6.09 18.74L5 21L3.91 18.74L2 18L3.91 17.26L5 15Z"/>
+            </svg>
+          </div>
+          <h1 style="margin: 0 0 16px 0; font-size: clamp(24px, 5vw, 36px); font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2;">
+            Ad Blocker Detected
+          </h1>
+          <p style="margin: 0; font-size: clamp(14px, 2.5vw, 18px); line-height: 1.6; color: #cbd5e1; opacity: 0.9;">
+            We've detected that you're using an ad blocker
+          </p>
+        </div>
+        
+        <div style="background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; margin: 32px 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <h3 style="margin: 0 0 16px 0; font-size: clamp(16px, 3vw, 20px); font-weight: 600; color: #f1f5f9;">We respect your choice!</h3>
+          <p style="margin: 0 0 20px 0; font-size: clamp(13px, 2.2vw, 15px); line-height: 1.6; color: #cbd5e1;">
+            Our content and sharing widget work perfectly with ad blockers. We don't track you or serve intrusive ads.
+          </p>
+          
+          <div style="text-align: left; margin: 20px 0;">
+            <p style="margin: 0 0 12px 0; font-size: clamp(12px, 2vw, 14px); font-weight: 600; color: #f8fafc;">To support us, you can:</p>
+            <ul style="margin: 0; padding-left: 20px; font-size: clamp(11px, 1.8vw, 13px); line-height: 1.7; color: #cbd5e1;">
+              <li>Disable ad blocker for this site</li>
+              <li>Whitelist our domain in your ad blocker</li>
+              <li>Or continue with limited features</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 32px;">
+          <button onclick="window.location.reload()" style="
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: clamp(14px, 2.5vw, 16px);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(16, 185, 129, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(16, 185, 129, 0.3)'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4V1L8 5L12 9V6C15.31 6 18 8.69 18 12C18 13.01 17.75 13.97 17.3 14.8L18.76 16.26C19.54 15.03 20 13.57 20 12C20 7.58 16.42 4 12 4Z"/>
+              <path d="M6 12C6 10.99 6.25 10.03 6.7 9.2L5.24 7.74C4.46 8.97 4 10.43 4 12C4 16.42 7.58 20 12 20V23L16 19L12 15V18C8.69 18 6 15.31 6 12Z"/>
+            </svg>
+            Refresh After Disabling
+          </button>
+          
+          <button onclick="
+            localStorage.setItem('onenetly-continue-without-disable', Date.now().toString());
+            document.querySelector('.onenetly-adblocker-overlay').remove();
+            document.body.style.filter = '';
+            document.body.style.pointerEvents = '';
+            document.body.style.overflow = '';
+          " style="
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 14px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: clamp(13px, 2.2vw, 14px);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          " onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
             </svg>
-          </div>
-          <div style="flex: 1;">
-            <div style="font-weight: 600; margin-bottom: 4px;">Ad Blocker Detected</div>
-            <div style="opacity: 0.9; font-size: 13px;">
-              We respect your choice! Our sharing widget works great with ad blockers and doesn't track you.
-            </div>
-          </div>
-          <button onclick="this.parentElement.parentElement.remove(); localStorage.setItem('onenetly-adblocker-dismissed', Date.now())" 
-                  style="background: none; border: none; color: white; cursor: pointer; padding: 4px; margin: -4px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            Continue Without Disabling (12h)
           </button>
         </div>
       `;
 
-      document.body.appendChild(notification);
+      // Add watermark
+      const watermark = document.createElement('div');
+      watermark.style.cssText = `
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+      `;
 
-      // Animate in
-      setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-      }, 100);
+      watermark.innerHTML = `
+        <a href="https://onenetly.com/" target="_blank" rel="noopener" style="
+          color: #cbd5e1;
+          text-decoration: none;
+          font-size: clamp(10px, 1.5vw, 12px);
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          transition: color 0.3s ease;
+        " onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#cbd5e1'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.8;">
+            <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+          </svg>
+          Protected by OneNetly
+        </a>
+      `;
 
-      // Auto dismiss after 8 seconds
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.style.transform = 'translateX(400px)';
-          setTimeout(() => {
-            if (notification.parentNode) {
-              notification.parentNode.removeChild(notification);
+      contentBox.appendChild(contentInner);
+      contentBox.appendChild(watermark);
+      overlay.appendChild(contentBox);
+      document.body.appendChild(overlay);
+
+      // Add CSS animations
+      if (!document.querySelector('#onenetly-adblocker-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'onenetly-adblocker-styles';
+        styles.textContent = `
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideIn {
+            from { 
+              opacity: 0; 
+              transform: translateY(40px) scale(0.95); 
             }
-          }, 300);
+            to { 
+              opacity: 1; 
+              transform: translateY(0) scale(1); 
+            }
+          }
+          
+          @media (max-width: 640px) {
+            .onenetly-adblocker-overlay {
+              padding: 16px !important;
+            }
+            .onenetly-adblocker-overlay > div {
+              padding: 32px 24px !important;
+              border-radius: 20px !important;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .onenetly-adblocker-overlay {
+              padding: 12px !important;
+            }
+            .onenetly-adblocker-overlay > div {
+              padding: 28px 20px !important;
+              border-radius: 16px !important;
+            }
+          }
+        `;
+        document.head.appendChild(styles);
+      }
+
+      // Prevent scrolling
+      document.body.style.overflow = 'hidden';
+
+      // Check every 3 seconds if ad blocker is still active (only if user didn't choose continue)
+      const checkInterval = setInterval(() => {
+        const continueTime = localStorage.getItem('onenetly-continue-without-disable');
+        if (continueTime) {
+          clearInterval(checkInterval);
+          return;
         }
-      }, 8000);
+
+        this.detectAdBlocker().then(detected => {
+          if (!detected) {
+            // Ad blocker disabled, remove overlay
+            clearInterval(checkInterval);
+            this.removeAdBlockerOverlay();
+          }
+        });
+      }, 3000);
+    }
+
+    removeAdBlockerOverlay() {
+      const overlay = document.querySelector('.onenetly-adblocker-overlay');
+      if (overlay) {
+        overlay.remove();
+      }
+      
+      // Remove blur and restore body
+      document.body.style.filter = '';
+      document.body.style.pointerEvents = '';
+      document.body.style.overflow = '';
     }
 
     // Public API methods for controlling ad blocker detection
@@ -252,11 +464,8 @@
 
     disableAdBlockerDetector() {
       this.config.adBlockerDetector = false;
-      // Remove any existing notifications
-      const existingNotification = document.querySelector('.onenetly-adblocker-notification');
-      if (existingNotification) {
-        existingNotification.remove();
-      }
+      // Remove any existing overlay
+      this.removeAdBlockerOverlay();
     }
 
     createWidget() {

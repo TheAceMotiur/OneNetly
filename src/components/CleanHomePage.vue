@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative pt-12 xs:pt-16 sm:pt-20 md:pt-28 lg:pt-40 pb-8 xs:pb-12 sm:pb-16 lg:pb-32 bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden safe-area-left safe-area-right">
+    <section class="relative min-h-screen flex items-center justify-center py-8 xs:py-12 sm:py-16 bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden safe-area-left safe-area-right">
       <!-- Professional Background Effects -->
       <div class="absolute inset-0">
         <!-- Sophisticated grid pattern -->
@@ -24,10 +24,10 @@
         <div class="absolute bottom-12 xs:bottom-24 left-1/4 w-8 xs:w-12 sm:w-16 lg:w-24 h-8 xs:h-12 sm:h-16 lg:h-24 border border-gray-800/8 rounded-lg xs:rounded-xl rotate-45 animate-float opacity-25" style="animation-delay: 8s;"></div>
       </div>
       
-      <div class="relative z-10 max-w-7xl mx-auto px-4 xs:px-6 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-6 xs:gap-8 sm:gap-12 lg:gap-20 items-center">
+      <div class="relative z-10 w-full max-w-7xl mx-auto px-4 xs:px-6 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8 xs:gap-12 sm:gap-16 lg:gap-20 items-center justify-center min-h-[calc(100vh-4rem)]">
           <!-- Enhanced Professional Content -->
-          <div class="text-center lg:text-left order-2 lg:order-1 px-4 xs:px-6 sm:px-0">
+          <div class="text-center lg:text-left w-full max-w-4xl mx-auto lg:mx-0 px-2 xs:px-4 sm:px-0">
             <!-- Premium Status Badge -->
             <div class="inline-flex items-center px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-black via-gray-900 to-black text-white text-[10px] xs:text-xs sm:text-sm font-black rounded-lg xs:rounded-xl sm:rounded-2xl mb-4 xs:mb-6 sm:mb-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 animate-bounce-gentle cursor-pointer group border border-gray-700">
               <div class="relative mr-2 xs:mr-2.5 sm:mr-3">
@@ -87,64 +87,64 @@
           </div>
           
           <!-- Professional Visual Demo -->
-          <div class="relative order-1 lg:order-2 opacity-0 animate-fade-in-up" style="animation-delay: 1.5s; animation-fill-mode: forwards;">
+          <div class="relative w-full max-w-lg mx-auto lg:max-w-none opacity-0 animate-fade-in-up" style="animation-delay: 1.5s; animation-fill-mode: forwards;">
             <!-- Premium Device Mockup -->
-            <div class="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-gray-200/50 transform rotate-2 hover:rotate-0 transition-all duration-700 hover:shadow-3xl group">
+            <div class="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl xs:rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-2xl border-2 border-gray-200/50 transform hover:rotate-0 transition-all duration-700 hover:shadow-3xl group">
               <!-- Enhanced Browser Chrome -->
-              <div class="bg-gradient-to-r from-gray-100 to-gray-200 rounded-t-3xl p-4 sm:p-6 border-b-2 border-gray-300 -m-6 sm:-m-8 mb-6 sm:mb-8">
-                <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                  <div class="flex gap-2 sm:gap-3">
-                    <div class="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
-                    <div class="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
-                    <div class="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
+              <div class="bg-gradient-to-r from-gray-100 to-gray-200 rounded-t-xl xs:rounded-t-2xl sm:rounded-t-3xl p-3 xs:p-4 sm:p-6 border-b-2 border-gray-300 -m-4 xs:-m-6 sm:-m-8 mb-4 xs:mb-6 sm:mb-8">
+                <div class="flex items-center gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3 sm:mb-4">
+                  <div class="flex gap-1.5 xs:gap-2 sm:gap-3">
+                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
+                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
+                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
                   </div>
-                  <div class="flex-1 bg-white rounded-xl px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 font-mono shadow-inner border border-gray-300">
-                    https://yourwebsite.com/premium-content
+                  <div class="flex-1 bg-white rounded-lg xs:rounded-xl px-2 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-3 text-[10px] xs:text-xs sm:text-sm text-gray-600 font-mono shadow-inner border border-gray-300 truncate">
+                    https://yourwebsite.com/content
                   </div>
                   <div class="hidden sm:flex gap-2">
-                    <div class="w-6 h-6 bg-gray-300 rounded-md"></div>
-                    <div class="w-6 h-6 bg-gray-300 rounded-md"></div>
+                    <div class="w-5 h-5 xs:w-6 xs:h-6 bg-gray-300 rounded-md"></div>
+                    <div class="w-5 h-5 xs:w-6 xs:h-6 bg-gray-300 rounded-md"></div>
                   </div>
                 </div>
               </div>
               
               <!-- Enhanced Content Preview -->
-              <div class="space-y-6">
-                <div class="space-y-4">
-                  <div class="h-6 bg-gradient-to-r from-gray-300 to-gray-200 rounded-lg"></div>
-                  <div class="h-4 bg-gradient-to-r from-gray-200 to-gray-100 rounded w-4/5"></div>
-                  <div class="h-4 bg-gradient-to-r from-gray-200 to-gray-100 rounded w-3/5"></div>
+              <div class="space-y-4 xs:space-y-6">
+                <div class="space-y-3 xs:space-y-4">
+                  <div class="h-4 xs:h-5 sm:h-6 bg-gradient-to-r from-gray-300 to-gray-200 rounded-lg"></div>
+                  <div class="h-3 xs:h-4 bg-gradient-to-r from-gray-200 to-gray-100 rounded w-4/5"></div>
+                  <div class="h-3 xs:h-4 bg-gradient-to-r from-gray-200 to-gray-100 rounded w-3/5"></div>
                 </div>
                 
-                <div class="bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl p-4 sm:p-6 border border-gray-200">
-                  <div class="h-24 sm:h-32 bg-gradient-to-br from-gray-300 to-gray-200 rounded-xl mb-3 sm:mb-4"></div>
-                  <div class="space-y-2">
-                    <div class="h-2 sm:h-3 bg-gradient-to-r from-gray-300 to-gray-200 rounded w-full"></div>
-                    <div class="h-2 sm:h-3 bg-gradient-to-r from-gray-200 to-gray-100 rounded w-3/4"></div>
+                <div class="bg-gradient-to-br from-gray-100 to-gray-50 rounded-xl xs:rounded-2xl p-3 xs:p-4 sm:p-6 border border-gray-200">
+                  <div class="h-16 xs:h-20 sm:h-24 md:h-32 bg-gradient-to-br from-gray-300 to-gray-200 rounded-lg xs:rounded-xl mb-2 xs:mb-3 sm:mb-4"></div>
+                  <div class="space-y-1.5 xs:space-y-2">
+                    <div class="h-2 xs:h-2.5 sm:h-3 bg-gradient-to-r from-gray-300 to-gray-200 rounded w-full"></div>
+                    <div class="h-2 xs:h-2.5 sm:h-3 bg-gradient-to-r from-gray-200 to-gray-100 rounded w-3/4"></div>
                   </div>
                 </div>
               </div>
               
               <!-- Premium Widget Preview with Advanced Animation -->
-              <div class="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 animate-bounce-gentle">
+              <div class="absolute bottom-3 xs:bottom-4 sm:bottom-6 md:bottom-8 right-3 xs:right-4 sm:right-6 md:right-8 animate-bounce-gentle">
                 <div class="relative group">
-                  <div class="bg-gradient-to-br from-black via-gray-900 to-black rounded-xl sm:rounded-2xl w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-500 shadow-2xl ring-4 ring-black/10 hover:ring-8 hover:ring-black/20 group-hover:rotate-12">
-                    <svg class="w-7 h-7 sm:w-9 sm:h-9 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="bg-gradient-to-br from-black via-gray-900 to-black rounded-lg xs:rounded-xl sm:rounded-2xl w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-500 shadow-2xl ring-2 xs:ring-4 ring-black/10 hover:ring-4 xs:hover:ring-8 hover:ring-black/20 group-hover:rotate-12">
+                    <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
                     </svg>
                   </div>
                   <!-- Enhanced Pulse Rings -->
-                  <div class="absolute inset-0 bg-black rounded-xl sm:rounded-2xl animate-ping opacity-20"></div>
-                  <div class="absolute inset-0 bg-gray-800 rounded-xl sm:rounded-2xl animate-ping opacity-15" style="animation-delay: 0.5s;"></div>
-                  <div class="absolute inset-0 bg-gray-900 rounded-xl sm:rounded-2xl animate-ping opacity-10" style="animation-delay: 1s;"></div>
+                  <div class="absolute inset-0 bg-black rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-20"></div>
+                  <div class="absolute inset-0 bg-gray-800 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-15" style="animation-delay: 0.5s;"></div>
+                  <div class="absolute inset-0 bg-gray-900 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-10" style="animation-delay: 1s;"></div>
                 </div>
               </div>
             </div>
             
             <!-- Premium Floating Elements -->
-            <div class="absolute -top-4 sm:-top-6 -left-4 sm:-left-6 w-16 sm:w-20 lg:w-24 h-16 sm:h-20 lg:h-24 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-2xl sm:rounded-3xl rotate-12 opacity-60 animate-float border border-blue-200"></div>
-            <div class="absolute -bottom-4 sm:-bottom-6 -right-4 sm:-right-6 w-14 sm:w-16 lg:w-20 h-14 sm:h-16 lg:h-20 bg-gradient-to-br from-pink-500/20 to-red-500/20 rounded-xl sm:rounded-2xl opacity-50 animate-float border border-pink-200" style="animation-delay: 1.5s"></div>
-            <div class="absolute top-1/2 -left-6 sm:-left-8 w-12 sm:w-14 lg:w-16 h-12 sm:h-14 lg:h-16 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full opacity-40 animate-float border border-green-200" style="animation-delay: 3s"></div>
+            <div class="absolute -top-2 xs:-top-4 sm:-top-6 -left-2 xs:-left-4 sm:-left-6 w-12 xs:w-16 sm:w-20 lg:w-24 h-12 xs:h-16 sm:h-20 lg:h-24 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-xl xs:rounded-2xl sm:rounded-3xl rotate-12 opacity-60 animate-float border border-blue-200"></div>
+            <div class="absolute -bottom-2 xs:-bottom-4 sm:-bottom-6 -right-2 xs:-right-4 sm:-right-6 w-10 xs:w-14 sm:w-16 lg:w-20 h-10 xs:h-14 sm:h-16 lg:h-20 bg-gradient-to-br from-pink-500/20 to-red-500/20 rounded-lg xs:rounded-xl sm:rounded-2xl opacity-50 animate-float border border-pink-200" style="animation-delay: 1.5s"></div>
+            <div class="absolute top-1/2 -left-3 xs:-left-6 sm:-left-8 w-8 xs:w-12 sm:w-14 lg:w-16 h-8 xs:h-12 sm:h-14 lg:h-16 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full opacity-40 animate-float border border-green-200" style="animation-delay: 3s"></div>
           </div>
         </div>
       </div>

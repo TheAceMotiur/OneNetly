@@ -31,6 +31,8 @@ Sentora is developed and maintained by the original ZPanel team members ([ballen
 
 ### One-Click Install (Recommended)
 
+**For Repository Owner**: If you just cloned this, see [GITHUB-SETUP.md](GITHUB-SETUP.md) to deploy the installer.
+
 Install OneNetly on Ubuntu 22.04/20.04 or Debian 11/10 with a single command:
 
 ```bash

@@ -16,6 +16,8 @@ Automated installation script for OneNetly Control Panel on Ubuntu and Debian sy
 
 ### Installation Command
 
+**Note**: The installer must be pushed to GitHub first. See [GITHUB-SETUP.md](GITHUB-SETUP.md) for setup instructions.
+
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)
 ```

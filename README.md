@@ -1,5 +1,10 @@
 # Sentora
 
+[![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04%20LTS-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
+[![PHP 8.1](https://img.shields.io/badge/PHP-8.1-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE.md)
+[![GitHub](https://img.shields.io/badge/GitHub-TheAceMotiur%2FOneNetly-181717?logo=github)](https://github.com/TheAceMotiur/OneNetly)
+
 * Version: 2.0.2 - In Development
 * [Website](http://sentora.org/)
 * [Forums](https://forums.sentora.org/) for comments, discussion and community support.
@@ -14,17 +19,41 @@
 Sentora 2.0.2 supports **Ubuntu 22.04 LTS** and other major Linux distributions. For a complete list of supported operating systems and system requirements, see [SUPPORTED_SYSTEMS.md](SUPPORTED_SYSTEMS.md).
 
 ### Quick Start
+- **One-Click Install**: `bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)`
+- **Installation Guide**: See [INSTALL.md](INSTALL.md) for complete instructions
 - **New Installation**: See [Quick Start Guide for Ubuntu 22.04](docs/QUICKSTART-UBUNTU-22.04.md)
 - **Migrating**: See [Migration Guide to Ubuntu 22.04](docs/MIGRATION-TO-UBUNTU-22.04.md)
 - **Detailed Guide**: See [Ubuntu 22.04 Documentation](docs/UBUNTU-22.04.md)
 
 Sentora is developed and maintained by the original ZPanel team members ([ballen](http://bobbyallen.me), tgates, kandrews, motters etc.)
 
-## Downloading Sentora
+## Quick Installation
 
-To use Sentora in a production environment we recommend you use our automated installers which also take care of the installation of not only Sentora but also Apache, PHP, MySQL, BIND, ProFTPd etc.
+### One-Click Install (Recommended)
 
-To download Sentora please use the links found on [our download page](https://sentora.org/download/).
+Install OneNetly on Ubuntu 22.04/20.04 or Debian 11/10 with a single command:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)
+```
+
+Or download and run:
+
+```bash
+wget https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh
+sudo bash install.sh
+```
+
+The installer will:
+- ✅ Detect your operating system automatically
+- ✅ Install Apache, PHP 8.1, MariaDB, Postfix, Dovecot, ProFTPd, BIND
+- ✅ Configure all services optimally
+- ✅ Set up your admin account
+- ✅ Configure firewall rules
+
+### Manual Installation
+
+For manual installation or other distributions, please visit [our download page](https://sentora.org/download/).
 
 ## Updating Sentora
 

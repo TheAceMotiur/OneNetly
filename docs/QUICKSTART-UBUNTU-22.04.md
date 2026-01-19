@@ -32,11 +32,28 @@ Add this line to `/etc/hosts` (replace with your IP and domain):
 YOUR_SERVER_IP panel.yourdomain.com panel
 ```
 
-## Step 2: Run the Sentora Installer
+## Step 2: Run the OneNetly Installer
+
+### One-Click Install (Recommended)
 
 ```bash
-# Download and execute the official installer
-bash <(curl -Ss https://sentora.org/install)
+# Download and execute the OneNetly installer
+bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)
+```
+
+### Alternative Method
+
+If the one-click command doesn't work, download and run manually:
+
+```bash
+# Download the installer
+wget https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh
+
+# Make it executable
+chmod +x install.sh
+
+# Run the installer
+sudo bash install.sh
 ```
 
 The installer will:

@@ -39,6 +39,24 @@ The Sentora installer will automatically install and configure:
 - Postfix 3.6+
 - Dovecot 2.3+
 
+## Quick Installation
+
+### One-Click Install
+
+Install OneNetly on any supported system with one command:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)
+```
+
+The installer automatically:
+- Detects your operating system and version
+- Checks system requirements
+- Installs all required packages
+- Configures services optimally for your OS
+- Sets up admin account
+- Configures firewall
+
 ## Installation Notes
 
 ### Ubuntu 22.04 Specific Notes

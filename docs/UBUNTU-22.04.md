@@ -17,11 +17,22 @@ Ubuntu 22.04 LTS brings several improvements that enhance Sentora's performance 
 ## Installation
 
 ### Automated Installation (Recommended)
-The official Sentora installer automatically detects Ubuntu 22.04 and configures all components:
+The official OneNetly one-click installer automatically detects Ubuntu 22.04 and configures all components:
 
 ```bash
-# Download and run the installer
-bash <(curl -s https://sentora.org/install)
+# One-click installation
+bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)
+```
+
+**Alternative installation methods:**
+
+```bash
+# Method 1: Download first, then run
+wget https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh
+sudo bash install.sh
+
+# Method 2: Using curl with bash
+curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh | sudo bash
 ```
 
 ### Pre-installation Requirements

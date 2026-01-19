@@ -156,11 +156,18 @@ tar -czf sentora-backup-$(date +%Y%m%d).tar.gz sentora-backup/
 - Apply all updates: `sudo apt update && sudo apt upgrade -y`
 - Set hostname: `sudo hostnamectl set-hostname panel.yourdomain.com`
 
-#### 2. Install Sentora
+#### 2. Install OneNetly
 
 ```bash
-# Run the installer
-bash <(curl -Ss https://sentora.org/install)
+# Run the one-click installer
+bash <(curl -s https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh)
+```
+
+Or download and run manually:
+
+```bash
+wget https://raw.githubusercontent.com/TheAceMotiur/OneNetly/main/install.sh
+sudo bash install.sh
 ```
 
 **Important**: Use the **same admin username** as your old server if possible.

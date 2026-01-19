@@ -412,7 +412,7 @@ install_onenetly() {
     print_info "Installing OneNetly control panel..."
     
     # Create directories
-    mkdir -p /etc/sentora /var/sentora /var/sentora/logs
+    mkdir -p /etc/sentora/panel /var/sentora /var/sentora/logs
     
     # Clone repository
     cd /tmp

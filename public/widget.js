@@ -89,6 +89,13 @@
         theme: options.theme || 'light',
         size: options.size || 'medium',
         adBlockerDetector: options.adBlockerDetector === true, // Default disabled
+        showShareCount: options.showShareCount === true, // Share counts
+        inlineMode: options.inlineMode === false ? false : true, // Inline buttons support
+        useNativeShare: options.useNativeShare !== false, // Use native share API on mobile
+        customMessages: options.customMessages || {}, // Per-network messages
+        buttonStyle: options.buttonStyle || 'icon', // icon, icon-label, icon-count
+        animations: options.animations !== false, // Enable animations
+        followButtons: options.followButtons || {}, // Social follow buttons
         ...options
       };
 
@@ -97,14 +104,93 @@
       this.container = null;
       this.panel = null;
       this.adBlockerDetected = false;
+      this.shareCounts = {};
 
       this.init();
+    }
+
+    // Get share count for a URL
+    async getShareCount(network, url) {
+      const encodedUrl = encodeURIComponent(url);
+      
+      try {
+        switch(network) {
+          case 'Facebook':
+            // Facebook Graph API
+            const fbResponse = await fetch(`https://graph.facebook.com/?id=${encodedUrl}&fields=engagement`);
+            const fbData = await fbResponse.json();
+            return fbData.engagement?.share_count || 0;
+            
+          case 'Pinterest':
+            // Pinterest API
+            const pinResponse = await fetch(`https://api.pinterest.com/v1/urls/count.json?url=${encodedUrl}`);
+            const pinText = await pinResponse.text();
+            const pinData = JSON.parse(pinText.match(/\{.+\}/)[0]);
+            return pinData.count || 0;
+            
+          case 'Reddit':
+            // Reddit API
+            const redditResponse = await fetch(`https://www.reddit.com/api/info.json?url=${encodedUrl}`);
+            const redditData = await redditResponse.json();
+            return redditData.data?.children?.reduce((sum, child) => sum + (child.data.score || 0), 0) || 0;
+            
+          default:
+            return 0;
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch ${network} share count:`, error);
+        return 0;
+      }
+    }
+
+    // Load all share counts
+    async loadShareCounts() {
+      if (!this.config.showShareCount) return;
+      
+      const url = window.location.href;
+      const countNetworks = ['Facebook', 'Pinterest', 'Reddit'].filter(n => 
+        this.config.networks.includes(n)
+      );
+      
+      for (const network of countNetworks) {
+        const count = await this.getShareCount(network, url);
+        this.shareCounts[network] = count;
+      }
+    }
+
+    // Check if native share is available
+    canUseNativeShare() {
+      return this.config.useNativeShare && 
+             navigator.share && 
+             /mobile/i.test(navigator.userAgent);
+    }
+
+    // Use native share API
+    async nativeShare() {
+      if (!this.canUseNativeShare()) return false;
+      
+      try {
+        await navigator.share({
+          title: this.config.customMessages.title || document.title,
+          text: this.config.customMessages.text || document.querySelector('meta[name="description"]')?.content || '',
+          url: window.location.href
+        });
+        return true;
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.warn('Native share failed:', error);
+        }
+        return false;
+      }
     }
 
     init() {
       this.addStyles();
       if (this.config.adBlockerDetector) {
         this.detectAdBlocker();
+      }
+      if (this.config.showShareCount) {
+        this.loadShareCounts();
       }
       this.createWidget();
     }
@@ -685,6 +771,14 @@
       label.style.cssText = 'flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
       btn.appendChild(label);
 
+      // Share count badge (if enabled)
+      if (this.config.showShareCount && this.shareCounts[social.name]) {
+        const countBadge = document.createElement('span');
+        countBadge.textContent = this.formatCount(this.shareCounts[social.name]);
+        countBadge.style.cssText = 'background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: auto;';
+        btn.appendChild(countBadge);
+      }
+
       // Hover effects
       btn.addEventListener('mouseenter', () => {
         btn.style.backgroundColor = '#f9fafb';
@@ -902,6 +996,16 @@
         this.copyToClipboard(`${title} - ${url}`);
       }
       this.closePanel();
+    }
+
+    // Format share count for display
+    formatCount(count) {
+      if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + 'M';
+      } else if (count >= 1000) {
+        return (count / 1000).toFixed(1) + 'K';
+      }
+      return count.toString();
     }
 
     generateQRCode(url) {

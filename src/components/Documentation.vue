@@ -97,9 +97,11 @@
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
                 <pre class="text-sm"><code>&lt;script 
     src="https://onenetly.com/widget.js"
-    data-position="left"
-    data-theme="light"
-    data-networks="facebook,twitter,linkedin"
+    data-position="bottom-right"
+    data-networks="Facebook,Twitter,LinkedIn,WhatsApp"
+    data-theme="dark"
+    data-show-share-count="true"
+    data-use-native-share="true"
 &gt;&lt;/script&gt;</code></pre>
               </div>
 

@@ -24,10 +24,12 @@
       <div class="p-4 flex justify-center">
         <ins 
           class="adsbygoogle"
-          style="display:block;text-align:center"
+          :style="getAdStyle()"
           :data-ad-client="adClient"
           :data-ad-slot="adSlot"
           :data-ad-format="adFormat"
+          :data-ad-layout="adType === 'in-feed' ? 'in-feed' : adType === 'in-article' ? 'in-article' : undefined"
+          :data-ad-layout-key="adType === 'in-feed' ? '-fb+5w+4e-db+86' : undefined"
           :data-full-width-responsive="responsive"
           :data-ad-test="isTestMode ? 'on' : undefined"
         ></ins>
@@ -47,11 +49,15 @@ const props = defineProps({
   },
   adFormat: {
     type: String,
-    default: 'auto'
+    default: 'auto' // Options: auto, rectangle, vertical, horizontal, fluid
   },
   responsive: {
     type: Boolean,
     default: true
+  },
+  adType: {
+    type: String,
+    default: 'display' // Options: display, in-article, in-feed, multiplex
   },
   showLabel: {
     type: Boolean,
@@ -84,6 +90,19 @@ const adContainer = ref(null)
 const isVisible = ref(false)
 const adConfig = ref({})
 let observer = null
+
+const getAdStyle = () => {
+  if (props.adType === 'multiplex') {
+    return 'display:block'
+  }
+  if (props.adType === 'in-article') {
+    return 'display:block;text-align:center'
+  }
+  if (props.adType === 'in-feed') {
+    return 'display:block'
+  }
+  return 'display:block;text-align:center'
+}
 
 const loadAd = async () => {
   try {

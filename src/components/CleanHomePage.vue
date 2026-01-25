@@ -196,7 +196,7 @@
             </span>
           </h2>
           <p class="text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">
-            Our <span class="font-semibold text-gray-800">free social sharing widget</span> combines <span class="font-semibold text-gray-800">performance, privacy, and simplicity</span> to deliver the ultimate social media buttons solution for your website.
+            Our <span class="font-semibold text-gray-800">free social sharing widget</span> combines <span class="font-semibold text-gray-800">performance, privacy, and simplicity</span> to deliver the ultimate social media buttons solution with <span class="font-semibold text-gray-800">native mobile share, share counts, and 18+ networks</span> for your website.
           </p>
         </div>
         
@@ -359,6 +359,9 @@
         :lazy-load="true"
       />
     </div>
+
+    <!-- In-Article Ad for Higher CPM -->
+    <InArticleAd ad-slot="4878379783" :show-label="true" />
 
     <!-- Live Demo Section -->
     <section id="demo" class="py-20 lg:py-32 bg-gray-50">
@@ -710,12 +713,21 @@
         :lazy-load="true"
       />
     </div>
+
+    <!-- Multiplex Native Ad for Content Discovery -->
+    <MultiplexAd ad-slot="4878379783" :show-label="true" />
+
+    <!-- Sticky Bottom Ad for Additional Revenue -->
+    <StickyAd ad-slot="4878379783" position="bottom" :delay-seconds="10" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import AdSense from './AdSense.vue'
+import InArticleAd from './InArticleAd.vue'
+import MultiplexAd from './MultiplexAd.vue'
+import StickyAd from './StickyAd.vue'
 
 const selectedPosition = ref('bottom-right')
 const selectedSocials = ref(['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram', 'Reddit'])

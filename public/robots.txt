@@ -1,21 +1,32 @@
+# OneNetly Robots.txt - Optimized for SEO
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /*.json$
 
-# Sitemaps
+# Sitemaps - Critical for SEO
 Sitemap: https://onenetly.com/sitemap.xml
 
 # Crawl-delay for polite crawling
-Crawl-delay: 1
+Crawl-delay: 0.5
 
-# Allow specific bot access
+# Google Bot - Priority Access
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
+User-agent: Googlebot-Image
+Allow: /images/
+
+# Bing Bot
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 0
 
+# Social Media Bots - Important for sharing
 User-agent: facebookexternalhit
 Allow: /
+Crawl-delay: 0
 
 User-agent: Twitterbot
 Allow: /

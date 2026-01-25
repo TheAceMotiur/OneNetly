@@ -783,7 +783,7 @@ function copyCode() {
 onMounted(() => {
   // Create and load the widget script
   const script = document.createElement('script')
-  script.src = '/widget.min.js'
+  script.src = '/widget.js'
   script.setAttribute('data-position', 'bottom-right')
   script.setAttribute('data-networks', 'Facebook,Twitter,LinkedIn,WhatsApp,Telegram,Pinterest,Tumblr,Email,Print,Copy Link')
   script.setAttribute('data-ad-blocker-detector', 'true')

@@ -56,7 +56,7 @@
               <p class="text-gray-600 mb-6">Add OneNetly to your website with a single script tag. No build process or dependencies required.</p>
               
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
-                <pre class="text-sm"><code>&lt;script src="https://onenetly.com/widget.min.js"&gt;&lt;/script&gt;</code></pre>
+                <pre class="text-sm"><code>&lt;script src="https://onenetly.com/widget.js"&gt;&lt;/script&gt;</code></pre>
               </div>
 
               <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -80,7 +80,7 @@
     &lt;h1&gt;Welcome to my website&lt;/h1&gt;
     &lt;p&gt;This is my content...&lt;/p&gt;
     
-    &lt;script src="https://onenetly.com/widget.min.js"&gt;&lt;/script&gt;
+    &lt;script src="https://onenetly.com/widget.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
               </div>
@@ -96,7 +96,7 @@
               <h3 class="text-xl font-semibold text-black mb-4">Script Configuration</h3>
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
                 <pre class="text-sm"><code>&lt;script 
-    src="https://onenetly.com/widget.min.js"
+    src="https://onenetly.com/widget.js"
     data-position="bottom-right"
     data-networks="Facebook,Twitter,LinkedIn,WhatsApp"
     data-theme="dark"
@@ -393,9 +393,9 @@ import AdSense from './AdSense.vue'
 
 onMounted(() => {
   // Load the widget for demo purposes
-  if (!document.querySelector('script[src*="widget.min.js"]')) {
+  if (!document.querySelector('script[src*="widget.js"]')) {
     const script = document.createElement('script');
-    script.src = '/widget.min.js';
+    script.src = '/widget.js';
     document.body.appendChild(script);
   }
 })

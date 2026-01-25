@@ -30,10 +30,8 @@ html {
 body {
   /* Optimize for mobile scrolling */
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
   
   /* Prevent horizontal scrolling */
-  overflow-x: hidden;
   max-width: 100vw;
 }
 

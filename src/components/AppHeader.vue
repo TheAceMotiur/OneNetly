@@ -26,10 +26,6 @@
             Live Demo
             <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
           </a>
-          <router-link to="/wordpress" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
-            WordPress
-            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-          </router-link>
           <router-link to="/docs" class="relative text-gray-700 hover:text-black font-bold text-sm tracking-wide transition-all duration-300 group py-2">
             Documentation
             <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
@@ -57,7 +53,6 @@
           <router-link to="/" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Home</router-link>
           <a href="/#features" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Features</a>
           <a href="/#demo" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Demo</a>
-          <router-link to="/wordpress" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">WordPress</router-link>
           <router-link to="/docs" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">Docs</router-link>
           <router-link to="/about" @click="mobileMenuOpen = false" class="text-gray-600 hover:text-black transition-colors py-2 px-4 rounded-lg hover:bg-gray-50">About</router-link>
         </div>

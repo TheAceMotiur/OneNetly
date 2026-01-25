@@ -1,7 +1,7 @@
 <template>
   <div 
     :class="[
-      'w-full my-8 flex justify-center',
+      'w-full my-8 flex items-center justify-center',
       containerClass,
       { 'animate-fade-in-up': !isVisible }
     ]"
@@ -11,7 +11,8 @@
       :class="[
         'max-w-full overflow-hidden rounded-lg shadow-sm border border-gray-200',
         'bg-gradient-to-r from-gray-50 to-gray-100',
-        responsive ? 'w-full' : 'max-w-4xl'
+        'mx-auto',
+        responsive ? 'w-full max-w-5xl' : 'max-w-4xl'
       ]"
     >
       <!-- Optional Ad Label -->
@@ -20,10 +21,10 @@
       </div>
       
       <!-- AdSense Ad Unit -->
-      <div class="p-4">
+      <div class="p-4 flex justify-center">
         <ins 
           class="adsbygoogle"
-          style="display:block"
+          style="display:block;text-align:center"
           :data-ad-client="adClient"
           :data-ad-slot="adSlot"
           :data-ad-format="adFormat"

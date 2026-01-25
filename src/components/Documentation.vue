@@ -37,12 +37,14 @@
         <!-- Main Content -->
         <div class="lg:col-span-3">
           <!-- Ad Placement: Top of Documentation -->
-          <AdSense 
-            ad-slot="4878379783"
-            :show-label="true"
-            container-class="mb-12"
-            :lazy-load="true"
-          />
+          <div class="w-full mb-12 flex justify-center">
+            <AdSense 
+              ad-slot="4878379783"
+              :show-label="true"
+              container-class="w-full max-w-5xl mx-auto"
+              :lazy-load="true"
+            />
+          </div>
           
           <div class="prose prose-lg max-w-none">
             <h1 class="text-4xl font-bold text-black mb-8">OneNetly Documentation</h1>
@@ -203,12 +205,14 @@
             </section>
 
             <!-- Ad Placement: Middle of Documentation -->
-            <AdSense 
-              ad-slot="4878379783"
-              :show-label="true"
-              container-class="my-16"
-              :lazy-load="true"
-            />
+            <div class="w-full my-16 flex justify-center">
+              <AdSense 
+                ad-slot="4878379783"
+                :show-label="true"
+                container-class="w-full max-w-5xl mx-auto"
+                :lazy-load="true"
+              />
+            </div>
 
             <!-- Data Attributes -->
             <section id="data-attributes" class="mb-16">

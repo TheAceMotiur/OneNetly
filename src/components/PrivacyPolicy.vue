@@ -7,12 +7,14 @@
         <p class="text-gray-500 mb-12 text-lg">Last updated: August 11, 2025</p>
 
         <!-- Ad Placement: Privacy Policy Top -->
-        <AdSense 
-          ad-slot="4878379783"
-          :show-label="true"
-          container-class="mb-12"
-          :lazy-load="true"
-        />
+        <div class="w-full mb-12 flex justify-center">
+          <AdSense 
+            ad-slot="4878379783"
+            :show-label="true"
+            container-class="w-full max-w-5xl mx-auto"
+            :lazy-load="true"
+          />
+        </div>
 
         <div class="space-y-12">
           <section>

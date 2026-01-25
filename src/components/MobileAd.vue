@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full py-6 flex justify-center">
-    <div class="max-w-full overflow-hidden">
+  <div class="w-full py-6 flex items-center justify-center">
+    <div class="max-w-full overflow-hidden mx-auto">
       <!-- Mobile-specific ad label -->
       <div v-if="showLabel" class="text-center py-1 mb-2">
         <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Sponsored</span>

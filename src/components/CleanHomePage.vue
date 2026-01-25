@@ -151,12 +151,14 @@
     </section>
 
     <!-- Strategic Ad Placement 1: After Hero Section -->
-    <AdSense 
-      ad-slot="4878379783"
-      :show-label="true"
-      container-class="bg-gray-50 py-8"
-      :lazy-load="true"
-    />
+    <div class="w-full bg-gray-50 py-8 flex justify-center">
+      <AdSense 
+        ad-slot="4878379783"
+        :show-label="true"
+        container-class="w-full max-w-6xl mx-auto"
+        :lazy-load="true"
+      />
+    </div>
 
     <!-- Features Section -->
     <section id="features" class="py-20 lg:py-32 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
@@ -349,12 +351,14 @@
     </section>
 
     <!-- Strategic Ad Placement 2: After Features, Before Demo -->
-    <AdSense 
-      ad-slot="4878379783"
-      :show-label="true"
-      container-class="bg-white py-12"
-      :lazy-load="true"
-    />
+    <div class="w-full bg-white py-12 flex justify-center">
+      <AdSense 
+        ad-slot="4878379783"
+        :show-label="true"
+        container-class="w-full max-w-6xl mx-auto"
+        :lazy-load="true"
+      />
+    </div>
 
     <!-- Live Demo Section -->
     <section id="demo" class="py-20 lg:py-32 bg-gray-50">
@@ -595,12 +599,14 @@
     </section>
 
     <!-- Strategic Ad Placement 3: After Demo, Before Documentation -->
-    <AdSense 
-      ad-slot="4878379783"
-      :show-label="true"
-      container-class="bg-gray-50 py-12"
-      :lazy-load="true"
-    />
+    <div class="w-full bg-gray-50 py-12 flex justify-center">
+      <AdSense 
+        ad-slot="4878379783"
+        :show-label="true"
+        container-class="w-full max-w-6xl mx-auto"
+        :lazy-load="true"
+      />
+    </div>
 
     <!-- FAQ Section for SEO -->
     <section class="py-20 bg-white">
@@ -696,12 +702,14 @@
     </section>
 
     <!-- Strategic Ad Placement 4: Before Footer -->
-    <AdSense 
-      ad-slot="4878379783"
-      :show-label="true"
-      container-class="bg-white py-16"
-      :lazy-load="true"
-    />
+    <div class="w-full bg-white py-16 flex justify-center">
+      <AdSense 
+        ad-slot="4878379783"
+        :show-label="true"
+        container-class="w-full max-w-6xl mx-auto"
+        :lazy-load="true"
+      />
+    </div>
   </div>
 </template>
 

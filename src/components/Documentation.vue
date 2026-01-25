@@ -351,11 +351,11 @@
               </div>
               <div>
                 <h3 class="text-xl font-black">OneNetly</h3>
-                <p class="text-sm text-gray-400 font-semibold">Free & Open Source</p>
+                <p class="text-sm text-gray-400 font-semibold">Free Forever</p>
               </div>
             </div>
             <p class="text-gray-300 max-w-md">
-              Free social sharing widget for modern websites. No registration required, completely open source.
+              Free social sharing widget for modern websites. No registration required, completely free.
             </p>
           </div>
           <div>
@@ -379,7 +379,7 @@
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 text-center">
           <p class="text-gray-400 text-sm">
-            © 2024 OneNetly. Free & open source social sharing widget.
+            © 2024 OneNetly. Free social sharing widget.
           </p>
         </div>
       </div>

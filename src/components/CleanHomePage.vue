@@ -35,7 +35,7 @@
                 <span class="absolute inset-0 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-ping opacity-75"></span>
                 <span class="absolute inset-0 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-300 rounded-full animate-ping opacity-50" style="animation-delay: 0.5s;"></span>
               </div>
-              <span class="group-hover:text-green-400 transition-colors duration-300 tracking-wide text-[10px] xs:text-xs sm:text-sm whitespace-nowrap">FREE & OPEN SOURCE</span>
+              <span class="group-hover:text-green-400 transition-colors duration-300 tracking-wide text-[10px] xs:text-xs sm:text-sm whitespace-nowrap">FREE FOREVER</span>
               <svg class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 ml-2 xs:ml-2.5 sm:ml-3 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
               </svg>
@@ -652,7 +652,7 @@
           <div class="space-y-6">
             <div class="bg-gray-50 rounded-2xl p-6">
               <h3 class="text-lg font-bold mb-3 text-gray-900">Is OneNetly social sharing widget free?</h3>
-              <p class="text-gray-600">Yes! OneNetly is completely free and open-source. Unlike other social sharing widgets that charge for premium features, all OneNetly features are free forever.</p>
+              <p class="text-gray-600">Yes! OneNetly is completely free. Unlike other social sharing widgets that charge for premium features, all OneNetly features are free forever.</p>
             </div>
             
             <div class="bg-gray-50 rounded-2xl p-6">

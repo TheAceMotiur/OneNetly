@@ -13,11 +13,11 @@
             </div>
             <div>
               <h3 class="text-xl font-black">OneNetly</h3>
-              <p class="text-sm text-gray-400 font-semibold">Free & Open Source</p>
+              <p class="text-sm text-gray-400 font-semibold">Free Forever</p>
             </div>
           </div>
           <p class="text-gray-300 max-w-md">
-            Social Sharing Widget for modern websites. No registration required, completely open source.
+            Social Sharing Widget for modern websites. No registration required, completely free.
           </p>
           
           <!-- Social Links -->
@@ -64,7 +64,7 @@
       <div class="border-t border-gray-700 mt-8 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <p class="text-gray-400 text-sm">
-            © 2024 OneNetly. Free & open source social sharing widget.
+            © 2024 OneNetly. Free social sharing widget.
           </p>
           <div class="flex items-center space-x-4 mt-4 md:mt-0">
             <span class="text-gray-500 text-xs">Made with ❤️ for the web</span>

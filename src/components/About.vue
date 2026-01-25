@@ -45,7 +45,7 @@
               <div class="w-20 h-20 bg-black rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <span class="text-white font-bold text-2xl">O</span>
               </div>
-              <h3 class="text-2xl font-bold mb-4 text-black">Free & Open Source</h3>
+              <h3 class="text-2xl font-bold mb-4 text-black">Free Forever</h3>
               <p class="text-gray-600">
                 No hidden costs, no premium tiers. OneNetly is completely free and always will be.
               </p>

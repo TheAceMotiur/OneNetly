@@ -764,7 +764,7 @@ function getPositionClass(position) {
 }
 
 function generateCode() {
-  generatedCode.value = `<script src="https://onenetly.com/widget.min.js" 
+  generatedCode.value = `<script src="https://onenetly.com/widget.js" 
         data-position="${selectedPosition.value}"
         data-networks="${selectedSocials.value.join(',')}"
         data-ad-blocker-detector="${adBlockerDetector.value}">

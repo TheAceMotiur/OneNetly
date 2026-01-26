@@ -1191,7 +1191,7 @@
 
   // Auto-initialize with data attributes
   function autoInit() {
-    const scripts = document.querySelectorAll('script[src*="widget.js"]');
+    const scripts = document.querySelectorAll('script[src*="widget"]');
     let config = {};
     
     scripts.forEach(script => {

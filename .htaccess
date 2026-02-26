@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────────
+# NOTE: Laravel Herd uses Nginx — this file is IGNORED by Herd.
+# For Herd, use the herd-nginx.conf file included in this project.
+# ─────────────────────────────────────────────────────────────────
+
+# Protect sensitive files (Apache / XAMPP only)
+<FilesMatch "^(config\.php|drive_api\.php)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to protected directories (Apache / XAMPP only)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^database/ - [F,L]
+</IfModule>
+
+# PHP upload limits (Apache / XAMPP only — Herd: handled via ini_set in upload.php)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 2048M
+    php_value post_max_size 2100M
+    php_value max_execution_time 600
+    php_value max_input_time 600
+    php_value memory_limit 512M
+</IfModule>
+
+Options -Indexes

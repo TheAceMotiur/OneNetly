@@ -16,5 +16,5 @@ jobs:
         password: AmiMotiur27@
         protocol: ftps
         port: 22
-        server-dir: /home/onenetly/htdocs/onenetly.com
+        server-dir: /home/onenetly/htdocs/onenetly.com/
 

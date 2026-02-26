@@ -46,4 +46,8 @@ define('ADMIN_PASSWORD', 'AmiMotiur27@'); // Change this to a strong password!
 // Database Configuration (MySQL)
 require_once __DIR__ . '/configuration.php';
 
-
+//define('DB_HOST', 'localhost');
+//define('DB_NAME', 'onefiles');
+//define('DB_USER', 'root');
+//define('DB_PASS', 'AmiMotiur27@');
+//define('DB_CHARSET', 'utf8mb4');

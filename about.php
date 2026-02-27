@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
-$siteName = defined('SITE_NAME') ? SITE_NAME : 'OneFiles';
+$siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,7 @@ $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneFiles';
   
   <!-- Header -->
   <div class="mb-8">
-    <a href="index.php" class="inline-flex items-center gap-2 text-blue-500 dark:text-blue-400 hover:text-blue-300 transition mb-4">
+    <a href="/" class="inline-flex items-center gap-2 text-blue-500 dark:text-blue-400 hover:text-blue-300 transition mb-4">
       ← Back to Home
     </a>
     <h1 class="text-4xl font-bold mb-2">About <?= htmlspecialchars($siteName) ?></h1>
@@ -145,7 +145,7 @@ $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneFiles';
     <section class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
       <h2 class="text-2xl font-semibold mb-3">Get in Touch</h2>
       <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-        Have questions, feedback, or issues? Visit our <a href="contact.php" class="text-blue-500 dark:text-blue-400 hover:underline">Contact</a> page to reach us.
+        Have questions, feedback, or issues? Visit our <a href="contact" class="text-blue-500 dark:text-blue-400 hover:underline">Contact</a> page to reach us.
       </p>
     </section>
 

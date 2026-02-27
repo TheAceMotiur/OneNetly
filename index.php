@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= defined('SITE_NAME') ? SITE_NAME : 'OneFiles' ?> – Free File Sharing</title>
+  <title><?= defined('SITE_NAME') ? SITE_NAME : 'OneNetly' ?> – Free File Sharing</title>
   <meta name="description" content="Upload any file and share a download link instantly. No registration required." />
 
   <!-- TailwindCSS CDN -->
@@ -30,9 +30,15 @@
   <style>
     [v-cloak] { display: none; }
 
+    /* Professional gradients and animations */
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
     .drop-zone-active {
       background: rgba(59,130,246,.12);
       border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
     }
 
     /* Thin scroll bar for file list */
@@ -40,6 +46,7 @@
     .file-list::-webkit-scrollbar-track { background: transparent; }
     .file-list::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
 
+    /* Shimmer animation for processing state */
     @keyframes shimmer {
       0%   { background-position: -400px 0; }
       100% { background-position: 400px 0; }
@@ -48,6 +55,43 @@
       background: linear-gradient(90deg, #eab308 25%, #fde047 50%, #eab308 75%);
       background-size: 400px 100%;
       animation: shimmer 1.4s infinite;
+    }
+
+    /* Smooth list transitions */
+    .list-enter-active, .list-leave-active {
+      transition: all 0.3s ease;
+    }
+    .list-enter-from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    .list-leave-to {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+
+    /* Professional card hover effects */
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Smooth details animation */
+    details summary {
+      list-style: none;
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    /* Premium focus styles */
+    input:focus, textarea:focus, button:focus {
+      outline: none;
+      ring: 2px;
+      ring-color: rgba(59, 130, 246, 0.3);
     }
   </style>
   
@@ -119,19 +163,30 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
   <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-12 space-y-8">
 
     <!-- Hero -->
-    <div class="text-center space-y-2">
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
-        Upload & Share <span class="text-blue-500 dark:text-blue-400">Instantly</span>
+    <div class="text-center space-y-4 mb-2">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
+        Upload & Share <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">Instantly</span>
       </h1>
-      <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+      <p class="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
         Drag &amp; drop your files below — get a shareable link in seconds.<br>
-        Max single file: <strong class="text-gray-200"><?= $maxDisplay ?></strong> · Smooth upload for large files.
+        <span class="inline-flex items-center gap-2 mt-2">
+          <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          Max single file: <strong class="text-gray-900 dark:text-gray-200"><?= $maxDisplay ?></strong>
+        </span>
+        <span class="inline-flex items-center gap-2 mx-3">
+          <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          No registration required
+        </span>
       </p>
     </div>
 
     <!-- ── Drop zone ─────────────────────────────────────────────────── -->
     <div
-      class="relative border-2 border-dashed border-gray-700 rounded-2xl p-10 text-center cursor-pointer transition duration-200 hover:border-blue-500 hover:bg-blue-500/5"
+      class="relative border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl p-10 sm:p-12 text-center cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-500/5 hover:shadow-lg card-hover"
       :class="{ 'drop-zone-active': dragging }"
       @dragover.prevent="dragging = true"
       @dragleave.prevent="dragging = false"
@@ -146,13 +201,18 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
         @change="onFileSelect"
       />
 
-      <div class="flex flex-col items-center gap-3 pointer-events-none select-none">
-        <span class="text-5xl transition-transform duration-200" :class="dragging ? 'scale-125' : ''">📂</span>
-        <p class="text-lg font-semibold" :class="dragging ? 'text-blue-500 dark:text-blue-400' : 'text-gray-300'">
-          <span v-if="dragging">Drop files here…</span>
-          <span v-else>Drag &amp; drop files, or <span class="text-blue-500 dark:text-blue-400 underline underline-offset-2">browse</span></span>
-        </p>
-        <p class="text-xs text-gray-500 dark:text-gray-500">All file types accepted · Multiple files allowed</p>
+      <div class="flex flex-col items-center gap-4 pointer-events-none select-none">
+        <div class="relative">
+          <span class="text-6xl transition-all duration-300" :class="dragging ? 'scale-125' : ''">📂</span>
+          <div v-if="dragging" class="absolute inset-0 bg-blue-500/20 rounded-full animate-ping"></div>
+        </div>
+        <div class="space-y-2">
+          <p class="text-lg sm:text-xl font-semibold" :class="dragging ? 'text-blue-500 dark:text-blue-400' : 'text-gray-900 dark:text-gray-200'">
+            <span v-if="dragging">Drop files here…</span>
+            <span v-else>Drag &amp; drop files, or <span class="text-blue-500 dark:text-blue-400 underline underline-offset-2">browse</span></span>
+          </p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">All file types accepted · Multiple files allowed · Up to <?= $maxDisplay ?></p>
+        </div>
       </div>
     </div>
 
@@ -287,6 +347,144 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
       </div>
     </div>
 
+    <!-- ── FAQ Section ─────────────────────────────────────────────────── -->
+    <section class="pt-16 pb-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold mb-2">Frequently Asked Questions</h2>
+        <p class="text-gray-600 dark:text-gray-400">Everything you need to know about <?= htmlspecialchars($siteName) ?></p>
+      </div>
+      
+      <div class="space-y-3">
+        <!-- FAQ Item 1 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">❓</span>
+              <span>Is <?= htmlspecialchars($siteName) ?> really free?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            Yes! <?= htmlspecialchars($siteName) ?> is completely free to use. No hidden fees, no subscription plans, and no credit card required. Upload and share as many files as you need.
+          </div>
+        </details>
+
+        <!-- FAQ Item 2 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">📦</span>
+              <span>What is the maximum file size I can upload?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            You can upload files up to <strong class="text-gray-900 dark:text-gray-200"><?= $maxDisplay ?></strong> per file. There's no limit on the number of files you can upload.
+          </div>
+        </details>
+
+        <!-- FAQ Item 3 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">⏱️</span>
+              <span>How long are files stored?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            Files are automatically stored for <strong class="text-gray-900 dark:text-gray-200"><?= EXPIRY_DAYS ?> days</strong> from the last download. If a file hasn't been downloaded, it will be deleted <?= EXPIRY_DAYS ?> days after upload. This ensures we can keep the service free and fast for everyone.
+          </div>
+        </details>
+
+        <!-- FAQ Item 4 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">🔐</span>
+              <span>Is my data secure and private?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            Yes. Files are stored securely in the cloud with encrypted connections. Only people with the download link can access your files. We do not scan, read, or modify your files. For sensitive data, we recommend encrypting files before uploading.
+          </div>
+        </details>
+
+        <!-- FAQ Item 5 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">🚫</span>
+              <span>What file types are allowed?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            Nearly all file types are supported! For security reasons, we block executable scripts like .php, .sh, .bat, and similar formats. Everything else — documents, images, videos, archives, etc. — is welcome.
+          </div>
+        </details>
+
+        <!-- FAQ Item 6 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">👤</span>
+              <span>Do I need to create an account?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            No account needed! Just visit <?= htmlspecialchars($siteName) ?>, upload your files, and instantly get shareable links. It's that simple.
+          </div>
+        </details>
+
+        <!-- FAQ Item 7 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">💬</span>
+              <span>How can I contact support?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            You can reach us at <a href="mailto:<?= SITE_EMAIL ?>" class="text-blue-500 dark:text-blue-400 hover:underline font-semibold"><?= SITE_EMAIL ?></a>. We typically respond within 24-48 hours. For more details, visit our <a href="contact" class="text-blue-500 dark:text-blue-400 hover:underline">contact page</a>.
+          </div>
+        </details>
+
+        <!-- FAQ Item 8 -->
+        <details class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden group">
+          <summary class="px-6 py-4 font-semibold cursor-pointer flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="flex items-center gap-3">
+              <span class="text-blue-500 dark:text-blue-400">🔗</span>
+              <span>Can I delete or modify uploaded files?</span>
+            </span>
+            <svg class="w-5 h-5 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="px-6 py-4 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed">
+            Since no account is required, files cannot be managed after upload. Files will automatically expire after <?= EXPIRY_DAYS ?> days. If you need a file removed immediately, please <a href="contact" class="text-blue-500 dark:text-blue-400 hover:underline">contact us</a> with the download link.
+          </div>
+        </details>
+      </div>
+    </section>
+
   </main>
 
   <!-- ── Footer ────────────────────────────────────────────────────────── -->
@@ -310,7 +508,7 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
       <!-- Copyright -->
       <div class="text-center text-xs text-gray-500 dark:text-gray-500 dark:text-gray-600">
         <p>&copy; <?= date('Y') ?> <?= htmlspecialchars($siteName) ?>. All rights reserved.</p>
-        <p class="mt-1">Free file sharing service</p>
+        <p class="mt-1">Free file sharing service · <a href="mailto:<?= SITE_EMAIL ?>" class="hover:text-blue-500 transition"><?= SITE_EMAIL ?></a></p>
       </div>
     </div>
   </footer>

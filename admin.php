@@ -768,17 +768,17 @@ usort($records, function($a, $b) {
     <?= htmlspecialchars(SITE_NAME) ?> &copy; <?= date('Y') ?> · Free file sharing service
     <br class="sm:hidden" />
     <span class="mx-2 hidden sm:inline">·</span>
-    <a href="terms.php" class="hover:text-gray-400 transition">Terms</a>
+    <a href="terms" class="hover:text-gray-400 transition">Terms</a>
     <span class="mx-2">·</span>
-    <a href="privacy.php" class="hover:text-gray-400 transition">Privacy</a>
+    <a href="privacy" class="hover:text-gray-400 transition">Privacy</a>
     <span class="mx-2">·</span>
-    <a href="dmca.php" class="hover:text-gray-400 transition">DMCA</a>
+    <a href="dmca" class="hover:text-gray-400 transition">DMCA</a>
     <span class="mx-2">·</span>
-    <a href="about.php" class="hover:text-gray-400 transition">About</a>
+    <a href="about" class="hover:text-gray-400 transition">About</a>
     <span class="mx-2">·</span>
-    <a href="contact.php" class="hover:text-gray-400 transition">Contact</a>
+    <a href="contact" class="hover:text-gray-400 transition">Contact</a>
     <span class="mx-2">·</span>
-    <a href="index.php" class="hover:text-gray-400 transition">Home</a>
+    <a href="/" class="hover:text-gray-400 transition">Home</a>
   </footer>
 
 </body>

@@ -1,5 +1,5 @@
 <?php
-$siteName = defined('SITE_NAME') ? SITE_NAME : 'OneFiles';
+$siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
 $currentYear = date('Y');
 ?>
 
@@ -11,22 +11,22 @@ $currentYear = date('Y');
       <nav class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
         <a href="<?= SITE_URL ?>" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Home</a>
         <span class="text-gray-400 dark:text-gray-600">·</span>
-        <a href="<?= SITE_URL ?>/terms.php" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Terms</a>
+        <a href="<?= SITE_URL ?>/terms" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Terms</a>
         <span class="text-gray-400 dark:text-gray-600">·</span>
-        <a href="<?= SITE_URL ?>/privacy.php" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Privacy</a>
+        <a href="<?= SITE_URL ?>/privacy" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Privacy</a>
         <span class="text-gray-400 dark:text-gray-600">·</span>
-        <a href="<?= SITE_URL ?>/dmca.php" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">DMCA</a>
+        <a href="<?= SITE_URL ?>/dmca" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">DMCA</a>
         <span class="text-gray-400 dark:text-gray-600">·</span>
-        <a href="<?= SITE_URL ?>/about.php" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">About</a>
+        <a href="<?= SITE_URL ?>/about" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">About</a>
         <span class="text-gray-400 dark:text-gray-600">·</span>
-        <a href="<?= SITE_URL ?>/contact.php" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Contact</a>
+        <a href="<?= SITE_URL ?>/contact" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Contact</a>
       </nav>
     </div>
     
     <!-- Copyright -->
     <div class="text-center text-xs text-gray-500 dark:text-gray-600">
       <p>&copy; <?= $currentYear ?> <?= htmlspecialchars($siteName) ?>. All rights reserved.</p>
-      <p class="mt-1">Free file sharing service</p>
+      <p class="mt-1">Free file sharing service · <a href="mailto:<?= SITE_EMAIL ?>" class="hover:text-blue-500 dark:hover:text-blue-400 transition"><?= SITE_EMAIL ?></a></p>
     </div>
   </div>
 </footer>

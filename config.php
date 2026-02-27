@@ -6,9 +6,14 @@
  */
 
 define('SITE_NAME', 'OneNetly');
+define('SITE_EMAIL', 'onenetly@gmail.com');
 
-// Auto-detect site URL from server variables
+// Auto-detect site URL from server variables (defaults to production URL)
 function getSiteUrl(): string {
+    // Use onenetly.com in production, or auto-detect for local development
+    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localhost') === false && strpos($_SERVER['HTTP_HOST'], '127.0.0.1') === false) {
+        return 'https://onenetly.com';
+    }
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
                 ($_SERVER['SERVER_PORT'] ?? 80) == 443 ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';

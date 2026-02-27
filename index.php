@@ -295,15 +295,15 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
       <!-- Links -->
       <nav class="text-center mb-4">
         <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
-          <a href="terms.php" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">Terms</a>
+          <a href="terms" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">Terms</a>
           <span class="text-gray-600 dark:text-gray-400 dark:text-gray-600">·</span>
-          <a href="privacy.php" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">Privacy</a>
+          <a href="privacy" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">Privacy</a>
           <span class="text-gray-600 dark:text-gray-400 dark:text-gray-600">·</span>
-          <a href="dmca.php" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">DMCA</a>
+          <a href="dmca" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">DMCA</a>
           <span class="text-gray-600 dark:text-gray-400 dark:text-gray-600">·</span>
-          <a href="about.php" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">About</a>
+          <a href="about" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">About</a>
           <span class="text-gray-600 dark:text-gray-400 dark:text-gray-600">·</span>
-          <a href="contact.php" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">Contact</a>
+          <a href="contact" class="text-gray-600 dark:text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 dark:text-blue-400 transition">Contact</a>
         </div>
       </nav>
       
@@ -468,7 +468,7 @@ createApp({
           resolve();
         });
 
-        xhr.open('POST', 'upload.php');
+        xhr.open('POST', 'upload');
         xhr.send(formData);
       });
     }

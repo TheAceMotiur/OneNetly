@@ -112,7 +112,7 @@ $contactEmail = 'dmca@' . strtolower(str_replace(' ', '', $siteName)) . '.exampl
     <section class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
       <h2 class="text-2xl font-semibold mb-3">Contact</h2>
       <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-        For questions about this policy, please visit our <a href="contact.php" class="text-blue-500 dark:text-blue-400 hover:underline">Contact</a> page.
+        For questions about this policy, please visit our <a href="contact" class="text-blue-500 dark:text-blue-400 hover:underline">Contact</a> page.
       </p>
     </section>
 

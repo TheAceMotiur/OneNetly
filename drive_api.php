@@ -121,7 +121,6 @@ class DriveAPI {
             ]);
             $result   = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
 
             $uploaded += $chunkLen;
 
@@ -185,7 +184,6 @@ class DriveAPI {
         ]);
         curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         // 204 = deleted, 404 = already gone — both are fine
         return $code === 204 || $code === 404;
@@ -208,7 +206,6 @@ class DriveAPI {
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
         $body = curl_exec($ch);
-        curl_close($ch);
 
         $data = json_decode($body, true);
         if (empty($data['storageQuota'])) return null;
@@ -243,15 +240,12 @@ class DriveAPI {
 
         if ($returnHeaders) {
             $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-            curl_close($ch);
             return [
                 'http_code' => $httpCode,
                 'headers'   => substr($response, 0, $headerSize),
                 'body'      => substr($response, $headerSize),
             ];
         }
-
-        curl_close($ch);
         return ['http_code' => $httpCode, 'body' => $response];
     }
 
@@ -283,7 +277,6 @@ class DriveAPI {
         curl_setopt($ch, CURLOPT_TIMEOUT, 0);
         curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
         fclose($fp);
 
         if ($httpCode !== 200) {

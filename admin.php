@@ -98,8 +98,17 @@ if ($isLoggedIn && isset($_POST['delete_file'])) {
 // Handle cleanup trigger
 if ($isLoggedIn && isset($_POST['trigger_cleanup'])) {
     $cleanupUrl = SITE_URL . '/cleanup.php?token=' . urlencode(CLEANUP_TOKEN);
-    $response = @file_get_contents($cleanupUrl);
-    $_SESSION['flash_message'] = 'Cleanup triggered: ' . ($response ?: 'Running in background');
+    
+    // Use async HTTP request with short timeout (fire and forget)
+    $ctx = stream_context_create([
+        'http' => [
+            'timeout' => 1,
+            'ignore_errors' => true
+        ]
+    ]);
+    
+    @file_get_contents($cleanupUrl, false, $ctx);
+    $_SESSION['flash_message'] = 'Cleanup triggered and running in background';
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }

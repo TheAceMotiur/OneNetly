@@ -31,7 +31,7 @@ define('ALLOWED_EXTENSIONS', []);
 define('BLOCKED_EXTENSIONS', ['php', 'php3', 'php4', 'php5', 'phtml', 'sh', 'bat', 'cmd', 'ps1']);
 
 // Short link base (used in download.php)
-define('DOWNLOAD_BASE', SITE_URL . '/download.php?id=');
+define('DOWNLOAD_BASE', SITE_URL . '/download/');
 
 // Auto-delete files this many days after their last download (or last upload if never downloaded)
 define('EXPIRY_DAYS', 90);

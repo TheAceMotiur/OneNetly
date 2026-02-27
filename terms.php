@@ -62,7 +62,7 @@ $siteName = SITE_NAME;
     <section class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
       <h2 class="text-2xl font-semibold mb-3">6. Copyright Infringement</h2>
       <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-        We respect intellectual property rights. If you believe that content hosted on our Service infringes your copyright, please see our <a href="dmca.php" class="text-blue-500 dark:text-blue-400 hover:underline">DMCA Policy</a> for information on how to submit a takedown notice.
+        We respect intellectual property rights. If you believe that content hosted on our Service infringes your copyright, please see our <a href="dmca" class="text-blue-500 dark:text-blue-400 hover:underline">DMCA Policy</a> for information on how to submit a takedown notice.
       </p>
     </section>
 
@@ -97,7 +97,7 @@ $siteName = SITE_NAME;
     <section class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
       <h2 class="text-2xl font-semibold mb-3">11. Contact Information</h2>
       <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-        For questions about these Terms, please visit our <a href="contact.php" class="text-blue-500 dark:text-blue-400 hover:underline">Contact</a> page.
+        For questions about these Terms, please visit our <a href="contact" class="text-blue-500 dark:text-blue-400 hover:underline">Contact</a> page.
       </p>
     </section>
 

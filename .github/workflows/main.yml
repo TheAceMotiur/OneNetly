@@ -17,5 +17,6 @@ jobs:
           -e "ssh -p 22 -o StrictHostKeyChecking=no" \
           --exclude='.git/' \
           --exclude='.github/' \
+          --exclude='configuration.php' \
           ./ onenetly@158.69.60.81:/home/onenetly/htdocs/onenetly.com/
 

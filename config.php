@@ -5,7 +5,7 @@
  * Add multiple accounts to DRIVE_ACCOUNTS for round-robin storage spreading.
  */
 
-define('SITE_NAME', 'OneFiles');
+define('SITE_NAME', 'OneNetly');
 
 // Auto-detect site URL from server variables
 function getSiteUrl(): string {

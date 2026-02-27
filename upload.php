@@ -25,10 +25,18 @@ ini_set('display_errors', '0');
 register_shutdown_function(function() {
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        // Log to file for debugging
+        error_log("Upload error: " . $error['message'] . " in " . $error['file'] . " on line " . $error['line']);
+        
         while (ob_get_level()) ob_end_clean();
         header('Content-Type: application/json');
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Server error: ' . $error['message']]);
+        echo json_encode([
+            'success' => false, 
+            'error' => 'Server error: ' . $error['message'],
+            'file' => basename($error['file']),
+            'line' => $error['line']
+        ]);
     }
 });
 
@@ -96,7 +104,7 @@ function pickAccount(int $fileSize): array {
             // Check storage quota for this account
             $drive = new DriveAPI($account);
             $drive->authenticate();
-            $quota = $drive->getStorageQuota();
+            $quota = $drive->getStorageInfo();
             
             if ($quota !== null) {
                 $available = $quota['limit'] - $quota['usage'];

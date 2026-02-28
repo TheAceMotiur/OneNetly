@@ -121,109 +121,34 @@ $removalDate = date('Y-m-d H:i:s', strtotime($baseDate . ' + ' . $expiryDays . '
 if ($daysLeft <= 7)      { $expiryClass = 'bg-red-900/60 text-red-300 border-red-800'; }
 elseif ($daysLeft <= 30) { $expiryClass = 'bg-yellow-900/60 text-yellow-300 border-yellow-800'; }
 else                     { $expiryClass = 'bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-700'; }
-?>
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= $fileName ?> — <?= $siteName ?></title>
-  <meta name="description" content="Download <?= $fileName ?> (<?= $fileSize ?>) from <?= $siteName ?>." />
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="<?= SITE_URL ?>/images/icon.png" />
-  <link rel="shortcut icon" type="image/png" href="<?= SITE_URL ?>/images/icon.png" />
-  <link rel="apple-touch-icon" href="<?= SITE_URL ?>/images/icon.png" />
-  
+
+// Set page variables for header
+$pageTitle = $fileName . ' — ' . $siteName;
+$pageDescription = 'Download ' . $fileName . ' (' . $fileSize . ') from ' . $siteName . '.';
+$extraHead = '
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="<?= $shareLink ?>" />
-  <meta property="og:title" content="Download: <?= $fileName ?>" />
-  <meta property="og:description" content="File size: <?= $fileSize ?> • Download from <?= $siteName ?> - Free file sharing service" />
-  <meta property="og:image" content="<?= SITE_URL ?>/images/og-facebook.png" />
+  <meta property="og:url" content="' . $shareLink . '" />
+  <meta property="og:title" content="Download: ' . $fileName . '" />
+  <meta property="og:description" content="File size: ' . $fileSize . ' • Download from ' . $siteName . ' - Free file sharing service" />
+  <meta property="og:image" content="' . SITE_URL . '/images/og-facebook.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="<?= $shareLink ?>" />
-  <meta property="twitter:title" content="Download: <?= $fileName ?>" />
-  <meta property="twitter:description" content="File size: <?= $fileSize ?> • Free download via <?= $siteName ?>" />
-  <meta property="twitter:image" content="<?= SITE_URL ?>/images/og-twitter.png" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class'
-    }
-  </script>
+  <meta property="twitter:url" content="' . $shareLink . '" />
+  <meta property="twitter:title" content="Download: ' . $fileName . '" />
+  <meta property="twitter:description" content="File size: ' . $fileSize . ' • Free download via ' . $siteName . '" />
+  <meta property="twitter:image" content="' . SITE_URL . '/images/og-twitter.png" />
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <style>
-    [v-cloak]{display:none}
-    
-    /* Theme transitions */
-    * {
-      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-    }
-  </style>
-  
-  <!-- Theme Management -->
-  <script>
-    // Initialize theme from cookie or system preference
-    (function() {
-      const savedTheme = document.cookie.split('; ').find(row => row.startsWith('theme='))?.split('=')[1];
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-      document.documentElement.classList.add(theme);
-    })();
-    
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      
-      html.classList.remove('dark', 'light');
-      html.classList.add(newTheme);
-      
-      // Save preference
-      document.cookie = `theme=${newTheme}; path=/; max-age=31536000; SameSite=Lax`;
-    }
-  </script>
-</head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen antialiased flex flex-col transition-colors duration-200">
+  <style>[v-cloak]{display:none}</style>
+';
 
-  <!-- Header -->
-  <header class="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/60 backdrop-blur sticky top-0 z-20">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="<?= $siteUrl ?>" class="flex items-center gap-2 text-xl font-bold tracking-tight">
-        <span class="text-2xl">📁</span>
-        <span class="text-blue-500 dark:text-blue-400"><?= htmlspecialchars($siteName) ?></span>
-      </a>
-      
-      <div class="flex items-center gap-3">
-        <a href="<?= $siteUrl ?>" class="text-xs text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-white transition">
-          ↑ Upload another file
-        </a>
-        
-        <!-- Theme Switcher -->
-        <button 
-          onclick="toggleTheme()"
-          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          title="Toggle theme"
-          aria-label="Toggle theme"
-        >
-          <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
-          </svg>
-          <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
+require_once __DIR__ . '/includes/header.php';
+?>
 
-  <!-- Main -->
-  <main class="flex-1 flex items-center justify-center px-4 py-16">
+<main class="flex-1 flex items-center justify-center px-4 py-16">
     <div id="app" v-cloak class="w-full max-w-lg space-y-4">
 
       <!-- File card -->
@@ -450,5 +375,5 @@ createApp({
   }
 }).mount('#app');
 </script>
-</body>
-</html>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

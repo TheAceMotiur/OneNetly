@@ -1,29 +1,26 @@
 <?php
 require_once __DIR__ . '/config.php';
 $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About <?= htmlspecialchars($siteName) ?> - Anonymous File Sharing Service</title>
-  <meta name="description" content="Learn about <?= htmlspecialchars($siteName) ?>, the free anonymous file sharing service. No registration required. Upload and share files up to 5GB securely and privately." />
-  <meta name="keywords" content="about anonymous file sharing, free file hosting, secure file transfer, <?= htmlspecialchars($siteName) ?>" />
-  <link rel="canonical" href="<?= SITE_URL ?>/about" />
+
+// Set page variables for header
+$pageTitle = 'About ' . $siteName . ' - Anonymous File Sharing Service';
+$pageDescription = 'Learn about ' . $siteName . ', the free anonymous file sharing service. No registration required. Upload and share files up to 5GB securely and privately.';
+$extraHead = '
+  <meta name="keywords" content="about anonymous file sharing, free file hosting, secure file transfer, ' . htmlspecialchars($siteName) . '" />
+  <link rel="canonical" href="' . SITE_URL . '/about" />
   
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="<?= SITE_URL ?>/about" />
-  <meta property="og:title" content="About <?= htmlspecialchars($siteName) ?> - Anonymous File Sharing" />
+  <meta property="og:url" content="' . SITE_URL . '/about" />
+  <meta property="og:title" content="About ' . htmlspecialchars($siteName) . ' - Anonymous File Sharing" />
   <meta property="og:description" content="Learn about our free anonymous file sharing service. No registration required." />
-  <meta property="og:image" content="<?= SITE_URL ?>/images/og-facebook.png" />
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-200 min-h-screen">
+  <meta property="og:image" content="' . SITE_URL . '/images/og-facebook.png" />
+';
 
-<div class="max-w-4xl mx-auto px-6 py-12">
+require_once __DIR__ . '/includes/header.php';
+?>
+
+<main class="max-w-4xl mx-auto px-6 py-12">
   
   <!-- Header -->
   <div class="mb-8">
@@ -162,6 +159,6 @@ $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
 
   </div>
 
-</div>
+</main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

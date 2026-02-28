@@ -7,7 +7,18 @@ $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About – <?= htmlspecialchars($siteName) ?></title>
+  <title>About <?= htmlspecialchars($siteName) ?> - Anonymous File Sharing Service</title>
+  <meta name="description" content="Learn about <?= htmlspecialchars($siteName) ?>, the free anonymous file sharing service. No registration required. Upload and share files up to 5GB securely and privately." />
+  <meta name="keywords" content="about anonymous file sharing, free file hosting, secure file transfer, <?= htmlspecialchars($siteName) ?>" />
+  <link rel="canonical" href="<?= SITE_URL ?>/about" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<?= SITE_URL ?>/about" />
+  <meta property="og:title" content="About <?= htmlspecialchars($siteName) ?> - Anonymous File Sharing" />
+  <meta property="og:description" content="Learn about our free anonymous file sharing service. No registration required." />
+  <meta property="og:image" content="<?= SITE_URL ?>/images/og-facebook.png" />
+  
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-200 min-h-screen">
@@ -19,8 +30,8 @@ $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
     <a href="/" class="inline-flex items-center gap-2 text-blue-500 dark:text-blue-400 hover:text-blue-300 transition mb-4">
       ← Back to Home
     </a>
-    <h1 class="text-4xl font-bold mb-2">About <?= htmlspecialchars($siteName) ?></h1>
-    <p class="text-gray-500 dark:text-gray-500">Simple. Fast. Free.</p>
+    <h1 class="text-4xl font-bold mb-2">About <?= htmlspecialchars($siteName) ?> - Anonymous File Sharing</h1>
+    <p class="text-gray-500 dark:text-gray-500">Simple. Fast. Free. Anonymous.</p>
   </div>
 
   <!-- Content -->
@@ -29,7 +40,7 @@ $siteName = defined('SITE_NAME') ? SITE_NAME : 'OneNetly';
     <section class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
       <h2 class="text-2xl font-semibold mb-3">What is <?= htmlspecialchars($siteName) ?>?</h2>
       <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-        <?= htmlspecialchars($siteName) ?> is a free, no-registration file sharing service. Upload any file up to <strong><?= MAX_FILE_SIZE_MB / 1024 ?> GB</strong>, get an instant download link, and share it with anyone. No account needed. No complicated setup. Just drag, drop, and share.
+        <?= htmlspecialchars($siteName) ?> is a free, no-registration <strong>anonymous file sharing service</strong>. Upload any file up to <strong><?= MAX_FILE_SIZE_MB / 1024 ?> GB</strong>, get an instant download link, and share it with anyone. No account needed. No complicated setup. Just drag, drop, and share anonymously.
       </p>
     </section>
 

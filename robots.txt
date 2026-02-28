@@ -1,0 +1,32 @@
+# robots.txt for OneNetly - Anonymous File Sharing Service
+User-agent: *
+Allow: /
+Disallow: /admin.php
+Disallow: /configuration.php
+Disallow: /database/
+Disallow: /includes/
+
+# Sitemap location
+Sitemap: <?= SITE_URL ?>/sitemap.xml
+
+# Crawl-delay for good SEO practice
+Crawl-delay: 0
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /

@@ -129,6 +129,27 @@ else                     { $expiryClass = 'bg-gray-800 text-gray-600 dark:text-g
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><?= $fileName ?> — <?= $siteName ?></title>
   <meta name="description" content="Download <?= $fileName ?> (<?= $fileSize ?>) from <?= $siteName ?>." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="<?= SITE_URL ?>/images/icon.png" />
+  <link rel="shortcut icon" type="image/png" href="<?= SITE_URL ?>/images/icon.png" />
+  <link rel="apple-touch-icon" href="<?= SITE_URL ?>/images/icon.png" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<?= $shareLink ?>" />
+  <meta property="og:title" content="Download: <?= $fileName ?>" />
+  <meta property="og:description" content="File size: <?= $fileSize ?> • Download from <?= $siteName ?> - Free file sharing service" />
+  <meta property="og:image" content="<?= SITE_URL ?>/images/og-facebook.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="<?= $shareLink ?>" />
+  <meta property="twitter:title" content="Download: <?= $fileName ?>" />
+  <meta property="twitter:description" content="File size: <?= $fileSize ?> • Free download via <?= $siteName ?>" />
+  <meta property="twitter:image" content="<?= SITE_URL ?>/images/og-twitter.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {

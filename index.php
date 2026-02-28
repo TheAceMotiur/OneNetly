@@ -1,11 +1,92 @@
+<?php
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/internal_cron.php';
+$siteName = SITE_NAME;
+$maxMB    = MAX_FILE_SIZE_MB;
+$maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
+?>
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= defined('SITE_NAME') ? SITE_NAME : 'OneNetly' ?> – Free File Sharing</title>
-  <meta name="description" content="Upload any file and share a download link instantly. No registration required." />
+  
+  <!-- SEO Optimized Title -->
+  <title>Anonymous File Sharing - Free Secure Upload & Share Files | <?= SITE_NAME ?></title>
+  <meta name="description" content="Anonymous file sharing made easy. Upload & share files up to 5GB with no registration. Secure, private, and free file transfer. Share documents, videos, photos anonymously." />
+  <meta name="keywords" content="anonymous file sharing, file sharing no registration, free file upload, secure file transfer, private file sharing, share files anonymously, online file sharing, cloud storage, file hosting" />
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<?= SITE_URL ?>" />
+  
+  <!-- SEO Meta Tags -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="author" content="<?= SITE_NAME ?>" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="<?= SITE_URL ?>/images/icon.png" />
+  <link rel="shortcut icon" type="image/png" href="<?= SITE_URL ?>/images/icon.png" />
+  <link rel="apple-touch-icon" href="<?= SITE_URL ?>/images/icon.png" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<?= SITE_URL ?>" />
+  <meta property="og:site_name" content="<?= SITE_NAME ?>" />
+  <meta property="og:title" content="Anonymous File Sharing - Free & Secure | <?= SITE_NAME ?>" />
+  <meta property="og:description" content="Anonymous file sharing made easy. Upload & share files up to 5GB with no registration. Secure, private, and free file transfer service." />
+  <meta property="og:image" content="<?= SITE_URL ?>/images/og-facebook.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Anonymous File Sharing Platform" />
+  <meta property="og:locale" content="en_US" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="<?= SITE_URL ?>" />
+  <meta name="twitter:title" content="Anonymous File Sharing - Free & Secure | <?= SITE_NAME ?>" />
+  <meta name="twitter:description" content="Upload & share files anonymously up to 5GB. No registration required. Secure and free file transfer service." />
+  <meta name="twitter:image" content="<?= SITE_URL ?>/images/og-twitter.png" />
+  <meta name="twitter:image:alt" content="Anonymous File Sharing Service" />
 
+  <!-- Structured Data / Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "<?= SITE_NAME ?>",
+    "url": "<?= SITE_URL ?>",
+    "description": "Anonymous file sharing service allowing users to upload and share files up to 5GB without registration. Secure, private, and free file transfer.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": "Anonymous file sharing, No registration required, Up to 5GB file size, Secure file transfer, Private file sharing, Free cloud storage",
+    "browserRequirements": "Requires JavaScript. Requires HTML5."
+  }
+  </script>
+  
+  <!-- Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "<?= SITE_NAME ?>",
+    "url": "<?= SITE_URL ?>",
+    "logo": "<?= SITE_URL ?>/images/icon.png",
+    "sameAs": [],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "<?= SITE_EMAIL ?>",
+      "contactType": "Customer Support"
+    }
+  }
+  </script>
+  
   <!-- TailwindCSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -120,14 +201,6 @@
 </head>
 <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen antialiased transition-colors duration-200">
 
-<?php
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/internal_cron.php';
-$siteName = SITE_NAME;
-$maxMB    = MAX_FILE_SIZE_MB;
-$maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
-?>
-
 <div id="app" v-cloak class="min-h-screen flex flex-col">
 
   <!-- ── Header ────────────────────────────────────────────────────────── -->
@@ -162,13 +235,13 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
   <!-- ── Main ──────────────────────────────────────────────────────────── -->
   <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-12 space-y-8">
 
-    <!-- Hero -->
+    <!-- Hero Section with SEO-Optimized Content -->
     <div class="text-center space-y-4 mb-2">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
-        Upload & Share <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">Instantly</span>
+        <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">Anonymous File Sharing</span> Made Simple
       </h1>
       <p class="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-        Drag &amp; drop your files below — get a shareable link in seconds.<br>
+        Share files anonymously without registration. Secure, private, and free file transfer service.<br>
         <span class="inline-flex items-center gap-2 mt-2">
           <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -342,10 +415,46 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
       </div>
     </div>
 
+    <!-- SEO Content Section -->
+    <section class="pt-12 pb-8">
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-center">Why Choose Our Anonymous File Sharing Service?</h2>
+        <div class="prose prose-lg dark:prose-invert max-w-none space-y-4 text-gray-700 dark:text-gray-300">
+          <p>
+            <strong><?= htmlspecialchars($siteName) ?></strong> provides the most secure and convenient <strong>anonymous file sharing</strong> solution. 
+            Upload documents, videos, images, or any file type up to <?= $maxDisplay ?> without creating an account or providing personal information.
+          </p>
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+            <div class="bg-white dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h3 class="font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">🔒 Complete Privacy</h3>
+              <p class="text-sm">No registration, no tracking, no personal data collection. Your file sharing remains completely anonymous and private.</p>
+            </div>
+            <div class="bg-white dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h3 class="font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">⚡ Instant Sharing</h3>
+              <p class="text-sm">Upload once and share your files anywhere with a simple link. Fast, reliable cloud-based file transfer.</p>
+            </div>
+            <div class="bg-white dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h3 class="font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">🌐 Universal Access</h3>
+              <p class="text-sm">Share files with anyone, anywhere. Recipients don't need an account to download your shared files.</p>
+            </div>
+            <div class="bg-white dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h3 class="font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">💯 100% Free</h3>
+              <p class="text-sm">No hidden costs, no premium tiers. Completely free file hosting and sharing service for everyone.</p>
+            </div>
+          </div>
+          <p class="mt-6">
+            Whether you need to send large files to colleagues, share photos with friends, or distribute documents securely, 
+            our <strong>anonymous file sharing platform</strong> makes it effortless. With encrypted connections and secure cloud storage, 
+            your files remain protected throughout the entire transfer process.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- ── FAQ Section ─────────────────────────────────────────────────── -->
     <section class="pt-16 pb-8">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold mb-2">Frequently Asked Questions</h2>
+        <h2 class="text-3xl font-bold mb-2">Frequently Asked Questions About Anonymous File Sharing</h2>
         <p class="text-gray-600 dark:text-gray-400">Everything you need to know about <?= htmlspecialchars($siteName) ?></p>
       </div>
       
@@ -709,6 +818,64 @@ createApp({
     };
   }
 }).mount('#app');
+</script>
+
+<!-- FAQ Schema Markup for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is <?= htmlspecialchars($siteName) ?> really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! <?= htmlspecialchars($siteName) ?> is completely free to use. No hidden fees, no subscription plans, and no credit card required. Upload and share as many files as you need anonymously."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the maximum file size I can upload?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can upload files up to <?= $maxDisplay ?> per file. There's no limit on the number of files you can upload anonymously."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long are files stored?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Files are automatically stored for <?= EXPIRY_DAYS ?> days from the last download. If a file hasn't been downloaded, it will be deleted <?= EXPIRY_DAYS ?> days after upload."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data secure and private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Files are stored securely in the cloud with encrypted connections. Only people with the download link can access your files. We do not scan, read, or modify your files. Anonymous file sharing ensures complete privacy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No account needed! Just visit <?= htmlspecialchars($siteName) ?>, upload your files anonymously, and instantly get shareable links. It's that simple."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What file types are allowed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nearly all file types are supported for anonymous sharing! For security reasons, we block executable scripts like .php, .sh, .bat, and similar formats. Everything else — documents, images, videos, archives, etc. — is welcome."
+      }
+    }
+  ]
+}
 </script>
 
 </body>

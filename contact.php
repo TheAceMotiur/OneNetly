@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
-$pageTitle = 'Contact Us';
-$pageDescription = 'Get in touch with ' . SITE_NAME . ' team';
+$pageTitle = 'Contact Us - Anonymous File Sharing Support';
+$pageDescription = 'Contact ' . SITE_NAME . ' support team for help with anonymous file sharing, technical support, or feedback. We respond within 24-48 hours.';
 require_once __DIR__ . '/includes/header.php';
 ?>
 

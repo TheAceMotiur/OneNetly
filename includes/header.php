@@ -14,6 +14,11 @@ $siteUrl = defined('SITE_URL') ? SITE_URL : '/';
   <?php if (isset($pageDescription)): ?>
   <meta name="description" content="<?= htmlspecialchars($pageDescription) ?>" />
   <?php endif; ?>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="<?= $siteUrl ?>/images/icon.png" />
+  <link rel="shortcut icon" type="image/png" href="<?= $siteUrl ?>/images/icon.png" />
+  <link rel="apple-touch-icon" href="<?= $siteUrl ?>/images/icon.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {

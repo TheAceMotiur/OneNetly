@@ -298,11 +298,6 @@ $maxDisplay = $maxMB >= 1024 ? round($maxMB / 1024, 1) . ' GB' : $maxMB . ' MB';
               {{ item.copied ? '✓ Copied!' : 'Copy' }}
             </button>
           </div>
-          <!-- Expiry notice -->
-          <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500 pt-0.5">
-            <span>🕒</span>
-            <span>Auto-deleted in <strong class="text-gray-400">{{ item.result.expires_days }} days</strong> from upload &nbsp;·&nbsp; {{ item.result.expires_at }}</span>
-          </div>
         </div>
       </div>
     </transition-group>

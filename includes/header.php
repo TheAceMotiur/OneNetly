@@ -48,7 +48,6 @@ $siteUrl = defined('SITE_URL') ? SITE_URL : '/';
 <header class="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/60 backdrop-blur sticky top-0 z-50">
   <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
     <a href="<?= $siteUrl ?>" class="flex items-center gap-2 text-xl font-bold tracking-tight">
-      <span class="text-2xl">☁️</span>
       <span class="text-blue-500 dark:text-blue-400"><?= htmlspecialchars($siteName) ?></span>
     </a>
     

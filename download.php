@@ -314,31 +314,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/40 mt-auto">
-    <div class="max-w-3xl mx-auto px-4 py-8">
-      <!-- Links -->
-      <nav class="text-center mb-4">
-        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
-          <a href="terms" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Terms</a>
-          <span class="text-gray-400 dark:text-gray-600">•</span>
-          <a href="privacy" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Privacy</a>
-          <span class="text-gray-400 dark:text-gray-600">•</span>
-          <a href="dmca" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">DMCA</a>
-          <span class="text-gray-400 dark:text-gray-600">•</span>
-          <a href="about" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">About</a>
-          <span class="text-gray-400 dark:text-gray-600">•</span>
-          <a href="contact" class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">Contact</a>
-        </div>
-      </nav>
-      
-      <!-- Copyright -->
-      <div class="text-center text-xs text-gray-500 dark:text-gray-600">
-        <p>&copy; <?= date('Y') ?> <?= htmlspecialchars($siteName) ?>. All rights reserved.</p>
-        <p class="mt-1">Free file sharing service</p>
-      </div>
-    </div>
-  </footer>
-
 <script>
 const { createApp, ref } = Vue;
 createApp({

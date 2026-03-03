@@ -7,6 +7,19 @@
 // Start output buffering
 ob_start();
 
+// Set CORS headers FIRST (before any other output)
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, X-API-Key, Authorization');
+header('Access-Control-Max-Age: 3600');
+header('Content-Type: application/json');
+
+// Handle CORS preflight immediately
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 // Set PHP limits for large uploads
 @ini_set('upload_max_filesize', '5120M');
 @ini_set('post_max_size', '5200M');
@@ -22,6 +35,7 @@ register_shutdown_function(function() {
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
         while (ob_get_level()) ob_end_clean();
+        header('Access-Control-Allow-Origin: *');
         header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode([
@@ -31,26 +45,13 @@ register_shutdown_function(function() {
     }
 });
 
-require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../database.php';
-require_once __DIR__ . '/../drive_api.php';
-require_once __DIR__ . '/../api_auth.php';
+require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../database.php';
+require_once __DIR__ . '/../../drive_api.php';
+require_once __DIR__ . '/../../api_auth.php';
 
 // Clean output buffer
 ob_end_clean();
-
-// Set JSON headers
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-API-Key, Authorization');
-header('Access-Control-Max-Age: 3600');
-
-// Handle CORS preflight
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
 
 // ── Helper Functions ──────────────────────────────────────────────────────────
 

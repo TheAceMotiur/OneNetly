@@ -43,20 +43,36 @@ class APIAuth {
      * Get API key from request headers
      */
     private function getAPIKeyFromRequest(): ?string {
-        // Check X-API-Key header
-        $headers = getallheaders();
-        if (isset($headers['X-API-Key'])) {
-            return $headers['X-API-Key'];
+        // Check $_SERVER first (required for Nginx + PHP-FPM)
+        if (isset($_SERVER['HTTP_X_API_KEY'])) {
+            return $_SERVER['HTTP_X_API_KEY'];
         }
         
-        // Check x-api-key (lowercase)
-        if (isset($headers['x-api-key'])) {
-            return $headers['x-api-key'];
+        // Check getallheaders() as fallback
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            
+            // Check X-API-Key header
+            if (isset($headers['X-API-Key'])) {
+                return $headers['X-API-Key'];
+            }
+            
+            // Check x-api-key (lowercase)
+            if (isset($headers['x-api-key'])) {
+                return $headers['x-api-key'];
+            }
+            
+            // Check Authorization header (Bearer token)
+            if (isset($headers['Authorization'])) {
+                if (preg_match('/Bearer\s+(.+)/i', $headers['Authorization'], $matches)) {
+                    return $matches[1];
+                }
+            }
         }
         
-        // Check Authorization header (Bearer token)
-        if (isset($headers['Authorization'])) {
-            if (preg_match('/Bearer\s+(.+)/i', $headers['Authorization'], $matches)) {
+        // Check Authorization from $_SERVER
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            if (preg_match('/Bearer\s+(.+)/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
                 return $matches[1];
             }
         }

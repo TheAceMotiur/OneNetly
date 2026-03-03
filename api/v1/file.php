@@ -4,11 +4,12 @@
  * GET /api/v1/file/{id} - Get file information and download URL
  */
 
-header('Content-Type: application/json');
+// Set CORS headers FIRST
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-API-Key, Authorization');
 header('Access-Control-Max-Age: 3600');
+header('Content-Type: application/json');
 
 // Handle CORS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

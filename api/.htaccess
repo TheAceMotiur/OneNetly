@@ -1,0 +1,29 @@
+# OneNetly API - Apache Configuration
+# Place this in /api/.htaccess
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /api/
+
+    # API v1 Upload endpoint
+    RewriteRule ^v1/upload$ v1/upload.php [L,QSA]
+
+    # API v1 File info endpoint
+    RewriteRule ^v1/file/([a-f0-9]{12})$ v1/file.php?id=$1 [L,QSA]
+    RewriteRule ^v1/file$ v1/file.php [L,QSA]
+
+    # CORS Headers for API
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, X-API-Key, Authorization"
+    Header always set Access-Control-Max-Age "3600"
+</IfModule>
+
+# Increase upload limits
+<IfModule mod_php.c>
+    php_value upload_max_filesize 5120M
+    php_value post_max_size 5200M
+    php_value max_execution_time 7200
+    php_value max_input_time 7200
+    php_value memory_limit 768M
+</IfModule>

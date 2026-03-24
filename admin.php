@@ -290,18 +290,26 @@ if (!$isLoggedIn) {
 
 // ── Load data for dashboard ───────────────────────────────────────────────────
 
-$records = getFiles();
+// Pagination & filtering
+$page = max(1, (int)($_GET['page'] ?? 1));
+$perPage = 20;
+$offset = ($page - 1) * $perPage;
+$search = trim($_GET['search'] ?? '');
+$statusFilter = $_GET['status'] ?? 'all';
+
+// Get all files for statistics (without pagination)
+$allRecords = getFiles();
 $accounts = getDriveAccounts();
 
 // Calculate statistics
-$totalFiles = count($records);
-$totalSize = array_sum(array_column($records, 'size'));
-$totalDownloads = array_sum(array_column($records, 'download_count'));
+$totalFiles = count($allRecords);
+$totalSize = array_sum(array_column($allRecords, 'size'));
+$totalDownloads = array_sum(array_column($allRecords, 'download_count'));
 $expiredCount = 0;
 $activeCount = 0;
 $expiringCount = 0;
 
-foreach ($records as $record) {
+foreach ($allRecords as $record) {
     $daysLeft = daysUntilExpiry($record);
     if ($daysLeft === 0) {
         $expiredCount++;
@@ -311,6 +319,50 @@ foreach ($records as $record) {
         $activeCount++;
     }
 }
+
+// Filter files based on search and status
+$filteredRecords = $allRecords;
+
+// Apply search filter
+if (!empty($search)) {
+    $filteredRecords = array_filter($filteredRecords, function($record) use ($search) {
+        $searchLower = strtolower($search);
+        return stripos($record['original_name'], $search) !== false 
+            || stripos($record['id'], $search) !== false
+            || stripos($record['mime'], $search) !== false;
+    });
+}
+
+// Apply status filter
+if ($statusFilter !== 'all') {
+    $filteredRecords = array_filter($filteredRecords, function($record) use ($statusFilter) {
+        $daysLeft = daysUntilExpiry($record);
+        switch ($statusFilter) {
+            case 'active':
+                return $daysLeft > 7;
+            case 'expiring':
+                return $daysLeft > 0 && $daysLeft <= 7;
+            case 'expired':
+                return $daysLeft === 0;
+            default:
+                return true;
+        }
+    });
+}
+
+// Sort files by upload date (newest first)
+usort($filteredRecords, function($a, $b) {
+    return strtotime($b['uploaded_at'] ?? '1970-01-01') - strtotime($a['uploaded_at'] ?? '1970-01-01');
+});
+
+// Pagination for filtered results
+$totalFilteredFiles = count($filteredRecords);
+$totalPages = max(1, (int)ceil($totalFilteredFiles / $perPage));
+$page = min($page, $totalPages); // Ensure page doesn't exceed total pages
+$offset = ($page - 1) * $perPage;
+
+// Get paginated records
+$records = array_slice($filteredRecords, $offset, $perPage);
 
 // Get flash messages
 $flashMessage = $_SESSION['flash_message'] ?? null;
@@ -322,11 +374,6 @@ unset($_SESSION['flash_error']);
 $cronLastRun = (int) getMetadata('cron_last_run', 0);
 $cronLastRunDate = getMetadata('cron_last_run_date', null);
 $cronNextRun = $cronLastRun > 0 ? $cronLastRun + 3600 : null;
-
-// Sort files by upload date (newest first)
-usort($records, function($a, $b) {
-    return strtotime($b['uploaded_at'] ?? '1970-01-01') - strtotime($a['uploaded_at'] ?? '1970-01-01');
-});
 
 ?>
 <!DOCTYPE html>
@@ -352,6 +399,9 @@ usort($records, function($a, $b) {
         <span class="text-sm text-gray-400"><?= htmlspecialchars(SITE_NAME) ?></span>
       </div>
       <div class="flex items-center gap-4">
+        <a href="files.php" class="text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition font-semibold">
+          📁 Advanced File Manager
+        </a>
         <a href="<?= SITE_URL ?>" class="text-sm text-gray-400 hover:text-white transition">
           ← Back to Site
         </a>
@@ -487,12 +537,58 @@ usort($records, function($a, $b) {
     <!-- Files Table -->
     <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
       <div class="p-6 border-b border-gray-800">
-        <h2 class="text-lg font-bold">All Files (<?= $totalFiles ?>)</h2>
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
+          <h2 class="text-lg font-bold">
+            All Files 
+            <span class="text-gray-500">(<?= $totalFilteredFiles ?><?php if ($totalFilteredFiles !== $totalFiles): ?> of <?= $totalFiles ?><?php endif; ?>)</span>
+          </h2>
+          
+          <!-- Search and Filter -->
+          <form method="GET" class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+            <input
+              type="text"
+              name="search"
+              value="<?= htmlspecialchars($search) ?>"
+              placeholder="Search by filename, ID..."
+              class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500 w-full sm:w-64"
+            />
+            
+            <select
+              name="status"
+              class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500"
+            >
+              <option value="all" <?= $statusFilter === 'all' ? 'selected' : '' ?>>All Status</option>
+              <option value="active" <?= $statusFilter === 'active' ? 'selected' : '' ?>>Active</option>
+              <option value="expiring" <?= $statusFilter === 'expiring' ? 'selected' : '' ?>>Expiring Soon</option>
+              <option value="expired" <?= $statusFilter === 'expired' ? 'selected' : '' ?>>Expired</option>
+            </select>
+            
+            <button
+              type="submit"
+              class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition whitespace-nowrap"
+            >
+              Filter
+            </button>
+            
+            <?php if (!empty($search) || $statusFilter !== 'all'): ?>
+            <a
+              href="?page=1"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition text-center whitespace-nowrap"
+            >
+              Clear
+            </a>
+            <?php endif; ?>
+          </form>
+        </div>
       </div>
       
       <?php if (empty($records)): ?>
       <div class="p-8 text-center text-gray-500">
-        No files uploaded yet.
+        <?php if (!empty($search) || $statusFilter !== 'all'): ?>
+          No files match your search criteria.
+        <?php else: ?>
+          No files uploaded yet.
+        <?php endif; ?>
       </div>
       <?php else: ?>
       <div class="overflow-x-auto">
@@ -583,6 +679,102 @@ usort($records, function($a, $b) {
           </tbody>
         </table>
       </div>
+      
+      <!-- Pagination -->
+      <?php if ($totalPages > 1): ?>
+      <div class="p-6 border-t border-gray-800 bg-gray-800/30">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <!-- Page info -->
+          <div class="text-sm text-gray-400">
+            Showing <?= $offset + 1 ?> to <?= min($offset + $perPage, $totalFilteredFiles) ?> of <?= $totalFilteredFiles ?> files
+          </div>
+          
+          <!-- Pagination controls -->
+          <div class="flex items-center gap-2">
+            <?php
+            // Build query string with existing filters
+            $queryParams = [];
+            if (!empty($search)) $queryParams['search'] = $search;
+            if ($statusFilter !== 'all') $queryParams['status'] = $statusFilter;
+            
+            $buildUrl = function($pageNum) use ($queryParams) {
+                $queryParams['page'] = $pageNum;
+                return '?' . http_build_query($queryParams);
+            };
+            ?>
+            
+            <!-- First page -->
+            <?php if ($page > 1): ?>
+            <a
+              href="<?= $buildUrl(1) ?>"
+              class="px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm transition"
+              title="First page"
+            >
+              ««
+            </a>
+            <?php endif; ?>
+            
+            <!-- Previous page -->
+            <?php if ($page > 1): ?>
+            <a
+              href="<?= $buildUrl($page - 1) ?>"
+              class="px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm transition"
+            >
+              « Previous
+            </a>
+            <?php endif; ?>
+            
+            <!-- Page numbers -->
+            <div class="flex items-center gap-2">
+              <?php
+              // Show max 5 page numbers
+              $startPage = max(1, $page - 2);
+              $endPage = min($totalPages, $page + 2);
+              
+              // Adjust if at the beginning or end
+              if ($page <= 3) {
+                  $endPage = min($totalPages, 5);
+              }
+              if ($page >= $totalPages - 2) {
+                  $startPage = max(1, $totalPages - 4);
+              }
+              
+              for ($i = $startPage; $i <= $endPage; $i++):
+              ?>
+                <a
+                  href="<?= $buildUrl($i) ?>"
+                  class="px-3 py-2 <?= $i === $page ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 border border-gray-700' ?> rounded-lg text-sm transition"
+                >
+                  <?= $i ?>
+                </a>
+              <?php endfor; ?>
+            </div>
+            
+            <!-- Next page -->
+            <?php if ($page < $totalPages): ?>
+            <a
+              href="<?= $buildUrl($page + 1) ?>"
+              class="px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm transition"
+            >
+              Next »
+            </a>
+            <?php endif; ?>
+            
+            <!-- Last page -->
+            <?php if ($page < $totalPages): ?>
+            <a
+              href="<?= $buildUrl($totalPages) ?>"
+              class="px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm transition"
+              title="Last page"
+            >
+              »»
+            </a>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+      
       <?php endif; ?>
     </div>
 

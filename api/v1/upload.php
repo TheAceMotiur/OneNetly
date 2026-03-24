@@ -162,12 +162,20 @@ try {
     $originalName = basename($file['name']);
     $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
 
-    if (in_array($ext, BLOCKED_EXTENSIONS, true)) {
-        jsonError("File type '.$ext' is not allowed for security reasons.");
+    // Check if file has no extension
+    if (empty($ext)) {
+        jsonError('File must have a valid extension. Supported formats: ' . implode(', ', array_slice(ALLOWED_EXTENSIONS, 0, 20)) . ' and more.');
     }
 
+    // Check against blocked extensions (security)
+    if (in_array($ext, BLOCKED_EXTENSIONS, true)) {
+        jsonError("File type '.$ext' is blocked for security reasons.");
+    }
+
+    // Check against allowed extensions whitelist
     if (!empty(ALLOWED_EXTENSIONS) && !in_array($ext, ALLOWED_EXTENSIONS, true)) {
-        jsonError("File type '.$ext' is not permitted.");
+        $supportedFormats = implode(', ', ALLOWED_EXTENSIONS);
+        jsonError("File type '.$ext' is not supported. Allowed formats: $supportedFormats");
     }
 
     // Sanitize filename

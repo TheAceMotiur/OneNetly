@@ -29,97 +29,139 @@ define('MAX_FILE_SIZE_BYTES', MAX_FILE_SIZE_MB * 1024 * 1024);
 // Google Drive folder ID to upload into (null = root)
 define('DEFAULT_DRIVE_FOLDER_ID', null);
 
-// Allowed file extensions - All Google Drive supported formats
-// Empty array = allow all, but we explicitly list Google Drive supported types for clarity
+// ═══════════════════════════════════════════════════════════════════════════════
+// STRICT FILE EXTENSION WHITELIST
+// ═══════════════════════════════════════════════════════════════════════════════
+// Only extensions listed here are allowed. Any other file type will be rejected.
+// This provides strong security by explicitly defining what is permitted.
+// 
+// To allow ALL extensions (not recommended): set to an empty array []
+// To be more permissive: uncomment additional categories below
+// ═══════════════════════════════════════════════════════════════════════════════
+
 define('ALLOWED_EXTENSIONS', [
-    // Documents
-    'doc', 'docx', 'odt', 'rtf', 'txt', 'pdf', 'epub', 'pages', 'wpd', 'wps', 'xps', 'oxps',
+    // ──────────────────────────────────────────────────────────────────────────
+    // DOCUMENTS (Common formats)
+    // ──────────────────────────────────────────────────────────────────────────
+    'pdf',                          // Adobe PDF
+    'doc', 'docx',                  // Microsoft Word
+    'xls', 'xlsx',                  // Microsoft Excel
+    'ppt', 'pptx',                  // Microsoft PowerPoint
+    'txt',                          // Plain Text
+    'rtf',                          // Rich Text Format
+    'odt', 'ods', 'odp',           // OpenDocument (LibreOffice)
+    'csv',                          // Comma-Separated Values
     
-    // Spreadsheets
-    'xls', 'xlsx', 'xlsm', 'xlt', 'xltx', 'xltm', 'ods', 'csv', 'tsv', 'numbers',
+    // ──────────────────────────────────────────────────────────────────────────
+    // IMAGES (Web-safe + common photo formats)
+    // ──────────────────────────────────────────────────────────────────────────
+    'jpg', 'jpeg',                  // JPEG images
+    'png',                          // PNG images
+    'gif',                          // GIF images
+    'webp',                         // WebP images (modern)
+    'svg',                          // SVG vector graphics
+    'bmp',                          // Bitmap
+    'ico',                          // Icons
+    'heic', 'heif',                // Apple HEIC/HEIF
     
-    // Presentations
-    'ppt', 'pptx', 'pps', 'ppsx', 'pptm', 'odp', 'key',
+    // ──────────────────────────────────────────────────────────────────────────
+    // VIDEOS (Common formats)
+    // ──────────────────────────────────────────────────────────────────────────
+    'mp4',                          // MPEG-4 (most common)
+    'mov',                          // QuickTime
+    'avi',                          // AVI container
+    'mkv',                          // Matroska
+    'webm',                         // WebM (web standard)
+    'wmv',                          // Windows Media Video
+    'flv',                          // Flash Video
+    'mpeg', 'mpg',                  // MPEG-1/2
+    'm4v',                          // iTunes video
     
-    // Images
-    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'tiff', 'tif', 'webp', 'ico', 'heic', 'heif', 
-    'raw', 'cr2', 'nef', 'dng', 'arw', 'orf', 'rw2', 'pef', 'sr2', 'raf',
+    // ──────────────────────────────────────────────────────────────────────────
+    // AUDIO (Common formats)
+    // ──────────────────────────────────────────────────────────────────────────
+    'mp3',                          // MP3 (most common)
+    'wav',                          // WAV (uncompressed)
+    'ogg',                          // Ogg Vorbis
+    'flac',                         // FLAC (lossless)
+    'aac',                          // Advanced Audio Coding
+    'm4a',                          // MPEG-4 Audio
+    'wma',                          // Windows Media Audio
     
-    // Videos
-    'mp4', 'mov', 'avi', 'wmv', 'flv', 'mkv', 'webm', 'm4v', 'mpg', 'mpeg', 'm2v', 
-    '3gp', '3g2', 'ogv', 'vob', 'mts', 'm2ts', 'ts', 'f4v', 'divx', 'xvid',
+    // ──────────────────────────────────────────────────────────────────────────
+    // ARCHIVES (Compressed files)
+    // ──────────────────────────────────────────────────────────────────────────
+    'zip',                          // ZIP archive
+    'rar',                          // RAR archive
+    '7z',                           // 7-Zip
+    'tar',                          // Tar archive
+    'gz',                           // Gzip
     
-    // Audio
-    'mp3', 'wav', 'wma', 'ogg', 'flac', 'aac', 'm4a', 'opus', 'amr', 'aiff', 'ape', 
-    'alac', 'wv', 'mka', 'oga', 'mid', 'midi',
+    // ──────────────────────────────────────────────────────────────────────────
+    // CODE & DEVELOPMENT (Common formats)
+    // ──────────────────────────────────────────────────────────────────────────
+    'html', 'htm',                  // HTML
+    'css',                          // CSS
+    'js',                           // JavaScript
+    'json',                         // JSON data
+    'xml',                          // XML
+    'md', 'markdown',               // Markdown
     
-    // Archives
-    'zip', 'rar', 'tar', 'gz', 'bz2', '7z', 'xz', 'iso', 'dmg', 'cab', 'arj', 'lz', 'lzh', 'ace',
+    // ═══════════════════════════════════════════════════════════════════════════
+    // OPTIONAL: Uncomment sections below to allow additional file types
+    // ═══════════════════════════════════════════════════════════════════════════
     
-    // Code & Development
-    'html', 'htm', 'css', 'json', 'xml', 'yaml', 'yml', 'md', 'markdown', 'sql',
-    'c', 'cpp', 'h', 'hpp', 'cc', 'cxx', 'java', 'py', 'rb', 'go', 'rs', 'swift', 'kt', 'kts',
-    'ts', 'tsx', 'jsx', 'js', 'mjs', 'cjs', 'vue', 'pl', 'r', 'scala', 'm', 'mm', 'groovy', 'gradle', 'dart',
-    'lua', 'coffee', 'asm', 's', 'pas', 'vb', 'vbs', 'bas', 'cls', 'jar',
+    /*
+    // ── EXTENDED DOCUMENTS ──
+    'epub',                         // E-books
+    'pages',                        // Apple Pages
+    'numbers',                      // Apple Numbers
+    'key',                          // Apple Keynote
     
-    // Adobe & Design
-    'psd', 'ai', 'indd', 'eps', 'ps', 'sketch', 'fig', 'xd', 'dwg', 'dxf',
+    // ── RAW IMAGES (Professional photography) ──
+    'raw', 'cr2', 'nef', 'dng', 'arw', 'orf',
     
-    // 3D Models & CAD
-    'obj', 'fbx', 'gltf', 'glb', 'stl', 'dae', '3ds', 'blend', 'max', 'ma', 'mb',
-    'step', 'stp', 'iges', 'igs', 'sat', 'sldprt', 'sldasm', 'ipt', 'iam',
+    // ── DESIGN FILES ──
+    'psd',                          // Adobe Photoshop
+    'ai',                           // Adobe Illustrator
+    'sketch',                       // Sketch
+    'fig',                          // Figma
+    'xd',                           // Adobe XD
     
-    // Fonts
-    'ttf', 'otf', 'woff', 'woff2', 'eot', 'fon',
+    // ── 3D MODELS ──
+    'obj', 'fbx', 'stl', 'gltf', 'glb',
     
-    // eBooks
-    'mobi', 'azw', 'azw3', 'kf8', 'fb2', 'cbr', 'cbz',
+    // ── FONTS ──
+    'ttf', 'otf', 'woff', 'woff2',
     
-    // Database
-    'db', 'sqlite', 'sqlite3', 'mdb', 'accdb', 'dbf',
+    // ── EXECUTABLES & MOBILE APPS ──
+    'exe',                          // Windows executable
+    'apk',                          // Android app
+    'ipa',                          // iOS app
+    'dmg',                          // macOS disk image
+    'iso',                          // ISO disk image
     
-    // Email & Communication
-    'eml', 'msg', 'pst', 'ost', 'vcf', 'ics',
-    
-    // Data & Logs
-    'log', 'dat', 'ini', 'cfg', 'conf', 'config', 'properties', 'toml',
-    
-    // Virtual Machines & Disk Images
-    'vmdk', 'vdi', 'vhd', 'vhdx', 'ova', 'ovf', 'qcow', 'qcow2', 'img',
-    
-    // Mobile Apps & Executables
-    'apk', 'ipa', 'aab', 'xap', 'exe', 'msi', 'deb', 'rpm',
-    
-    // Game Development
-    'unity', 'unitypackage', 'uasset', 'pak', 'grf', 'wad', 'bsp',
-    
-    // Certificates & Keys
-    'pem', 'crt', 'cer', 'der', 'p7b', 'p7c', 'p12', 'pfx', 'key', 'pub', 'csr',
-    
-    // Microsoft Office (additional formats)
-    'dot', 'dotx', 'dotm', 'docm', 'xlam', 'xlsb', 'pot', 'potx', 'potm', 'ppsm',
-    
-    // OpenDocument formats
-    'odc', 'odf', 'odg', 'odi', 'odm', 'ods', 'odt', 'otg', 'oth', 'otp', 'ots', 'ott',
-    
-    // Project Management
-    'mpp', 'mpt', 'mpx', 'pod', 'gan',
-    
-    // Scientific & Math
-    'mat', 'fig', 'mlx', 'slx', 'mdl', 'nb', 'cdf',
-    
-    // GIS & Mapping
-    'shp', 'kml', 'kmz', 'gpx', 'geojson', 'gdb',
-    
-    // Backup & System
-    'bak', 'old', 'tmp', 'temp', 'swp', 'swo', 'cache',
+    // ── ADDITIONAL CODE LANGUAGES ──
+    'py',                           // Python
+    'java',                         // Java
+    'cpp', 'c', 'h',               // C/C++
+    'php',                          // PHP (allowed if not in BLOCKED_EXTENSIONS)
+    'rb',                           // Ruby
+    'go',                           // Go
+    'rs',                           // Rust
+    'swift',                        // Swift
+    'kt',                           // Kotlin
+    'ts',                           // TypeScript
+    'sql',                          // SQL
+    'yaml', 'yml',                  // YAML
+    */
 ]);
 
 // Blocked file extensions for security
 // Only blocking server-side executable scripts that could run on PHP/Nginx server
 define('BLOCKED_EXTENSIONS', [
     // PHP executables (primary concern for PHP server)
-    'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phps', 'pht', 'phar',
+    'php', 'php3', 'php4', 'php5', 'php7', 'mjs', 'phtml', 'phps', 'pht', 'phar',
     // Shell scripts (could be dangerous if server is misconfigured)
     'sh', 'bash', 'zsh', 'fish', 'ksh', 'csh',
     // Windows batch/PowerShell (if running on Windows server)

@@ -29,3 +29,9 @@ coverage
 /node_modules/
 *.tsbuildinfo
 /wordpress-plugin
+
+# Wrangler
+.wrangler/
+wrangler.toml.backup
+.dev.vars
+*.log

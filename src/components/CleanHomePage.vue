@@ -1,27 +1,28 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center py-8 xs:py-12 sm:py-16 bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden safe-area-left safe-area-right">
+    <section class="relative min-h-screen flex items-center justify-center py-8 xs:py-12 sm:py-16 bg-gradient-to-br from-indigo-50/30 via-white to-pink-50/30 overflow-hidden safe-area-left safe-area-right">
       <!-- Professional Background Effects -->
       <div class="absolute inset-0">
-        <!-- Sophisticated grid pattern -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:20px_20px] xs:bg-[size:30px_30px] sm:bg-[size:40px_40px] opacity-40"></div>
-        <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:20px_20px] xs:bg-[size:30px_30px] sm:bg-[size:40px_40px] opacity-30"></div>
+        <!-- Sophisticated animated gradient mesh -->
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-100/20 via-purple-100/20 to-pink-100/20 animate-gradient"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:20px_20px] xs:bg-[size:30px_30px] sm:bg-[size:40px_40px] opacity-60"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(139,92,246,0.02)_1px,transparent_1px)] bg-[size:20px_20px] xs:bg-[size:30px_30px] sm:bg-[size:40px_40px] opacity-50"></div>
         
-        <!-- Premium floating elements -->
-        <div class="absolute top-1/4 left-1/4 w-1.5 h-1.5 xs:w-2 xs:h-2 bg-gradient-to-br from-black to-gray-600 rounded-full animate-ping opacity-20"></div>
-        <div class="absolute top-1/3 right-1/3 w-1 h-1 xs:w-1.5 xs:h-1.5 bg-gradient-to-br from-gray-800 to-black rounded-full animate-ping opacity-25" style="animation-delay: 1.5s;"></div>
-        <div class="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 xs:w-2 xs:h-2 bg-gradient-to-br from-black to-gray-700 rounded-full animate-ping opacity-15" style="animation-delay: 3s;"></div>
-        <div class="absolute top-1/2 right-1/4 w-1 h-1 xs:w-1.5 xs:h-1.5 bg-gradient-to-br from-gray-900 to-black rounded-full animate-ping opacity-30" style="animation-delay: 4.5s;"></div>
+        <!-- Premium floating elements with gradient colors -->
+        <div class="absolute top-1/4 left-1/4 w-1.5 h-1.5 xs:w-2 xs:h-2 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full animate-ping opacity-30"></div>
+        <div class="absolute top-1/3 right-1/3 w-1 h-1 xs:w-1.5 xs:h-1.5 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full animate-ping opacity-35" style="animation-delay: 1.5s;"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 xs:w-2 xs:h-2 bg-gradient-to-br from-pink-600 to-rose-600 rounded-full animate-ping opacity-25" style="animation-delay: 3s;"></div>
+        <div class="absolute top-1/2 right-1/4 w-1 h-1 xs:w-1.5 xs:h-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full animate-ping opacity-40" style="animation-delay: 4.5s;"></div>
         
-        <!-- Premium gradient orbs - Reduced size for mobile -->
-        <div class="absolute top-6 xs:top-12 left-4 xs:left-12 w-32 xs:w-48 sm:w-64 lg:w-96 xl:w-[500px] h-32 xs:h-48 sm:h-64 lg:h-96 xl:h-[500px] bg-gradient-to-br from-black/8 via-gray-900/5 to-transparent rounded-full blur-3xl animate-float opacity-60"></div>
-        <div class="absolute bottom-6 xs:bottom-12 right-4 xs:right-12 w-40 xs:w-56 sm:w-80 lg:w-[500px] xl:w-[600px] h-40 xs:h-56 sm:h-80 lg:h-[500px] xl:h-[600px] bg-gradient-to-tl from-gray-900/6 via-black/4 to-transparent rounded-full blur-3xl animate-float opacity-70" style="animation-delay: 2s;"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 xs:w-80 sm:w-[400px] lg:w-[600px] xl:w-[800px] h-64 xs:h-80 sm:h-[400px] lg:h-[600px] xl:h-[800px] bg-gradient-to-r from-transparent via-black/3 to-transparent rounded-full blur-3xl animate-float opacity-50" style="animation-delay: 4s;"></div>
+        <!-- Premium gradient orbs with vibrant colors -->
+        <div class="absolute top-6 xs:top-12 left-4 xs:left-12 w-32 xs:w-48 sm:w-64 lg:w-96 xl:w-[500px] h-32 xs:h-48 sm:h-64 lg:h-96 xl:h-[500px] bg-gradient-to-br from-indigo-400/15 via-purple-400/10 to-transparent rounded-full blur-3xl animate-float opacity-70"></div>
+        <div class="absolute bottom-6 xs:bottom-12 right-4 xs:right-12 w-40 xs:w-56 sm:w-80 lg:w-[500px] xl:w-[600px] h-40 xs:h-56 sm:h-80 lg:h-[500px] xl:h-[600px] bg-gradient-to-tl from-pink-400/12 via-rose-400/8 to-transparent rounded-full blur-3xl animate-float opacity-80" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 xs:w-80 sm:w-[400px] lg:w-[600px] xl:w-[800px] h-64 xs:h-80 sm:h-[400px] lg:h-[600px] xl:h-[800px] bg-gradient-to-r from-transparent via-purple-400/8 to-transparent rounded-full blur-3xl animate-float opacity-60" style="animation-delay: 4s;"></div>
         
-        <!-- Professional geometric shapes - Adjusted for mobile -->
-        <div class="absolute top-12 xs:top-24 right-1/4 w-12 xs:w-16 sm:w-20 lg:w-32 h-12 xs:h-16 sm:h-20 lg:h-32 border border-black/5 rounded-xl xs:rounded-2xl rotate-12 animate-float opacity-30" style="animation-delay: 6s;"></div>
-        <div class="absolute bottom-12 xs:bottom-24 left-1/4 w-8 xs:w-12 sm:w-16 lg:w-24 h-8 xs:h-12 sm:h-16 lg:h-24 border border-gray-800/8 rounded-lg xs:rounded-xl rotate-45 animate-float opacity-25" style="animation-delay: 8s;"></div>
+        <!-- Professional geometric shapes with gradient borders -->
+        <div class="absolute top-12 xs:top-24 right-1/4 w-12 xs:w-16 sm:w-20 lg:w-32 h-12 xs:h-16 sm:h-20 lg:h-32 border-2 border-gradient-to-br from-purple-200 to-pink-200 rounded-xl xs:rounded-2xl rotate-12 animate-float opacity-40" style="animation-delay: 6s;"></div>
+        <div class="absolute bottom-12 xs:bottom-24 left-1/4 w-8 xs:w-12 sm:w-16 lg:w-24 h-8 xs:h-12 sm:h-16 lg:h-24 border-2 border-indigo-200/60 rounded-lg xs:rounded-xl rotate-45 animate-float opacity-35" style="animation-delay: 8s;"></div>
       </div>
       
       <div class="relative z-10 w-full max-w-7xl mx-auto px-4 xs:px-6 sm:px-6 lg:px-8">
@@ -29,13 +30,13 @@
           <!-- Enhanced Professional Content -->
           <div class="text-center lg:text-left w-full max-w-4xl mx-auto lg:mx-0 px-2 xs:px-4 sm:px-0">
             <!-- Premium Status Badge -->
-            <div class="inline-flex items-center px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-black via-gray-900 to-black text-white text-[10px] xs:text-xs sm:text-sm font-black rounded-lg xs:rounded-xl sm:rounded-2xl mb-4 xs:mb-6 sm:mb-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 animate-bounce-gentle cursor-pointer group border border-gray-700">
+            <div class="inline-flex items-center px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-[10px] xs:text-xs sm:text-sm font-black rounded-lg xs:rounded-xl sm:rounded-2xl mb-4 xs:mb-6 sm:mb-8 shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-105 animate-bounce-gentle cursor-pointer group border-2 border-purple-300/50 ring-2 ring-purple-200/50">
               <div class="relative mr-2 xs:mr-2.5 sm:mr-3">
-                <span class="w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse block shadow-lg"></span>
-                <span class="absolute inset-0 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-ping opacity-75"></span>
-                <span class="absolute inset-0 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-300 rounded-full animate-ping opacity-50" style="animation-delay: 0.5s;"></span>
+                <span class="w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-300 rounded-full animate-pulse block shadow-lg"></span>
+                <span class="absolute inset-0 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-300 rounded-full animate-ping opacity-75"></span>
+                <span class="absolute inset-0 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-200 rounded-full animate-ping opacity-50" style="animation-delay: 0.5s;"></span>
               </div>
-              <span class="group-hover:text-green-400 transition-colors duration-300 tracking-wide text-[10px] xs:text-xs sm:text-sm whitespace-nowrap">FREE FOREVER</span>
+              <span class="group-hover:text-green-200 transition-colors duration-300 tracking-wide text-[10px] xs:text-xs sm:text-sm whitespace-nowrap drop-shadow-lg">FREE FOREVER</span>
               <svg class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 ml-2 xs:ml-2.5 sm:ml-3 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
               </svg>
@@ -45,7 +46,7 @@
             <h1 class="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black leading-[0.95] xs:leading-[0.9] tracking-tight mb-4 xs:mb-6 sm:mb-8">
               <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.3s; animation-fill-mode: forwards;">Best Social Sharing Widget</span>
               <span class="block text-gray-900 opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">for Modern</span>
-              <span class="block bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent opacity-0 animate-fade-in-up" style="animation-delay: 0.7s; animation-fill-mode: forwards;">Websites</span>
+              <span class="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent opacity-0 animate-fade-in-up drop-shadow-2xl" style="animation-delay: 0.7s; animation-fill-mode: forwards;">Websites</span>
             </h1>
             
             <!-- Professional Description -->
@@ -55,31 +56,31 @@
             </h2>
             <!-- Enhanced Professional Stats -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6 justify-center lg:justify-start opacity-0 animate-fade-in-up" style="animation-delay: 1.3s; animation-fill-mode: forwards;">
-              <div class="text-center lg:text-left group bg-white/50 rounded-lg p-2 xs:p-3">
+              <div class="text-center lg:text-left group bg-white/70 backdrop-blur-sm rounded-xl p-2 xs:p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-green-100">
                 <div class="flex items-center justify-center lg:justify-start gap-1 xs:gap-1.5 sm:gap-2 mb-1 xs:mb-1.5">
                   <div class="w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse shadow-lg"></div>
-                  <span class="text-base xs:text-lg sm:text-xl font-black text-gray-900 group-hover:text-green-600 transition-colors duration-300">5KB</span>
+                  <span class="text-base xs:text-lg sm:text-xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">5KB</span>
                 </div>
                 <span class="text-[10px] xs:text-xs sm:text-sm font-bold text-gray-600 tracking-wide uppercase">Minified Size</span>
               </div>
-              <div class="text-center lg:text-left group bg-white/50 rounded-lg p-2 xs:p-3">
+              <div class="text-center lg:text-left group bg-white/70 backdrop-blur-sm rounded-xl p-2 xs:p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
                 <div class="flex items-center justify-center lg:justify-start gap-1 xs:gap-1.5 sm:gap-2 mb-1 xs:mb-1.5">
                   <div class="w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-pulse shadow-lg" style="animation-delay: 0.5s;"></div>
-                  <span class="text-base xs:text-lg sm:text-xl font-black text-gray-900 group-hover:text-blue-600 transition-colors duration-300">50M+</span>
+                  <span class="text-base xs:text-lg sm:text-xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">50M+</span>
                 </div>
                 <span class="text-[10px] xs:text-xs sm:text-sm font-bold text-gray-600 tracking-wide uppercase">Downloads</span>
               </div>
-              <div class="text-center lg:text-left group bg-white/50 rounded-lg p-2 xs:p-3">
+              <div class="text-center lg:text-left group bg-white/70 backdrop-blur-sm rounded-xl p-2 xs:p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-purple-100">
                 <div class="flex items-center justify-center lg:justify-start gap-1 xs:gap-1.5 sm:gap-2 mb-1 xs:mb-1.5">
                   <div class="w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-purple-500 rounded-full animate-pulse shadow-lg" style="animation-delay: 1s;"></div>
-                  <span class="text-base xs:text-lg sm:text-xl font-black text-gray-900 group-hover:text-purple-600 transition-colors duration-300">99.9%</span>
+                  <span class="text-base xs:text-lg sm:text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">99.9%</span>
                 </div>
                 <span class="text-[10px] xs:text-xs sm:text-sm font-bold text-gray-600 tracking-wide uppercase">Uptime</span>
               </div>
-              <div class="text-center lg:text-left group bg-white/50 rounded-lg p-2 xs:p-3">
+              <div class="text-center lg:text-left group bg-white/70 backdrop-blur-sm rounded-xl p-2 xs:p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-orange-100">
                 <div class="flex items-center justify-center lg:justify-start gap-1 xs:gap-1.5 sm:gap-2 mb-1 xs:mb-1.5">
                   <div class="w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full animate-pulse shadow-lg" style="animation-delay: 1.5s;"></div>
-                  <span class="text-base xs:text-lg sm:text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors duration-300">24/7</span>
+                  <span class="text-base xs:text-lg sm:text-xl font-black bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">24/7</span>
                 </div>
                 <span class="text-[10px] xs:text-xs sm:text-sm font-bold text-gray-600 tracking-wide uppercase">Support</span>
               </div>
@@ -89,14 +90,14 @@
           <!-- Professional Visual Demo -->
           <div class="relative w-full max-w-lg mx-auto lg:max-w-none opacity-0 animate-fade-in-up" style="animation-delay: 1.5s; animation-fill-mode: forwards;">
             <!-- Premium Device Mockup -->
-            <div class="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl xs:rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-2xl border-2 border-gray-200/50 transform hover:rotate-0 transition-all duration-700 hover:shadow-3xl group">
+            <div class="relative bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30 rounded-xl xs:rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-premium-lg border-2 border-purple-100/50 transform hover:rotate-0 transition-all duration-700 hover:shadow-purple-200/50 group ring-1 ring-purple-100/30">
               <!-- Enhanced Browser Chrome -->
-              <div class="bg-gradient-to-r from-gray-100 to-gray-200 rounded-t-xl xs:rounded-t-2xl sm:rounded-t-3xl p-3 xs:p-4 sm:p-6 border-b-2 border-gray-300 -m-4 xs:-m-6 sm:-m-8 mb-4 xs:mb-6 sm:mb-8">
+              <div class="bg-gradient-to-r from-gray-100 via-purple-50 to-pink-50 rounded-t-xl xs:rounded-t-2xl sm:rounded-t-3xl p-3 xs:p-4 sm:p-6 border-b-2 border-purple-200/50 -m-4 xs:-m-6 sm:-m-8 mb-4 xs:mb-6 sm:mb-8">
                 <div class="flex items-center gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3 sm:mb-4">
                   <div class="flex gap-1.5 xs:gap-2 sm:gap-3">
-                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
-                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
-                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
+                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-red-400 to-red-600 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
+                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
+                    <div class="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-green-400 to-green-600 rounded-full shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"></div>
                   </div>
                   <div class="flex-1 bg-white rounded-lg xs:rounded-xl px-2 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-3 text-[10px] xs:text-xs sm:text-sm text-gray-600 font-mono shadow-inner border border-gray-300 truncate">
                     https://yourwebsite.com/content
@@ -128,15 +129,17 @@
               <!-- Premium Widget Preview with Advanced Animation -->
               <div class="absolute bottom-3 xs:bottom-4 sm:bottom-6 md:bottom-8 right-3 xs:right-4 sm:right-6 md:right-8 animate-bounce-gentle">
                 <div class="relative group">
-                  <div class="bg-gradient-to-br from-black via-gray-900 to-black rounded-lg xs:rounded-xl sm:rounded-2xl w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-500 shadow-2xl ring-2 xs:ring-4 ring-black/10 hover:ring-4 xs:hover:ring-8 hover:ring-black/20 group-hover:rotate-12">
-                    <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-lg xs:rounded-xl sm:rounded-2xl w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-500 shadow-2xl ring-2 xs:ring-4 ring-purple-200/50 hover:ring-4 xs:hover:ring-8 hover:ring-purple-300/60 group-hover:rotate-12">
+                    <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
                     </svg>
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-lg xs:rounded-xl sm:rounded-2xl opacity-50"></div>
                   </div>
                   <!-- Enhanced Pulse Rings -->
-                  <div class="absolute inset-0 bg-black rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-20"></div>
-                  <div class="absolute inset-0 bg-gray-800 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-15" style="animation-delay: 0.5s;"></div>
-                  <div class="absolute inset-0 bg-gray-900 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-10" style="animation-delay: 1s;"></div>
+                  <div class="absolute inset-0 bg-purple-400 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-30"></div>
+                  <div class="absolute inset-0 bg-pink-400 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-20" style="animation-delay: 0.5s;"></div>
+                  <div class="absolute inset-0 bg-indigo-400 rounded-lg xs:rounded-xl sm:rounded-2xl animate-ping opacity-15" style="animation-delay: 1s;"></div>
+                  <div class="absolute -inset-3 bg-gradient-to-br from-purple-400/40 to-pink-400/40 rounded-2xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
                 </div>
               </div>
             </div>
@@ -161,7 +164,7 @@
     </div>
 
     <!-- Features Section -->
-    <section id="features" class="py-20 lg:py-32 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section id="features" class="py-20 lg:py-32 bg-gradient-to-b from-purple-50/30 via-white to-pink-50/30 relative overflow-hidden">
       <!-- Enhanced Background Pattern -->
       <div class="absolute inset-0 opacity-5">
         <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -175,15 +178,15 @@
       </div>
       
       <!-- Floating background elements -->
-      <div class="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-black/3 to-transparent rounded-full blur-3xl animate-float opacity-30"></div>
-      <div class="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-tl from-gray-900/2 to-transparent rounded-full blur-3xl animate-float opacity-40" style="animation-delay: 3s;"></div>
+      <div class="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-indigo-400/10 to-transparent rounded-full blur-3xl animate-float opacity-40"></div>
+      <div class="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-tl from-pink-400/10 to-transparent rounded-full blur-3xl animate-float opacity-50" style="animation-delay: 3s;"></div>
       
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-16 lg:mb-20">
           <!-- Enhanced section badge -->
-          <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 text-sm font-bold rounded-full mb-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-300">
+          <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 text-gray-800 text-sm font-bold rounded-full mb-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-purple-200/50 ring-2 ring-purple-100/30">
             <span class="mr-2 text-yellow-500">✨</span>
-            Features & Benefits
+            <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-black">Features & Benefits</span>
             <span class="ml-2 text-green-500">🚀</span>
           </div>
           
@@ -191,12 +194,12 @@
           <h2 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-8 text-gray-900 tracking-tight">
             Why OneNetly is the{' '}
             <span class="relative inline-block">
-              <span class="bg-gradient-to-r from-gray-900 via-black to-gray-700 bg-clip-text text-transparent">Best Social Sharing Widget</span>
-              <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-black to-gray-600 rounded-full transform scale-x-0 animate-fade-in-up" style="animation-delay: 1s; animation-fill-mode: forwards;"></div>
+              <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent drop-shadow-sm">Best Social Sharing Widget</span>
+              <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transform scale-x-0 animate-fade-in-up" style="animation-delay: 1s; animation-fill-mode: forwards;"></div>
             </span>
           </h2>
           <p class="text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed opacity-0 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: forwards;">
-            Our <span class="font-semibold text-gray-800">free social sharing widget</span> combines <span class="font-semibold text-gray-800">performance, privacy, and simplicity</span> to deliver the ultimate social media buttons solution with <span class="font-semibold text-gray-800">native mobile share, share counts, and 18+ networks</span> for your website.
+            Our <span class="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">free social sharing widget</span> combines <span class="font-semibold text-gray-800">performance, privacy, and simplicity</span> to deliver the ultimate social media buttons solution with <span class="font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">native mobile share, share counts, and 18+ networks</span> for your website.
           </p>
         </div>
         

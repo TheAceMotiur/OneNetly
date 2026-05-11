@@ -3,24 +3,25 @@
     <!-- Main Share Button -->
     <button
       @click="togglePanel"
-      class="relative w-16 h-16 bg-black hover:bg-gray-800 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group overflow-hidden"
+      class="relative w-16 h-16 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 transform hover:scale-110 hover:rotate-12 flex items-center justify-center group overflow-hidden ring-4 ring-purple-200 hover:ring-purple-300"
     >
       <!-- Background gradient effect -->
-      <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
       
       <!-- Icon -->
       <div class="relative z-10">
-        <svg v-if="!isPanelOpen" class="w-7 h-7 transition-all duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg v-if="!isPanelOpen" class="w-7 h-7 transition-all duration-300 group-hover:scale-110 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
         </svg>
-        <svg v-else class="w-6 h-6 transition-all duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg v-else class="w-6 h-6 transition-all duration-300 group-hover:rotate-90 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </div>
       
       <!-- Pulse rings -->
-      <div class="absolute inset-0 rounded-full bg-black animate-ping opacity-20 group-hover:opacity-30"></div>
-      <div class="absolute inset-0 rounded-full bg-black animate-ping opacity-10" style="animation-delay: 0.5s;"></div>
+      <div class="absolute inset-0 rounded-full bg-purple-400 animate-ping opacity-30"></div>
+      <div class="absolute inset-0 rounded-full bg-pink-400 animate-ping opacity-20" style="animation-delay: 0.5s;"></div>
+      <div class="absolute -inset-2 rounded-full bg-gradient-to-br from-purple-400/30 to-pink-400/30 blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
     </button>
 
     <!-- Share Panel -->
@@ -34,12 +35,17 @@
     >
       <div
         v-if="isPanelOpen"
-        class="absolute bottom-20 right-0 w-72 bg-white border-2 border-gray-200 rounded-2xl shadow-2xl p-6 backdrop-blur-sm"
+        class="absolute bottom-20 right-0 w-72 bg-white/90 backdrop-blur-2xl border-2 border-gray-200/50 rounded-2xl shadow-premium-lg p-6 ring-1 ring-gray-200/50"
       >
         <!-- Header -->
         <div class="text-center mb-6">
-          <h3 class="text-xl font-bold text-black mb-2">Share this page</h3>
-          <p class="text-sm text-gray-600">Choose your favorite social network</p>
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-xl mb-3 shadow-lg ring-2 ring-purple-200\">
+            <svg class="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">Share this page</h3>
+          <p class="text-sm text-gray-600 font-medium">Choose your favorite social network</p>
         </div>
         
         <!-- Main Social Networks -->
@@ -48,10 +54,10 @@
             v-for="social in mainSocials"
             :key="social.name"
             @click="shareOn(social.name)"
-            class="group flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+            class="group flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 hover:border-purple-300 hover:from-purple-50 hover:to-pink-50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover-lift"
           >
             <component :is="social.icon" class="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
-            <span class="text-sm font-semibold text-gray-800 group-hover:text-black">{{ social.name }}</span>
+            <span class="text-sm font-bold text-gray-800 group-hover:text-purple-600">{{ social.name }}</span>
           </button>
         </div>
 
@@ -102,7 +108,7 @@
     <div
       v-if="isPanelOpen"
       @click="isPanelOpen = false"
-      class="fixed inset-0 bg-black bg-opacity-20 backdrop-blur-sm -z-10 transition-opacity duration-300"
+      class="fixed inset-0 bg-gradient-to-br from-black/30 via-purple-900/20 to-pink-900/20 backdrop-blur-md -z-10 transition-all duration-500"
     ></div>
   </div>
 </template>

@@ -1,0 +1,95 @@
+name: Deploy to CloudPanel (FTP)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Log FTP changes without uploading
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Build frontend
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+          npm ci
+          npm run build
+
+      - name: Deploy via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          timeout: 600000
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/.editorconfig
+            **/.gitattributes
+            **/.gitignore
+            **/.env
+            **/.env.*
+            **/.npmrc
+            **/auth.json
+            **/node_modules/**
+            **/tests/**
+            **/phpunit.xml
+            **/phpstan.neon
+            **/pint.json
+            **/pnpm-workspace.yaml
+            **/.phpunit.cache/**
+            **/storage/logs/**
+            **/storage/framework/cache/**
+            **/storage/framework/sessions/**
+            **/storage/framework/views/**
+            **/storage/*.key
+            **/storage/app/private/**
+            **/storage/app/public/**
+            **/AGENTS.md
+            **/CLAUDE.md
+            **/.cursor/**
+            **/.vscode/**
+            **/.idea/**
+            **/boost.json

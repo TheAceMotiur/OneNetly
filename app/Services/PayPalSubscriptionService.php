@@ -55,24 +55,38 @@ class PayPalSubscriptionService
     /**
      * Create a PayPal order for the given subscription plan.
      *
+     * When $returnUrl/$cancelUrl are provided (e.g. for a mobile app driving
+     * the approval step through a WebView), PayPal redirects there after the
+     * user approves or cancels instead of relying on the JS SDK popup flow.
+     *
      * @return array<string, mixed>
      */
-    public function createOrder(SubscriptionPlan $plan): array
+    public function createOrder(SubscriptionPlan $plan, ?string $returnUrl = null, ?string $cancelUrl = null): array
     {
-        $response = Http::withToken($this->getAccessToken())
-            ->post("{$this->baseUri()}/v2/checkout/orders", [
-                'intent' => 'CAPTURE',
-                'purchase_units' => [
-                    [
-                        'description' => "OneNetly {$plan->name} subscription",
-                        'custom_id' => (string) $plan->id,
-                        'amount' => [
-                            'currency_code' => $plan->currency,
-                            'value' => number_format((float) $plan->price, 2, '.', ''),
-                        ],
+        $payload = [
+            'intent' => 'CAPTURE',
+            'purchase_units' => [
+                [
+                    'description' => "OneNetly {$plan->name} subscription",
+                    'custom_id' => (string) $plan->id,
+                    'amount' => [
+                        'currency_code' => $plan->currency,
+                        'value' => number_format((float) $plan->price, 2, '.', ''),
                     ],
                 ],
-            ])
+            ],
+        ];
+
+        if ($returnUrl !== null && $cancelUrl !== null) {
+            $payload['application_context'] = [
+                'return_url' => $returnUrl,
+                'cancel_url' => $cancelUrl,
+                'user_action' => 'PAY_NOW',
+            ];
+        }
+
+        $response = Http::withToken($this->getAccessToken())
+            ->post("{$this->baseUri()}/v2/checkout/orders", $payload)
             ->throw();
 
         return $response->json();

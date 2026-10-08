@@ -84,6 +84,11 @@ const adminNavItems = computed<NavItem[]>(() => [
         icon: CreditCard,
     },
     {
+        title: 'Notifications',
+        href: admin.notifications.index(),
+        icon: Megaphone,
+    },
+    {
         title: 'Monetization Settings',
         href: admin.settings.monetization.edit(),
         icon: Megaphone,

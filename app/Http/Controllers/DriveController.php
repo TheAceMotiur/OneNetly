@@ -79,7 +79,7 @@ class DriveController extends Controller
                 'is_starred' => $item->is_starred,
                 'is_trashed' => $item->is_trashed,
                 'share_token' => $item->share_token,
-                'share_url' => $item->share_token ? route('drive.public.download', ['token' => $item->share_token]) : null,
+                'share_url' => $item->share_token ? route('drive.public.show', ['token' => $item->share_token]) : null,
                 'google_drive_account' => $item->googleDriveAccount?->name,
                 'google_drive_account_id' => $item->google_drive_account_id,
                 'has_google_drive' => ! empty($item->google_drive_file_id),
@@ -462,7 +462,7 @@ class DriveController extends Controller
             ]);
         }
 
-        $shareUrl = route('drive.public.download', ['token' => $item->share_token]);
+        $shareUrl = route('drive.public.show', ['token' => $item->share_token]);
 
         return response()->json([
             'success' => true,
@@ -577,6 +577,27 @@ class DriveController extends Controller
     }
 
     /**
+     * Public landing page showing details for a shared file, with a download button.
+     */
+    public function publicShow(string $token): Response
+    {
+        $item = DriveItem::where('share_token', $token)
+            ->where('is_trashed', false)
+            ->where('type', 'file')
+            ->firstOrFail();
+
+        return Inertia::render('PublicShare', [
+            'file' => [
+                'name' => $item->name,
+                'mime_type' => $item->mime_type,
+                'size' => $item->size,
+                'created_at' => $item->created_at?->toISOString(),
+                'token' => $token,
+            ],
+        ]);
+    }
+
+    /**
      * Public download or view for files with a valid share token.
      */
     public function publicDownload(string $token)
@@ -586,6 +607,19 @@ class DriveController extends Controller
             ->firstOrFail();
 
         return $this->streamItemContent($item, 'attachment');
+    }
+
+    /**
+     * Public inline preview (image/video/audio/pdf) for a shared file.
+     */
+    public function publicPreview(string $token)
+    {
+        $item = DriveItem::where('share_token', $token)
+            ->where('is_trashed', false)
+            ->where('type', 'file')
+            ->firstOrFail();
+
+        return $this->streamItemContent($item, 'inline');
     }
 
     /**
@@ -600,12 +634,22 @@ class DriveController extends Controller
                     $item->google_drive_file_id
                 );
 
-                return response()->streamDownload(function () use ($response) {
-                    echo $response->body();
-                }, $item->name, [
+                $headers = [
                     'Content-Type' => $item->mime_type ?: 'application/octet-stream',
-                    'Content-Disposition' => "{$disposition}; filename=\"{$item->name}\"",
-                ]);
+                    'Content-Disposition' => $disposition.'; filename="'.addslashes($item->name).'"',
+                ];
+
+                if ($disposition === 'inline') {
+                    return response($response->body(), 200, $headers);
+                }
+
+                return response()->stream(
+                    static function () use ($response): void {
+                        echo $response->body();
+                    },
+                    200,
+                    $headers,
+                );
             } catch (Throwable $e) {
                 return back()->with('error', 'Failed streaming file from Google Drive: '.$e->getMessage());
             }
@@ -618,7 +662,9 @@ class DriveController extends Controller
                 ]);
             }
 
-            return Storage::disk('local')->download($item->storage_path, $item->name);
+            return Storage::disk('local')->download($item->storage_path, $item->name, [
+                'Content-Type' => $item->mime_type ?: 'application/octet-stream',
+            ]);
         }
 
         return back()->with('error', 'File content could not be located.');

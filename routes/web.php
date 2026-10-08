@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminDriveAccountController;
+use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\MonetizationSettingsController;
 use App\Http\Controllers\Admin\SubscriptionController as AdminSubscriptionController;
@@ -21,8 +22,15 @@ Route::inertia('contact', 'legal/Contact')->name('legal.contact');
 
 Route::get('pricing', [SubscriptionController::class, 'index'])->name('subscriptions.index');
 
-// Public shared download route (no auth required)
+// Lightweight static pages the mobile app's WebView watches for during PayPal
+// checkout, so it knows when to close the browser and finish the purchase.
+Route::view('subscriptions/mobile-return', 'subscriptions.mobile-return')->name('subscriptions.mobile-return');
+Route::view('subscriptions/mobile-cancel', 'subscriptions.mobile-cancel')->name('subscriptions.mobile-cancel');
+
+// Public shared file routes (no auth required)
+Route::get('drive/s/{token}', [DriveController::class, 'publicShow'])->name('drive.public.show');
 Route::get('drive/public/{token}', [DriveController::class, 'publicDownload'])->name('drive.public.download');
+Route::get('drive/public/{token}/preview', [DriveController::class, 'publicPreview'])->name('drive.public.preview');
 
 // Public PayPal IPN webhook (no auth, CSRF-exempt, see bootstrap/app.php)
 Route::post('webhooks/paypal/ipn', [PayPalIpnController::class, 'handle'])->name('webhooks.paypal-ipn');
@@ -84,6 +92,9 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         Route::get('subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
         Route::patch('subscriptions/{subscription}/cancel', [AdminSubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
+
+        Route::get('notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+        Route::post('notifications/broadcast', [AdminNotificationController::class, 'broadcast'])->name('notifications.broadcast');
 
         Route::get('settings/monetization', [MonetizationSettingsController::class, 'edit'])->name('settings.monetization.edit');
         Route::put('settings/monetization/paypal', [MonetizationSettingsController::class, 'updatePaypal'])->name('settings.monetization.paypal');

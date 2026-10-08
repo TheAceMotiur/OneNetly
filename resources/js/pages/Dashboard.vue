@@ -152,6 +152,18 @@ defineOptions({
 // View mode: 'grid' or 'list'
 const viewMode = ref<'grid' | 'list'>('grid');
 
+// Thumbnail previews for image files
+const thumbnailErrors = ref<Set<number>>(new Set());
+const isImageFile = (file: DriveItem) => {
+    if (file.mime_type?.startsWith('image/')) return true;
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    return ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext);
+};
+const getThumbnailUrl = (file: DriveItem) => drive.items.preview.url({ item: file.id });
+const markThumbnailError = (id: number) => {
+    thumbnailErrors.value.add(id);
+};
+
 const { ads } = useAdsense();
 
 const storagePercent = computed(() => {
@@ -728,9 +740,9 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
         </div>
 
         <!-- Breadcrumbs & View Toggle Bar -->
-        <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
             <!-- Breadcrumbs -->
-            <div class="flex items-center gap-1 text-sm font-medium overflow-x-auto py-1">
+            <div class="flex min-w-0 flex-1 items-center gap-1 text-sm font-medium overflow-x-auto py-1">
                 <template v-for="(crumb, idx) in breadcrumbs" :key="crumb.id ?? 'root'">
                     <Link
                         v-if="idx < breadcrumbs.length - 1"
@@ -816,7 +828,7 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
         <!-- FLOATING BULK ACTIONS TOOLBAR -->
         <div
             v-if="selectedItemIds.length > 0"
-            class="sticky top-4 z-40 flex items-center justify-between rounded-2xl border bg-card/95 p-3 shadow-xl backdrop-blur-md"
+            class="sticky top-4 z-40 flex flex-wrap items-center justify-between gap-2 rounded-2xl border bg-card/95 p-3 shadow-xl backdrop-blur-md"
         >
             <div class="flex items-center gap-2">
                 <Badge variant="default" class="bg-blue-600">
@@ -827,7 +839,7 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
                 </Button>
             </div>
 
-            <div class="flex items-center gap-1.5">
+            <div class="flex flex-wrap items-center gap-1.5">
                 <Button size="sm" variant="outline" class="h-8 text-xs" @click="runBulkAction('star')">
                     <Star class="mr-1.5 h-3.5 w-3.5 fill-amber-400 text-amber-400" /> Star
                 </Button>
@@ -855,7 +867,7 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
             </h2>
 
             <!-- Folders Grid View -->
-            <div v-if="viewMode === 'grid'" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <div v-if="viewMode === 'grid'" class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 <div
                     v-for="folder in folders"
                     :key="folder.id"
@@ -931,8 +943,8 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
             </div>
 
             <!-- Folders List View -->
-            <div v-else class="rounded-xl border bg-card overflow-hidden">
-                <table class="w-full text-left text-sm">
+            <div v-else class="rounded-xl border bg-card overflow-x-auto">
+                <table class="w-full min-w-[560px] text-left text-sm">
                     <thead class="border-b bg-muted/30 text-xs uppercase text-muted-foreground">
                         <tr>
                             <th class="w-10 px-4"></th>
@@ -1005,124 +1017,129 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
             </h2>
 
             <!-- Files Grid View -->
-            <div v-if="viewMode === 'grid' && files.length > 0" class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <div v-if="viewMode === 'grid' && files.length > 0" class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 <div
                     v-for="file in files"
                     :key="file.id"
                     :class="[
-                        'group relative flex flex-col rounded-2xl border bg-card p-3 shadow-2xs transition-all cursor-pointer overflow-hidden',
+                        'group relative flex flex-col rounded-2xl border bg-card shadow-2xs transition-all cursor-pointer overflow-hidden',
                         selectedItemIds.includes(file.id) ? 'border-blue-500 bg-blue-500/10 ring-2 ring-blue-500/20' : 'hover:border-blue-500/50 hover:shadow-md'
                     ]"
                     @dblclick="openPreviewModal(file)"
                 >
-                    <!-- File Card Preview / Header -->
-                    <div class="flex items-center justify-between pb-2">
-                        <div class="flex items-center gap-1.5">
-                            <button
-                                type="button"
-                                class="text-muted-foreground hover:text-foreground"
-                                @click.stop="toggleSelectItem(file.id)"
-                            >
-                                <component
-                                    :is="selectedItemIds.includes(file.id) ? CheckSquare : Square"
-                                    :class="['h-4 w-4', selectedItemIds.includes(file.id) ? 'text-blue-500' : 'opacity-0 group-hover:opacity-100']"
-                                />
-                            </button>
-                            <div :class="['flex h-8 w-8 items-center justify-center rounded-lg', getFileColorClass(file.mime_type, file.name)]">
-                                <component :is="getFileIcon(file.mime_type, file.name)" class="h-4 w-4" />
-                            </div>
+                    <!-- Thumbnail -->
+                    <div class="relative aspect-square w-full bg-muted/40" @click="openPreviewModal(file)">
+                        <img
+                            v-if="isImageFile(file) && !thumbnailErrors.has(file.id)"
+                            :src="getThumbnailUrl(file)"
+                            :alt="file.name"
+                            loading="lazy"
+                            decoding="async"
+                            class="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                            @error="markThumbnailError(file.id)"
+                        />
+                        <div v-else :class="['flex h-full w-full items-center justify-center', getFileColorClass(file.mime_type, file.name)]">
+                            <component :is="getFileIcon(file.mime_type, file.name)" class="h-10 w-10 sm:h-12 sm:w-12" />
                         </div>
 
-                        <div class="flex items-center gap-1">
-                            <button
-                                type="button"
-                                class="text-muted-foreground hover:text-amber-400 transition-colors"
-                                @click.stop="toggleStar(file)"
-                            >
-                                <Star :class="['h-3.5 w-3.5', file.is_starred ? 'fill-amber-400 text-amber-400' : 'opacity-0 group-hover:opacity-100']" />
-                            </button>
+                        <!-- Selection checkbox overlay -->
+                        <button
+                            type="button"
+                            class="absolute left-2 top-2 rounded-md bg-background/80 p-1 text-muted-foreground backdrop-blur-sm hover:text-foreground"
+                            @click.stop="toggleSelectItem(file.id)"
+                        >
+                            <component
+                                :is="selectedItemIds.includes(file.id) ? CheckSquare : Square"
+                                :class="['h-4 w-4', selectedItemIds.includes(file.id) ? 'text-blue-500' : 'opacity-0 group-hover:opacity-100']"
+                            />
+                        </button>
 
-                            <DropdownMenu>
-                                <DropdownMenuTrigger as-child>
-                                    <Button size="icon" variant="ghost" class="h-7 w-7 text-muted-foreground hover:text-foreground" @click.stop>
-                                        <MoreVertical class="h-3.5 w-3.5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" class="w-48 rounded-xl shadow-xl">
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="openPreviewModal(file)">
-                                        <Eye class="mr-2 h-4 w-4 text-primary" /> Preview
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="downloadFile(file)">
-                                        <Download class="mr-2 h-4 w-4 text-blue-500" /> Download
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="openShareModal(file)">
-                                        <Share2 class="mr-2 h-4 w-4 text-indigo-500" /> Get link
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="duplicateFile(file)">
-                                        <Files class="mr-2 h-4 w-4 text-emerald-500" /> Make a copy
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="toggleStar(file)">
-                                        <Star :class="['mr-2 h-4 w-4', file.is_starred ? 'fill-amber-400 text-amber-400' : '']" />
-                                        {{ file.is_starred ? 'Remove star' : 'Add star' }}
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="openRenameModal(file)">
-                                        <Edit3 class="mr-2 h-4 w-4" /> Rename
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem v-if="!file.is_trashed" @click="openMoveModal(file)">
-                                        <Move class="mr-2 h-4 w-4" /> Move to
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem @click="openDetailsModal(file)">
-                                        <Info class="mr-2 h-4 w-4" /> File details
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <template v-if="file.is_trashed">
-                                        <DropdownMenuItem @click="restoreItem(file)">
-                                            <RotateCcw class="mr-2 h-4 w-4 text-emerald-500" /> Restore
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem class="text-destructive focus:text-destructive" @click="deleteItem(file, true)">
-                                            <Trash2 class="mr-2 h-4 w-4" /> Delete permanently
-                                        </DropdownMenuItem>
-                                    </template>
-                                    <DropdownMenuItem
-                                        v-else
-                                        class="text-destructive focus:text-destructive"
-                                        @click="deleteItem(file)"
-                                    >
-                                        <Trash2 class="mr-2 h-4 w-4" /> Move to trash
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
+                        <!-- Star overlay -->
+                        <button
+                            type="button"
+                            class="absolute right-2 top-2 rounded-md bg-background/80 p-1 text-muted-foreground backdrop-blur-sm hover:text-amber-400 transition-colors"
+                            @click.stop="toggleStar(file)"
+                        >
+                            <Star :class="['h-3.5 w-3.5', file.is_starred ? 'fill-amber-400 text-amber-400' : 'opacity-0 group-hover:opacity-100']" />
+                        </button>
                     </div>
 
-                    <!-- File Name & Meta -->
-                    <div class="space-y-1 pt-1" @click="openPreviewModal(file)">
-                        <div class="truncate text-xs font-semibold text-foreground hover:underline" :title="file.name">
+                    <!-- File Name & Actions -->
+                    <div class="flex items-start justify-between gap-1 p-2.5 pb-1">
+                        <span
+                            class="truncate text-xs font-semibold text-foreground hover:underline"
+                            :title="file.name"
+                            @click="openPreviewModal(file)"
+                        >
                             {{ file.name }}
-                        </div>
+                        </span>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger as-child>
+                                <Button size="icon" variant="ghost" class="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground" @click.stop>
+                                    <MoreVertical class="h-3.5 w-3.5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" class="w-48 rounded-xl shadow-xl">
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="openPreviewModal(file)">
+                                    <Eye class="mr-2 h-4 w-4 text-primary" /> Preview
+                                </DropdownMenuItem>
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="downloadFile(file)">
+                                    <Download class="mr-2 h-4 w-4 text-blue-500" /> Download
+                                </DropdownMenuItem>
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="openShareModal(file)">
+                                    <Share2 class="mr-2 h-4 w-4 text-indigo-500" /> Get link
+                                </DropdownMenuItem>
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="duplicateFile(file)">
+                                    <Files class="mr-2 h-4 w-4 text-emerald-500" /> Make a copy
+                                </DropdownMenuItem>
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="toggleStar(file)">
+                                    <Star :class="['mr-2 h-4 w-4', file.is_starred ? 'fill-amber-400 text-amber-400' : '']" />
+                                    {{ file.is_starred ? 'Remove star' : 'Add star' }}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="openRenameModal(file)">
+                                    <Edit3 class="mr-2 h-4 w-4" /> Rename
+                                </DropdownMenuItem>
+                                <DropdownMenuItem v-if="!file.is_trashed" @click="openMoveModal(file)">
+                                    <Move class="mr-2 h-4 w-4" /> Move to
+                                </DropdownMenuItem>
+                                <DropdownMenuItem @click="openDetailsModal(file)">
+                                    <Info class="mr-2 h-4 w-4" /> File details
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <template v-if="file.is_trashed">
+                                    <DropdownMenuItem @click="restoreItem(file)">
+                                        <RotateCcw class="mr-2 h-4 w-4 text-emerald-500" /> Restore
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem class="text-destructive focus:text-destructive" @click="deleteItem(file, true)">
+                                        <Trash2 class="mr-2 h-4 w-4" /> Delete permanently
+                                    </DropdownMenuItem>
+                                </template>
+                                <DropdownMenuItem
+                                    v-else
+                                    class="text-destructive focus:text-destructive"
+                                    @click="deleteItem(file)"
+                                >
+                                    <Trash2 class="mr-2 h-4 w-4" /> Move to trash
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="space-y-1.5 px-2.5 pb-2.5">
                         <div class="flex items-center justify-between text-[11px] text-muted-foreground">
                             <span>{{ formatBytes(file.size) }}</span>
                             <span>{{ formatDate(file.created_at) }}</span>
                         </div>
-                    </div>
 
-                    <!-- Storage status & Public status -->
-                    <div class="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
-                        <span class="flex items-center gap-1 text-blue-500 font-medium truncate">
-                            <Cloud class="h-3 w-3 shrink-0" />
-                            <span class="truncate">Cloud storage</span>
-                        </span>
-
-                        <span v-if="file.share_token" class="flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-medium" title="Publicly shared">
-                            <Globe class="h-3 w-3" /> Shared
-                        </span>
                     </div>
                 </div>
             </div>
 
             <!-- Files List View -->
-            <div v-else-if="viewMode === 'list' && files.length > 0" class="rounded-xl border bg-card overflow-hidden">
-                <table class="w-full text-left text-sm">
+            <div v-else-if="viewMode === 'list' && files.length > 0" class="rounded-xl border bg-card overflow-x-auto">
+                <table class="w-full min-w-[640px] text-left text-sm">
                     <thead class="border-b bg-muted/30 text-xs uppercase text-muted-foreground">
                         <tr>
                             <th class="w-10 px-4"></th>
@@ -1153,8 +1170,17 @@ const getFileColorClass = (mimeType: string | null, name: string) => {
                             </td>
                             <td class="py-3 px-4">
                                 <div class="flex items-center gap-2.5">
-                                    <div :class="['flex h-7 w-7 shrink-0 items-center justify-center rounded-lg', getFileColorClass(file.mime_type, file.name)]">
-                                        <component :is="getFileIcon(file.mime_type, file.name)" class="h-3.5 w-3.5" />
+                                    <div :class="['flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg', getFileColorClass(file.mime_type, file.name)]">
+                                        <img
+                                            v-if="isImageFile(file) && !thumbnailErrors.has(file.id)"
+                                            :src="getThumbnailUrl(file)"
+                                            :alt="file.name"
+                                            loading="lazy"
+                                            decoding="async"
+                                            class="h-full w-full object-cover"
+                                            @error="markThumbnailError(file.id)"
+                                        />
+                                        <component v-else :is="getFileIcon(file.mime_type, file.name)" class="h-3.5 w-3.5" />
                                     </div>
                                     <span class="font-medium text-foreground truncate max-w-xs md:max-w-md hover:underline" :title="file.name" @click="openPreviewModal(file)">
                                         {{ file.name }}

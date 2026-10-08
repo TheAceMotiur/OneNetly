@@ -24,6 +24,9 @@ use Illuminate\Support\Carbon;
  * @property bool $is_starred
  * @property bool $is_trashed
  * @property string|null $share_token
+ * @property string|null $device_asset_id
+ * @property string|null $content_hash
+ * @property bool $is_backup
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -40,6 +43,9 @@ use Illuminate\Support\Carbon;
     'is_starred',
     'is_trashed',
     'share_token',
+    'device_asset_id',
+    'content_hash',
+    'is_backup',
 ])]
 class DriveItem extends Model
 {
@@ -57,6 +63,7 @@ class DriveItem extends Model
             'size' => 'integer',
             'is_starred' => 'boolean',
             'is_trashed' => 'boolean',
+            'is_backup' => 'boolean',
         ];
     }
 

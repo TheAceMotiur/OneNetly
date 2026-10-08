@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Keep Google Drive account storage quotas fresh automatically.
 Schedule::command('drive:sync-quotas')->hourly()->onOneServer()->withoutOverlapping();
+
+// Permanently delete trashed files/folders past the retention period.
+Schedule::command('drive:empty-trash')->daily()->onOneServer()->withoutOverlapping();

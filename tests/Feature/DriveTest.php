@@ -347,7 +347,9 @@ test('user can create and revoke share link and public guest can download', func
 
     // Public download without authentication
     $publicResponse = $this->get(route('drive.public.download', ['token' => $token]));
-    $publicResponse->assertOk();
+    $publicResponse->assertOk()
+        ->assertHeader('Content-Disposition', 'attachment; filename="public_file.txt"');
+    expect($publicResponse->streamedContent())->toBe('public shared content');
 
     // Revoke share link
     $unshareResponse = $this->actingAs($user)->deleteJson(route('drive.items.unshare', $file));
